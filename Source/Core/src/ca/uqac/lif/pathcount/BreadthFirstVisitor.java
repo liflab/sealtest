@@ -34,7 +34,13 @@ public abstract class BreadthFirstVisitor
 				}
 			}
 			paths = new_paths;
+			depthStep(depth + 1);
 		}
+	}
+	
+	public void depthStep(int depth)
+	{
+		
 	}
 	
 	public abstract void visit(ArrayList<Edge> path);

@@ -1,3 +1,5 @@
+Title: globally, b responds to a
+
 digraph G {
   0 -> 0 [label="b,c,d"];
   0 -> 1 [label="a"];

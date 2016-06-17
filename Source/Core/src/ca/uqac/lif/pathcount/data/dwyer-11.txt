@@ -1,0 +1,15 @@
+Title: globally, transitions to p states occur at most 2 times
+
+digraph G {
+  0 -> 0 [label="Q,R,S"];
+  0 -> 1 [label="P"];
+  1 -> 1 [label="P"];
+  1 -> 2 [label="Q,R,S"];
+  2 -> 2 [label="Q,R,S"];
+  2 -> 3 [label="P"];
+  3 -> 3 [label="P"];
+  3 -> 4 [label="Q,R,S"];
+  4 -> 4 [label="Q,R,S"];
+  4 -> 5 [label="P"];
+  5 -> 5 [label="P,Q,R,S"];
+};

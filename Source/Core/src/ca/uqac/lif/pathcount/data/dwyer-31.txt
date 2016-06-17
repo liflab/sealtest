@@ -1,0 +1,11 @@
+Title: globally, S,T preceeds P
+
+digraph G {
+  0 -> 0 [label="Q,R,T"];
+  0 -> 3 [label="P"];
+  0 -> 1 [label="S"];
+  1 -> 1 [label="Q,R,S"];
+  1 -> 3 [label="P"];
+  1 -> 2 [label="T"];
+  2 -> 2 [label="P,Q,R,S,T"];
+};

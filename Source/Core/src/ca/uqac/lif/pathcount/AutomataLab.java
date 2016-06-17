@@ -1,15 +1,22 @@
 package ca.uqac.lif.pathcount;
+import java.io.File;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Scanner;
 
+import ca.uqac.lif.parkbench.CliParser;
+import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
 import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.plot.BarPlot;
+import ca.uqac.lif.parkbench.plot.Scatterplot;
 import ca.uqac.lif.parkbench.table.ExperimentTable;
 import ca.uqac.lif.parkbench.table.NormalizeRows;
 import ca.uqac.lif.parkbench.table.Table;
 import ca.uqac.lif.parkbench.Laboratory;
 
+@SuppressWarnings("unused")
 public class AutomataLab extends Laboratory
 {
 	protected static transient final String s_dataPath = "data/";
@@ -20,6 +27,12 @@ public class AutomataLab extends Laboratory
 	public static void main(String[] args) 
 	{
 		initialize(args, AutomataLab.class);
+	}
+	
+	@Override
+	public void setupCli(CliParser parser)
+	{
+		parser.addArgument(new Argument().withArgument("length").withLongName("max-length"));
 	}
 	
 	@Override
@@ -34,9 +47,26 @@ public class AutomataLab extends Laboratory
 		setTitle("Path Counting");
 		
 		// Setup the experiments
-		addExperiment("dwyer-01.txt", max_length);
-		addExperiment("dwyer-02.txt", max_length);
-		addExperiment("dwyer-03.txt", max_length);
+		URL url = AutomataLab.class.getResource(s_dataPath);
+		File f = null;
+		try 
+		{
+			f = new File(url.toURI());
+			if (f != null)
+			{
+				for (String uris : f.list())
+				{
+					if (uris.endsWith(".txt"))
+					{
+						addExperiment(uris, max_length);
+					}
+				}
+			}
+		} 
+		catch (URISyntaxException e) 
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	protected void addExperiment(String filename, int max_length)
@@ -58,9 +88,12 @@ public class AutomataLab extends Laboratory
 		add(table);
 		Table norm_tab = new NormalizeRows(table);
 		add(norm_tab);
-		BarPlot plot = new BarPlot(norm_tab);
+		Scatterplot plot = new Scatterplot(norm_tab);
 		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
-		plot.rowStacked();
+		plot.withLines();
+		/*BarPlot plot = new BarPlot(norm_tab);
+		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
+		plot.rowStacked();*/
 		add(plot);
 	}
 }

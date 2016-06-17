@@ -30,4 +30,12 @@ public class CountVisitor extends BreadthFirstVisitor
 		JsonNumber j_num = (JsonNumber) list.get(length);
 		list.set(length, new JsonNumber(j_num.numberValue().intValue() + 1));
 	}
+	
+	@Override
+	public void depthStep(int depth)
+	{
+		float progression = (float) depth / m_experiment.readFloat("max-length");
+		System.out.println("DEPTH " + depth + " " + progression);
+		m_experiment.setProgression(progression); 
+	}
 }
