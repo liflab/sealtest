@@ -4,6 +4,8 @@ import ca.uqac.lif.parkbench.Experiment;
 
 public abstract class PathCountExperiment extends Experiment
 {
+	protected transient Graph m_graph;
+	
 	PathCountExperiment()
 	{
 		super();
@@ -16,6 +18,17 @@ public abstract class PathCountExperiment extends Experiment
 		this();
 		setInput("property", property);
 		setInput("max-length", max_length);
+	}
+	
+	public PathCountExperiment setGraph(Graph g)
+	{
+		m_graph = g;
+		return this;
+	}
+	
+	public Graph getGraph()
+	{
+		return m_graph;
 	}
 
 

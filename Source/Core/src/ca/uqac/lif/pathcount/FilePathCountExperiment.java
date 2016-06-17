@@ -1,35 +1,35 @@
 package ca.uqac.lif.pathcount;
 
-import java.io.InputStream;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import ca.uqac.lif.json.JsonList;
-import ca.uqac.lif.parkbench.FileHelper;
 
 public class FilePathCountExperiment extends PathCountExperiment 
 {
-	protected static transient final String s_dataPath = "data/";
-	
-	protected transient Graph m_graph;
-	
 	FilePathCountExperiment()
 	{
 		super();
-		describe("filename", "Name of the file containing te automaton");
 	}
 	
-	public FilePathCountExperiment(String property, String filename, int max_length)
+	public FilePathCountExperiment(Scanner scanner, int max_length)
 	{
-		super(property, max_length);
-		describe("filename", "Name of the file containing te automaton");
-		setInput("filename", filename);
-		InputStream is = FileHelper.internalFileToStream(FilePathCountExperiment.class, s_dataPath + readString("filename"));
-		if (is == null)
+		super();
+		write("max-length", max_length);
+		Pattern pat_title = Pattern.compile("Title: (.*)");
+		while (scanner.hasNextLine())
 		{
-			m_graph = null;
-			return;
+			String line = scanner.nextLine();
+			if (line.startsWith("digraph"))
+				break;
+			Matcher mat = pat_title.matcher(line);
+			if (mat.find())
+			{
+				setDescription("This experiment counts the number of paths ending in each state of the automaton for the property '" + mat.group(1) + "'");
+				setInput("property", mat.group(1));
+			}
 		}
-		Scanner scanner = new Scanner(is);
 		Graph g = Graph.parseDot(scanner);
 		m_graph = g;
 		JsonList len_list = new JsonList();
@@ -37,6 +37,7 @@ public class FilePathCountExperiment extends PathCountExperiment
 		{
 			len_list.add(i);
 		}
+		describe("length", "The list of path lengths");
 		write("length", len_list);
 		for (Vertex v : g.m_vertices)
 		{
@@ -45,6 +46,7 @@ public class FilePathCountExperiment extends PathCountExperiment
 			{
 				list.add(0);
 			}
+			describe(v.m_label, "The number of paths ending in state " + v.m_label + " for increasing lengths");
 			write(v.m_label, list);
 		}
 	}
@@ -54,17 +56,12 @@ public class FilePathCountExperiment extends PathCountExperiment
 	{
 		if (m_graph == null)
 		{
-			setErrorMessage("Could not find resource " + s_dataPath + readString("filename"));
+			setErrorMessage("Could not find resource");
 			return Status.FAILED;
 		}
 		CountVisitor cv = new CountVisitor(this);
 		cv.start(m_graph, "0", readInt("max-length"));
 		return Status.DONE;
-	}
-	
-	public Graph getGraph()
-	{
-		return m_graph;
 	}
 
 }

@@ -1,5 +1,9 @@
 package ca.uqac.lif.pathcount;
+import java.io.InputStream;
+import java.util.Scanner;
+
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
+import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.plot.BarPlot;
 import ca.uqac.lif.parkbench.table.ExperimentTable;
 import ca.uqac.lif.parkbench.table.NormalizeRows;
@@ -8,6 +12,7 @@ import ca.uqac.lif.parkbench.Laboratory;
 
 public class AutomataLab extends Laboratory
 {
+	protected static transient final String s_dataPath = "data/";
 
 	/**
 	 * @param args
@@ -29,15 +34,17 @@ public class AutomataLab extends Laboratory
 		setTitle("Path Counting");
 		
 		// Setup the experiments
-		addExperiment("Fa.dot", "F a", max_length);
-		addExperiment("aUb.dot", "a U b", max_length);
-		addExperiment("GaXb.dot", "G (a -> X b)", max_length);
-		
+		addExperiment("dwyer-01.txt", max_length);
+		addExperiment("dwyer-02.txt", max_length);
+		addExperiment("dwyer-03.txt", max_length);
 	}
 	
-	protected void addExperiment(String filename, String title, int max_length)
+	protected void addExperiment(String filename, int max_length)
 	{
-		FilePathCountExperiment exp = new FilePathCountExperiment(title, filename, max_length);
+		InputStream is = FileHelper.internalFileToStream(AutomataLab.class, s_dataPath + filename);
+		Scanner scanner = new Scanner(is);
+		FilePathCountExperiment exp = new FilePathCountExperiment(scanner, max_length);
+		scanner.close();
 		Graph g = exp.getGraph();
 		String[] vertices = new String[g.m_vertices.size()];
 		int i = 0;
@@ -46,12 +53,13 @@ public class AutomataLab extends Laboratory
 			vertices[i++] = v.m_label;
 		}
 		ExperimentTable table = new ExperimentTable();
-		table.setSeriesNames(vertices).useForX("length").useForY(null).setTitle("Number of paths for each final state in the property " + title);
+		table.setSeriesNames(vertices).useForX("length").useForY(null).setTitle("Number of paths for each final state in the property " + exp.readString("property"));
 		add(exp, table);
 		add(table);
 		Table norm_tab = new NormalizeRows(table);
+		add(norm_tab);
 		BarPlot plot = new BarPlot(norm_tab);
-		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + title);
+		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
 		plot.rowStacked();
 		add(plot);
 	}
