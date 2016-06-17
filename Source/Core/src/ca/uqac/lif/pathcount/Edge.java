@@ -1,4 +1,4 @@
-package ca.uqac.lif.brutecount;
+package ca.uqac.lif.pathcount;
 
 public class Edge 
 {
