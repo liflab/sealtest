@@ -37,4 +37,22 @@ public class Edge<T extends Event>
 	{
 		return m_label + "->" + m_destination;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return m_label.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof Edge))
+		{
+			return false;
+		}
+		@SuppressWarnings("unchecked")
+		Edge<T> e = (Edge<T>) o;
+		return m_label.equals(e.m_label) && m_destination == e.m_destination;
+	}
 }
