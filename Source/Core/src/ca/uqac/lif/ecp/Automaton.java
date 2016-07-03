@@ -42,8 +42,6 @@ public class Automaton extends AtomicCayleyGraph
 					current_vertex = target_vertex;
 					break;
 				}
-				// Not supposed to get here!
-				assert false;
 			}
 		}
 	}

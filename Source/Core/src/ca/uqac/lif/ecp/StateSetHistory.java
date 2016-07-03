@@ -1,57 +1,57 @@
 package ca.uqac.lif.ecp;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-
-import ca.uqac.lif.ecp.StateSetHistory.History;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
  * found in the sequence of states of the automaton that are visited
  */
-public class StateSetHistory extends AutomatonFunction<History> 
+public class StateSetHistory extends AutomatonFunction<MathSet<Collection<Integer>>> 
 {
 	/**
 	 * The width of the history
 	 */
 	protected int m_width;
+	
+	/**
+	 * Whether the n-grams should be ordered or not
+	 */
+	protected boolean m_ordered = true;
 
 	/**
 	 * Instantiates the triaging function
 	 * @param a The automaton that is used as the basis for the triaging
 	 * @param width The size of the <i>n</i>-grams (i.e. the value of
 	 *   <i>n</i>)
+	 * @param ordered Whether the n-grams should be ordered or not
 	 */
-	public StateSetHistory(Automaton a, int width)
+	public StateSetHistory(Automaton a, int width, boolean ordered)
 	{
 		super(a);
+		m_ordered = ordered;
 		m_width = width;
 	}
 
 	@Override
-	public History getClass(Trace<AtomicEvent> trace)
+	public MathSet<Collection<Integer>> getClass(Trace<AtomicEvent> trace)
 	{
 		HistoryVisitor visitor = new HistoryVisitor(m_width);
 		m_automaton.read(trace, visitor);
 		return visitor.m_history;
 	}
 
-	protected static class HistoryVisitor extends AutomatonVisitor
+	protected class HistoryVisitor extends AutomatonVisitor
 	{
-		protected History m_history;
-
-		protected int m_width = 1;
+		protected MathSet<Collection<Integer>> m_history;
 
 		protected List<Integer> m_stateWindow;
 
 		public HistoryVisitor(int width)
 		{
 			super();
-			m_history = new History();
-			/*OrderedStateTuple ost = new OrderedStateTuple();
-			ost.add(0); // TODO: replace this by initial state
-			m_history.add(ost);*/
-			m_width = width;
+			m_history = new MathSet<Collection<Integer>>();
 			m_stateWindow = new ArrayList<Integer>(width);
 		}
 
@@ -61,7 +61,8 @@ public class StateSetHistory extends AutomatonFunction<History>
 			if (edge == null)
 			{
 				m_stateWindow.add(start_state.getId());
-				OrderedStateTuple ost = new OrderedStateTuple(m_stateWindow);
+				Collection<Integer> ost = newCollection();
+				ost.addAll(m_stateWindow);
 				m_history.add(ost);
 				return;
 			}
@@ -70,102 +71,23 @@ public class StateSetHistory extends AutomatonFunction<History>
 			{
 				m_stateWindow.remove(0);
 			}
-			OrderedStateTuple ost = new OrderedStateTuple(m_stateWindow);
+			Collection<Integer> ost = newCollection();
+			ost.addAll(m_stateWindow);
 			m_history.add(ost);
 		}
-	}
-
-	/**
-	 * A state tuple is a collection of states
-	 * @author Sylvain
-	 *
-	 */
-	public abstract static class StateTuple
-	{
-		protected List<Integer> m_states;
-
-		public StateTuple()
-		{
-			super();
-			m_states = new ArrayList<Integer>();
-		}
-
-		public StateTuple(List<Integer> list)
-		{
-			this();
-			m_states.addAll(list);
-		}
-
+		
 		/**
-		 * Adds a new state to the tuple
-		 * @param state
+		 * Gets a new collection of states. Depending on whether the visitor
+		 * is ordered or not, a set or a list will be given.
+		 * @return The collection
 		 */
-		public void add(Integer state)
+		protected Collection<Integer> newCollection()
 		{
-			m_states.add(state);
-		}
-
-		@Override
-		public String toString()
-		{
-			return m_states.toString();
+			if (m_ordered)
+			{
+				return new MathList<Integer>();
+			}
+			return new MathSet<Integer>();
 		}
 	}
-
-	/**
-	 * State tuple where the order where the states appear is important,
-	 * i.e. the tuple &lt;1,2,1&gt; is not the same tuple as &lt;1,1,2&gt;
-	 */
-	public static class OrderedStateTuple extends StateTuple
-	{
-		public OrderedStateTuple() 
-		{
-			super();
-		}
-
-		public OrderedStateTuple(List<Integer> list)
-		{
-			super(list);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return m_states.size();
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if (o == null || !(o instanceof OrderedStateTuple))
-			{
-				return false;
-			}
-			OrderedStateTuple ost = (OrderedStateTuple) o;
-			if (m_states.size() != ost.m_states.size())
-			{
-				return false;
-			}
-			for (int state_id : m_states)
-			{
-				if (!(ost.m_states.contains(state_id)))
-				{
-					return false;
-				}
-			}
-			return true;
-		}
-	}
-
-	/**
-	 * A state history is a set of state tuples
-	 */
-	public static class History extends MathSet<StateTuple>
-	{
-		/**
-		 * Dummy UID
-		 */
-		private static final long serialVersionUID = 1L;		
-	}
-
 }

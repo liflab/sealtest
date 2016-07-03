@@ -206,4 +206,27 @@ public class CayleyGraph<T extends Event,U extends Object>
 			out.append("[label=\"").append(label).append("\"];\n");
 		}
 	}
+
+	/**
+	 * Gets the number of edges in the graph
+	 * @return The number of edges
+	 */
+	public int getEdgeCount()
+	{
+		int count = 0;
+		for (Vertex<T> v : m_vertices)
+		{
+			count += v.m_outEdges.size();
+		}
+		return count;
+	}
+	
+	/**
+	 * Gets the number of vertices in the graph
+	 * @return The number of vertices
+	 */
+	public int getVertexCount()
+	{
+		return m_vertices.size();
+	}
 }

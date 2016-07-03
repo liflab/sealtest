@@ -2,8 +2,6 @@ package ca.uqac.lif.ecp;
 
 import java.util.HashSet;
 
-import ca.uqac.lif.ecp.StateSetHistory.History;
-
 /**
  * Set implementation that behaves like a real set, i.e. two sets
  * are equal if and only if they contain the same elements.
@@ -26,11 +24,12 @@ public class MathSet<T> extends HashSet<T>
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == null || !(o instanceof History))
+		if (o == null || !(o instanceof MathSet))
 		{
 			return false;
 		}
-		History h = (History) o;
+		@SuppressWarnings("unchecked")
+		MathSet<T> h = (MathSet<T>) o;
 		if (h.size() != size())
 		{
 			return false;
@@ -44,5 +43,4 @@ public class MathSet<T> extends HashSet<T>
 		}
 		return true;
 	}
-
 }
