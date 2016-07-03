@@ -10,6 +10,11 @@ package ca.uqac.lif.ecp;
 public class Edge<T extends Event> 
 {
 	/**
+	 * The ID of the vertex in the graph that is the destination of this edge
+	 */
+	protected int m_source;
+	
+	/**
 	 * The label attached to this edge
 	 */
 	protected T m_label;
@@ -25,23 +30,24 @@ public class Edge<T extends Event>
 	 * @param destination The ID of the vertex in the graph that is the 
 	 *   destination of this edge
 	 */
-	public Edge(T label, int destination)
+	public Edge(int source, T label, int destination)
 	{
 		super();
 		m_label = label;
 		m_destination = destination;
+		m_source = source;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return m_label + "->" + m_destination;
+		return m_source + "-" + m_label + "->" + m_destination;
 	}
 	
 	@Override
 	public int hashCode()
 	{
-		return m_label.hashCode();
+		return m_source + m_label.hashCode() + m_destination;
 	}
 	
 	@Override
@@ -53,6 +59,6 @@ public class Edge<T extends Event>
 		}
 		@SuppressWarnings("unchecked")
 		Edge<T> e = (Edge<T>) o;
-		return m_label.equals(e.m_label) && m_destination == e.m_destination;
+		return m_source == e.m_source && m_label.equals(e.m_label) && m_destination == e.m_destination;
 	}
 }

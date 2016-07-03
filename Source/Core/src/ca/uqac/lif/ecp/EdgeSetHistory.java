@@ -19,6 +19,12 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 	 * Whether the n-grams should be ordered or not
 	 */
 	protected boolean m_ordered = true;
+	
+	/**
+	 * Whether to take the label of the transition into account,
+	 * or just the endpoints (source-destination states)
+	 */
+	protected boolean m_useLabel = false;
 
 	/**
 	 * Instantiates the triaging function
@@ -26,12 +32,15 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 	 * @param width The size of the <i>n</i>-grams (i.e. the value of
 	 *   <i>n</i>)
 	 * @param ordered Whether the n-grams should be ordered or not
+	 * @param label Whether to take the label of the transition into account,
+	 *   or just the endpoints (source-destination states)
 	 */
-	public EdgeSetHistory(Automaton a, int width, boolean ordered)
+	public EdgeSetHistory(Automaton a, int width, boolean ordered, boolean label)
 	{
 		super(a);
 		m_ordered = ordered;
 		m_width = width;
+		m_useLabel = label;
 	}
 
 	@Override
@@ -62,7 +71,14 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 			{
 				return;
 			}
-			m_stateWindow.add(edge);
+			if (m_useLabel)
+			{
+				m_stateWindow.add(edge);
+			}
+			else
+			{
+				m_stateWindow.add(new EdgeLabelDontCare(edge));	
+			}
 			if (m_stateWindow.size() == m_width + 1)
 			{
 				m_stateWindow.remove(0);
@@ -84,6 +100,36 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 				return new MathList<Edge<AtomicEvent>>();
 			}
 			return new MathSet<Edge<AtomicEvent>>();
+		}
+	}
+	
+	/**
+	 * A special type of edge that does not compare labels when equality
+	 * with another edge is computed
+	 */
+	protected static class EdgeLabelDontCare extends Edge<AtomicEvent>
+	{
+		public EdgeLabelDontCare(Edge<AtomicEvent> e)
+		{
+			super(e.m_source, e.m_label, e.m_destination);
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return m_source + m_destination;
+		}
+		
+		@Override
+		public boolean equals(Object o)
+		{
+			if (o == null || !(o instanceof Edge))
+			{
+				return false;
+			}
+			@SuppressWarnings("unchecked")
+			Edge<AtomicEvent> e = (Edge<AtomicEvent>) o;
+			return m_source == e.m_source && m_destination == e.m_destination;
 		}
 	}
 }

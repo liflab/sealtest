@@ -25,7 +25,7 @@ public class CayleyTest
 	public static CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> edgeHistory(Automaton aut)
 	{
 		AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>> factory = new AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>>(aut.getAlphabet());
-		EdgeSetHistory function = new EdgeSetHistory(aut, 1, false);
+		EdgeSetHistory function = new EdgeSetHistory(aut, 2, false, false);
 		CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> graph = factory.getGraph(function);
 		return graph;
 	}

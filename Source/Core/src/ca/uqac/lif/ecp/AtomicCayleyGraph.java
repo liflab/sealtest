@@ -50,7 +50,7 @@ public class AtomicCayleyGraph extends CayleyGraph<AtomicEvent,String>
 				String[] labels = mat.group(3).trim().split(",");
 				for (String label : labels)
 				{
-					Edge<AtomicEvent> e = new Edge<AtomicEvent>(new AtomicEvent(label), i_to);
+					Edge<AtomicEvent> e = new Edge<AtomicEvent>(i_from, new AtomicEvent(label), i_to);
 					from.add(e);
 				}
 			}

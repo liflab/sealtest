@@ -46,7 +46,7 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 				graph.add(target_vertex);
 				graph.m_labelling.put(target_vertex.getId(), category);
 			}
-			Edge<T> edge = new Edge<T>(vep.event, target_vertex.getId());
+			Edge<T> edge = new Edge<T>(source_vertex.getId(), vep.event, target_vertex.getId());
 			source_vertex.add(edge);
 			nexts = getNextEvents();
 			for (T e : nexts)
