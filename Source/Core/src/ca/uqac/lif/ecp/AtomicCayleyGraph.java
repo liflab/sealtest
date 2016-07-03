@@ -1,47 +1,25 @@
-package ca.uqac.lif.pathcount;
+package ca.uqac.lif.ecp;
 
-import java.util.HashSet;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Graph 
+/**
+ * Special case of Cayley graph where the triaging function operates
+ * over atomic events
+ * 
+ * @author Sylvain
+ */
+public class AtomicCayleyGraph extends CayleyGraph<AtomicEvent>
 {
-	public Set<Vertex> m_vertices;
-	
-	public Graph()
-	{
-		super();
-		m_vertices = new HashSet<Vertex>();
-	}
-	
-	public Vertex getVertex(String label)
-	{
-		for (Vertex v : m_vertices)
-		{
-			if (v.m_label.compareTo(label) == 0)
-			{
-				return v;
-			}
-		}
-		return null;
-	}
-	
-	public Graph add(Vertex v)
-	{
-		m_vertices.add(v);
-		return this;
-	}
-	
 	/**
 	 * Creates a graph from a dot string
 	 * @param input A scanner to a dot string
 	 * @return The graph
 	 */
-	public static Graph parseDot(Scanner scanner)
+	public static AtomicCayleyGraph parseDot(Scanner scanner)
 	{
-		Graph g = new Graph();
+		AtomicCayleyGraph g = new AtomicCayleyGraph();
 		Pattern pat = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
 		while(scanner.hasNextLine())
 		{
@@ -53,23 +31,25 @@ public class Graph
 			if (mat.find())
 			{
 				String s_from = mat.group(1).trim();
-				Vertex from = g.getVertex(s_from);
+				int i_from = Integer.parseInt(s_from);
+				Vertex<AtomicEvent> from = g.getVertex(i_from);
 				if (from == null)
 				{
-					from = new Vertex(s_from);
+					from = new Vertex<AtomicEvent>(i_from);
 					g.add(from);
 				}
 				String s_to = mat.group(2).trim();
-				Vertex to = g.getVertex(s_to);
+				int i_to = Integer.parseInt(s_to);
+				Vertex<AtomicEvent> to = g.getVertex(i_to);
 				if (to == null)
 				{
-					to = new Vertex(s_to);
+					to = new Vertex<AtomicEvent>(i_to);
 					g.add(to);
 				}
 				String[] labels = mat.group(3).trim().split(",");
 				for (String label : labels)
 				{
-					Edge e = new Edge(label, s_to);
+					Edge<AtomicEvent> e = new Edge<AtomicEvent>(new AtomicEvent(label), i_to);
 					from.add(e);
 				}
 			}

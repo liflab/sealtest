@@ -1,32 +1,33 @@
-package ca.uqac.lif.pathcount;
+package ca.uqac.lif.ecp;
 
 import java.util.ArrayList;
 
+import ca.uqac.lif.ecp.lab.GraphExperiment;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.json.JsonNumber;
 
-public class CountVisitor extends BreadthFirstVisitor
+public class CountVisitor<T extends Event> extends BreadthFirstVisitor<T>
 {
-	protected PathCountExperiment m_experiment;
+	protected GraphExperiment m_experiment;
 	
-	public CountVisitor(PathCountExperiment experiment)
+	public CountVisitor(GraphExperiment experiment)
 	{
 		super();
 		m_experiment = experiment;
 	}
 	
-	public void start(Graph g, String start_label, int max_depth)
+	public void start(CayleyGraph<T> g, int start_id, int max_depth)
 	{
-		super.start(g, start_label, max_depth);
+		super.start(g, start_id, max_depth);
 	}
 
 	@Override
-	public void visit(ArrayList<Edge> path)
+	public void visit(ArrayList<Edge<T>> path)
 	{
 		int length = path.size();
-		Edge last_edge = path.get(path.size() - 1);
-		String last_label = last_edge.m_destination;
-		JsonList list = m_experiment.readList(last_label);
+		Edge<T> last_edge = path.get(path.size() - 1);
+		int last_label = last_edge.m_destination;
+		JsonList list = m_experiment.readList(Integer.toString(last_label));
 		JsonNumber j_num = (JsonNumber) list.get(length);
 		list.set(length, new JsonNumber(j_num.numberValue().intValue() + 1));
 	}
