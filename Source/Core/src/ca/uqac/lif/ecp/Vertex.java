@@ -77,5 +77,21 @@ public class Vertex<T extends Event>
 		return out.toString();
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return m_id;
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof Vertex))
+		{
+			return false;
+		}
+		return m_id == ((Vertex<?>) o).m_id;
+	}
+	
 
 }

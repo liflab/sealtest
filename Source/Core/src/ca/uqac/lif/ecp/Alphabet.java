@@ -106,4 +106,10 @@ public class Alphabet<T> implements Set<T>
 		return m_elements.toArray(arg0);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return m_elements.toString();
+	}
+	
 }

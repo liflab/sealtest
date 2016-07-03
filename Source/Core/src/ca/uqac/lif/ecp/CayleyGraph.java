@@ -2,8 +2,10 @@ package ca.uqac.lif.ecp;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -22,6 +24,9 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 */
 	public Set<Vertex<T>> m_vertices;
 	
+	/**
+	 * The labelling associated to each vertex
+	 */
 	VertexLabelling<U> m_labelling;
 	
 	/**
@@ -31,6 +36,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	{
 		super();
 		m_vertices = new HashSet<Vertex<T>>();
+		m_labelling = new VertexLabelling<U>();
 	}
 	
 	/**
@@ -134,4 +140,70 @@ public class CayleyGraph<T extends Event,U extends Object>
 		return null;
 	}
 
+	/**
+	 * Gets the vertex with given ID
+	 * @param id The ID
+	 * @return The vertex, or null if not found
+	 */
+	public Vertex<T> getVertexWithId(int id)
+	{
+		for (Vertex<T> v : m_vertices)
+		{
+			if (v.getId() == id)
+			{
+				return v;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Produces a Dot file to draw the graph
+	 * @return A string that can be passed to Dot
+	 */
+	public String toDot()
+	{
+		StringBuilder out = new StringBuilder();
+		out.append("digraph G {\n");
+		for (Vertex<T> v : m_vertices)
+		{
+			int id = v.getId();
+			out.append(" ").append(id).append("[label=\"").append(m_labelling.get(id)).append("\"];\n");
+			printEdges(v.m_outEdges, id, out);
+		}
+		// Add initial state
+		out.append("i -> 0;\n");
+		out.append("i [shape=\"none\",label=\"\"];\n");
+		out.append("}");
+		return out.toString();
+	}
+	
+	/**
+	 * Prints the edges of the graph, by merging the label of all edges
+	 * with the same target state
+	 * @param edges The list of edges
+	 * @param source_id The ID of the source state for all the labels
+	 * @param out The StringBuilder to write to
+	 */
+	protected void printEdges(List<Edge<T>> edges, int source_id, StringBuilder out)
+	{
+		Map<Integer,String> edge_labels = new HashMap<Integer,String>();
+		for (Edge<T> e : edges)
+		{
+			String edge_label = "";
+			if (edge_labels.containsKey(e.m_destination))
+			{
+				edge_label = edge_labels.get(e.m_destination);
+			}
+			edge_label += e.m_label + ",";
+			edge_labels.put(e.m_destination, edge_label);
+		}
+		for (int dest : edge_labels.keySet())
+		{
+			String label = edge_labels.get(dest);
+			label = label.substring(0, label.length() - 1);
+			out.append(" ").append(source_id).append(" -> ").append(dest);
+			out.append("[label=\"").append(label).append("\"];\n");
+		}
+	}
 }

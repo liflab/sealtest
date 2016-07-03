@@ -202,4 +202,9 @@ public class Trace<T> implements List<T>
 		return true;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return m_innerList.toString();
+	}
 }

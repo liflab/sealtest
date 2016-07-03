@@ -43,6 +43,7 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 			if (target_vertex == null)
 			{
 				target_vertex = new Vertex<T>();
+				graph.add(target_vertex);
 				graph.m_labelling.put(target_vertex.getId(), category);
 			}
 			Edge<T> edge = new Edge<T>(vep.event, target_vertex.getId());
@@ -50,8 +51,8 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 			nexts = getNextEvents();
 			for (T e : nexts)
 			{
-				vep = new VertexEventTracePair(current_vertex, current_trace, e);
-				if (!explored.contains(vep))
+				vep = new VertexEventTracePair(target_vertex, current_trace, e);
+				if (!explored.contains(vep) && !to_explore.contains(vep))
 				{
 					to_explore.add(vep);
 				}
@@ -72,7 +73,35 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 			vertex = v;
 			trace = t;
 			event = e;
-		}		
+		}
+		
+		@Override
+		public String toString()
+		{
+			StringBuilder out = new StringBuilder();
+			out.append("<").append(vertex).append(",").append(trace).append(",").append(event).append(">");
+			return out.toString();
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return 0;
+		}
+		
+		@Override
+		public boolean equals(Object o)
+		{
+			if (o == null || !(o instanceof CayleyGraphFactory.VertexEventTracePair))
+			{
+				return false;
+			}
+			@SuppressWarnings("unchecked")
+			VertexEventTracePair vetp = (VertexEventTracePair) o;
+			// We do not perform equality on the trace; since we are in a Cayley
+			// graph, source state + event is sufficient
+			return vertex.equals(vetp.vertex) /*&& trace.equals(vetp.trace)*/ && event.equals(vetp.event);
+		}
 	}
 	
 	protected abstract Set<T> getNextEvents();
