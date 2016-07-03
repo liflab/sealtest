@@ -7,6 +7,10 @@ public class AtomicEvent extends Event
 	 */
 	private final String m_label;
 	
+	/**
+	 * Creates a new atomic event with given label
+	 * @param label The label
+	 */
 	public AtomicEvent(String label)
 	{
 		super();

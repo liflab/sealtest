@@ -14,13 +14,15 @@ import java.util.Set;
  * @author Sylvain
  *
  */
-public class CayleyGraph<T extends Event>
+public class CayleyGraph<T extends Event,U extends Object>
 {
 	/**
 	 * The set of vertices of this graph. Each vertex is responsible
 	 * for storing its outgoing edges.
 	 */
 	public Set<Vertex<T>> m_vertices;
+	
+	VertexLabelling<U> m_labelling;
 	
 	/**
 	 * Creates an empty graph
@@ -53,7 +55,7 @@ public class CayleyGraph<T extends Event>
 	 * @param v The vertex
 	 * @return This graph
 	 */
-	public CayleyGraph<T> add(Vertex<T> v)
+	public CayleyGraph<T,U> add(Vertex<T> v)
 	{
 		m_vertices.add(v);
 		return this;
@@ -113,4 +115,23 @@ public class CayleyGraph<T extends Event>
 		}
 		return out;
 	}
+	
+	/**
+	 * Gets the first vertex that is labelled with a given category
+	 * @param category The category
+	 * @return The first vertex found, null if no vertex exists with that
+	 *   category
+	 */
+	protected Vertex<T> getFirstVertexWithLabelling(U category)
+	{
+		for (Vertex<T> v : m_vertices)
+		{
+			if (m_labelling.get(v.getId()).equals(category))
+			{
+				return v;
+			}
+		}
+		return null;
+	}
+
 }

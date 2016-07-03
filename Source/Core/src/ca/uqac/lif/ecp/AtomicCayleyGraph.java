@@ -7,10 +7,11 @@ import java.util.regex.Pattern;
 /**
  * Special case of Cayley graph where the triaging function operates
  * over atomic events
- * 
+ * @param <U> The return type of the triiaging function used to build the
+ *   graph
  * @author Sylvain
  */
-public class AtomicCayleyGraph extends CayleyGraph<AtomicEvent>
+public class AtomicCayleyGraph extends CayleyGraph<AtomicEvent,String>
 {
 	/**
 	 * Creates a graph from a dot string

@@ -44,7 +44,7 @@ public class PathCountExperiment extends GraphExperiment
 			setErrorMessage("Could not find resource");
 			return Status.FAILED;
 		}
-		CountVisitor<AtomicEvent> cv = new CountVisitor<AtomicEvent>(this);
+		CountVisitor<AtomicEvent,String> cv = new CountVisitor<AtomicEvent,String>(this);
 		cv.start(m_graph, 0, readInt("max-length"));
 		return Status.DONE;
 	}

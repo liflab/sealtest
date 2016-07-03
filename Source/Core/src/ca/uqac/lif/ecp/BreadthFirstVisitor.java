@@ -4,9 +4,9 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
 
-public abstract class BreadthFirstVisitor<T extends Event>
+public abstract class BreadthFirstVisitor<T extends Event,U extends Object>
 {
-	public void start(CayleyGraph<T> g, int start_id, int max_depth)
+	public void start(CayleyGraph<T,U> g, int start_id, int max_depth)
 	{
 		Vertex<T> start = g.getVertex(start_id);
 		Queue<ArrayList<Edge<T>>> paths = new ArrayDeque<ArrayList<Edge<T>>>();

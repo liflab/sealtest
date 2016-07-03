@@ -6,7 +6,7 @@ import ca.uqac.lif.ecp.lab.GraphExperiment;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.json.JsonNumber;
 
-public class CountVisitor<T extends Event> extends BreadthFirstVisitor<T>
+public class CountVisitor<T extends Event,U extends Object> extends BreadthFirstVisitor<T,U>
 {
 	protected GraphExperiment m_experiment;
 	
@@ -16,7 +16,7 @@ public class CountVisitor<T extends Event> extends BreadthFirstVisitor<T>
 		m_experiment = experiment;
 	}
 	
-	public void start(CayleyGraph<T> g, int start_id, int max_depth)
+	public void start(CayleyGraph<T,U> g, int start_id, int max_depth)
 	{
 		super.start(g, start_id, max_depth);
 	}
