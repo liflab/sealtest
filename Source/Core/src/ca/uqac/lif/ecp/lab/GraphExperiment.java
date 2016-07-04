@@ -4,12 +4,12 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import ca.uqac.lif.ecp.AtomicCayleyGraph;
+import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.parkbench.Experiment;
 
 public abstract class GraphExperiment extends Experiment
 {
-	protected transient AtomicCayleyGraph m_graph;
+	protected transient Automaton m_graph;
 	
 	GraphExperiment()
 	{
@@ -32,17 +32,17 @@ public abstract class GraphExperiment extends Experiment
 				setInput("property", mat.group(1));
 			}
 		}
-		AtomicCayleyGraph g = AtomicCayleyGraph.parseDot(scanner);
+		Automaton g = Automaton.parseDot(scanner);
 		m_graph = g;
 	}
 	
-	public GraphExperiment setGraph(AtomicCayleyGraph g)
+	public GraphExperiment setGraph(Automaton g)
 	{
 		m_graph = g;
 		return this;
 	}
 	
-	public AtomicCayleyGraph getGraph()
+	public Automaton getGraph()
 	{
 		return m_graph;
 	}

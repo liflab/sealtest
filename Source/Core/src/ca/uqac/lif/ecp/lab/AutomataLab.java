@@ -5,9 +5,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.AtomicCayleyGraph;
-import ca.uqac.lif.ecp.AtomicEvent;
 import ca.uqac.lif.ecp.Vertex;
+import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
@@ -85,7 +85,7 @@ public class AutomataLab extends Laboratory
 		Scanner scanner = new Scanner(is);
 		PathCountExperiment exp = new PathCountExperimentMatrix(scanner, max_length);
 		scanner.close();
-		AtomicCayleyGraph g = exp.getGraph();
+		Automaton g = exp.getGraph();
 		String[] vertices = new String[g.m_vertices.size()];
 		int i = 0;
 		for (Vertex<AtomicEvent> v : g.m_vertices)
@@ -115,7 +115,7 @@ public class AutomataLab extends Laboratory
 		Scanner scanner = new Scanner(is);
 		StateDistributionExperiment exp = new StateDistributionExperiment(scanner, iterations);
 		scanner.close();
-		AtomicCayleyGraph g = exp.getGraph();
+		Automaton g = exp.getGraph();
 		String[] vertices = new String[g.m_vertices.size()];
 		int i = 0;
 		for (Vertex<AtomicEvent> v : g.m_vertices)

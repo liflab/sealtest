@@ -93,5 +93,12 @@ public class Vertex<T extends Event>
 		return m_id == ((Vertex<?>) o).m_id;
 	}
 	
-
+	/**
+	 * Gets the outgoing edges from this vertex
+	 * @return The list of edges
+	 */
+	public List<Edge<T>> getEdges()
+	{
+		return m_outEdges;
+	}
 }

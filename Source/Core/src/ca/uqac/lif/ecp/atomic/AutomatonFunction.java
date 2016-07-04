@@ -1,4 +1,6 @@
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.atomic;
+
+import ca.uqac.lif.ecp.TriagingFunction;
 
 /**
  * Triaging function based on a finite-state automaton

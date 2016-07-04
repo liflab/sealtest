@@ -1,4 +1,8 @@
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.atomic;
+
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.Trace;
+import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the state of
@@ -35,7 +39,7 @@ public class StateIdentityFunction extends AutomatonFunction<Integer>
 				// (which is not necessarily 0)
 				m_lastVisited = 0;
 			}
-			m_lastVisited = edge.m_destination;
+			m_lastVisited = edge.getDestination();
 		}
 	}
 

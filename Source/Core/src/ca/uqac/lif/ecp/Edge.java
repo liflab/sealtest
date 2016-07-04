@@ -61,4 +61,31 @@ public class Edge<T extends Event>
 		Edge<T> e = (Edge<T>) o;
 		return m_source == e.m_source && m_label.equals(e.m_label) && m_destination == e.m_destination;
 	}
+	
+	/**
+	 * Gets the label of the edge
+	 * @return The label
+	 */
+	public T getLabel()
+	{
+		return m_label;
+	}
+	
+	/**
+	 * Gets the ID of the destination vertex for that edge
+	 * @return The ID
+	 */
+	public int getDestination()
+	{
+		return m_destination;
+	}
+	
+	/**
+	 * Gets the ID of the source vertex for that edge
+	 * @return The ID
+	 */
+	public int getSource()
+	{
+		return m_source;
+	}
 }

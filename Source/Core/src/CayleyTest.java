@@ -1,4 +1,4 @@
-package ca.uqac.lif.ecp;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,6 +6,10 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Scanner;
 
+import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.GraphPlotter;
+import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.ecp.atomic.AutomatonCayleyGraphFactory;

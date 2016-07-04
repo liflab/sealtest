@@ -1,6 +1,9 @@
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.atomic;
 
 import java.util.Set;
+
+import ca.uqac.lif.ecp.Alphabet;
+import ca.uqac.lif.ecp.CayleyGraphFactory;
 
 /**
  * Class that creates a Cayley graph out of a triaging function based on a

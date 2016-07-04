@@ -2,9 +2,9 @@ package ca.uqac.lif.ecp.lab;
 
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.AtomicEvent;
 import ca.uqac.lif.ecp.CountVisitor;
 import ca.uqac.lif.ecp.Vertex;
+import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.json.JsonList;
 
 public class PathCountExperiment extends GraphExperiment 

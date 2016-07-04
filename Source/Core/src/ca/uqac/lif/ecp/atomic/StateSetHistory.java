@@ -1,8 +1,14 @@
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.atomic;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.MathList;
+import ca.uqac.lif.ecp.MathSet;
+import ca.uqac.lif.ecp.Trace;
+import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
@@ -66,7 +72,7 @@ public class StateSetHistory extends AutomatonFunction<MathSet<Collection<Intege
 				m_history.add(ost);
 				return;
 			}
-			m_stateWindow.add(edge.m_destination);
+			m_stateWindow.add(edge.getDestination());
 			if (m_stateWindow.size() == m_width + 1)
 			{
 				m_stateWindow.remove(0);

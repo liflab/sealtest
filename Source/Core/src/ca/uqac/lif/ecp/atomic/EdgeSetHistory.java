@@ -1,8 +1,14 @@
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.atomic;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.MathList;
+import ca.uqac.lif.ecp.MathSet;
+import ca.uqac.lif.ecp.Trace;
+import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
@@ -111,7 +117,7 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 	{
 		public EdgeLabelDontCare(Edge<AtomicEvent> e)
 		{
-			super(e.m_source, e.m_label, e.m_destination);
+			super(e.getSource(), e.getLabel(), e.getDestination());
 		}
 		
 		@Override
@@ -129,7 +135,7 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 			}
 			@SuppressWarnings("unchecked")
 			Edge<AtomicEvent> e = (Edge<AtomicEvent>) o;
-			return m_source == e.m_source && m_destination == e.m_destination;
+			return m_source == e.getSource() && m_destination == e.getDestination();
 		}
 	}
 }
