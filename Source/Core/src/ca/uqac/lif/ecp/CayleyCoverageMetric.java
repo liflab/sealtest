@@ -1,7 +1,5 @@
 package ca.uqac.lif.ecp;
 
-import java.util.Set;
-
 public abstract class CayleyCoverageMetric<T extends Event,U extends Object,V> extends CoverageMetric<T,V> 
 {
 	/**
@@ -14,9 +12,9 @@ public abstract class CayleyCoverageMetric<T extends Event,U extends Object,V> e
 	 */
 	protected TriagingFunction<T,U> m_function;
 	
-	public CayleyCoverageMetric(CayleyGraph<T,U> graph, TriagingFunction<T,U> function, Set<Trace<T>> traces)
+	public CayleyCoverageMetric(CayleyGraph<T,U> graph, TriagingFunction<T,U> function)
 	{
-		super(traces);
+		super();
 		m_graph = graph;
 		m_function = function;
 	}
