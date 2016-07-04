@@ -27,7 +27,7 @@ import ca.uqac.lif.ecp.BoundedRandomTraceGenerator;
 import ca.uqac.lif.ecp.CayleyCardinalityCoverage;
 import ca.uqac.lif.ecp.CayleyEquivalenceCoverage;
 import ca.uqac.lif.ecp.CayleyGraph;
-import ca.uqac.lif.ecp.CayleyMaxLengthCoverage;
+import ca.uqac.lif.ecp.CayleyDiameterCoverage;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.GraphPlotter;
 import ca.uqac.lif.ecp.MathSet;
@@ -73,7 +73,7 @@ public class CayleyTest
 		CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> graph = factory.getGraph(function);
 		CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> cat_coverage = new CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
 		CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
-		CayleyMaxLengthCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> len_coverage = new CayleyMaxLengthCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
+		CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
 		System.out.printf("Category Coverage: \t%f\n", cat_coverage.getCoverage(set));
 		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
 		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));

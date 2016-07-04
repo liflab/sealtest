@@ -22,15 +22,17 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Coverage of a set of traces based on the fraction of all traces whose
- * equivalence class for sometriaging function is represented 
- * in one of the prefixes of some trace.
+ * Coverage of a set of traces based on the maximum length for which
+ * all equivalence classes of some triaging function are represented 
+ * in one of the prefixes of some trace. Otherwise stated, it is the largest
+ * integer <i>d</i> such that the subgraph of the Cayley graph with
+ * diameter <i>d</i> is completely covered by the traces of the set.
  * @author Sylvain
  *
  * @param <T> The type of events in the trace
  * @param <U> The output type of the triaging function
  */
-public class CayleyMaxLengthCoverage<T extends Event,U extends Object> extends CayleyCoverageMetric<T,U,Float> 
+public class CayleyDiameterCoverage<T extends Event,U extends Object> extends CayleyCoverageMetric<T,U,Float> 
 {
 	/**
 	 * Whether the cardinality considers all traces <em>up to</em> a given
@@ -38,7 +40,7 @@ public class CayleyMaxLengthCoverage<T extends Event,U extends Object> extends C
 	 */
 	protected boolean m_cumulative = true;
 	
-	public CayleyMaxLengthCoverage(CayleyGraph<T, U> graph, TriagingFunction<T,U> function) 
+	public CayleyDiameterCoverage(CayleyGraph<T, U> graph, TriagingFunction<T,U> function) 
 	{
 		super(graph, function);
 	}
