@@ -1,9 +1,28 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -203,6 +222,62 @@ public class CayleyGraph<T extends Event,U extends Object>
 	public VertexLabelling<U> getLabelling()
 	{
 		return m_labelling;
+	}
+	
+	/**
+	 * Computes the number of traces of a given length that belong to
+	 * each equivalence class
+	 * @param length The length
+	 * @param cumulative If set to true, will compute the number of traces
+	 *   of length at most <tt>length</tt> (instead of <em>exactly</em> of length
+	 *   <tt>length</tt>) 
+	 * @return A map telling how many traces there are for each equivalence
+	 *   class
+	 */
+	public Map<U,Integer> getClassCardinality(int length, boolean cumulative)
+	{
+		Map<U,Integer> cardinalities = new HashMap<U,Integer>();
+		for (U category : m_labelling.values())
+		{
+			cardinalities.put(category, 0);
+		}
+		float[][] M = getAdjacencyMatrix();
+		List<Integer> labels = getVertexLabels();
+		Collections.sort(labels);
+		// Create empty vector, put 1 as its first component
+		float[] V = new float[M[0].length];
+		float[] V_cumul = new float[M[0].length];
+		for (int i = 0; i < V.length; i++)
+		{
+			V[i] = 0;
+		}
+		V[0] = 1; // TODO: replace 0 by initial state
+		// Repeatedly multiply M by V (n times) 
+		float[] V_prime = null;
+		for (int it_count = 0; it_count < length; it_count++)
+		{
+			V_prime = Matrix.multiply(M, V);
+			for (int i = 0; i < V.length; i++)
+			{
+				if (cumulative)
+				{
+					V_cumul[i] = V_prime[i];
+				}
+				else
+				{
+					V_cumul[i] += V_prime[i];
+				}
+			}
+			V = V_prime;
+		}
+		// Fill map
+		for (int i = 0; i < V.length; i++)
+		{
+			int vertex_id = labels.get(i);
+			U category = m_labelling.get(vertex_id);
+			cardinalities.put(category, cardinalities.get(category) + (int) V_cumul[i]);
+		}
+		return cardinalities;
 	}
 
 }

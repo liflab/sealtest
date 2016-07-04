@@ -1,5 +1,20 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
 
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -9,8 +24,10 @@ import java.util.Scanner;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.BoundedRandomTraceGenerator;
+import ca.uqac.lif.ecp.CayleyCardinalityCoverage;
 import ca.uqac.lif.ecp.CayleyEquivalenceCoverage;
 import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.CayleyMaxLengthCoverage;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.GraphPlotter;
 import ca.uqac.lif.ecp.MathSet;
@@ -54,8 +71,12 @@ public class CayleyTest
 		AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>> factory = new AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>>(aut.getAlphabet());
 		EdgeSetHistory function = new EdgeSetHistory(aut, 2, false, false);
 		CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> graph = factory.getGraph(function);
-		CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> coverage = new CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
-		System.out.printf("Coverage: %f\n", coverage.getCoverage(set));
+		CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> cat_coverage = new CayleyEquivalenceCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
+		CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
+		CayleyMaxLengthCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> len_coverage = new CayleyMaxLengthCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
+		System.out.printf("Category Coverage: \t%f\n", cat_coverage.getCoverage(set));
+		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
+		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));
 		return graph;
 	}
 	
