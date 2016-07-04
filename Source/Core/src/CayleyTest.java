@@ -22,12 +22,13 @@ public class CayleyTest
 	public static void main(String[] args) throws FileNotFoundException
 	{
 		//InputStream is = FileHelper.internalFileToStream(CayleyTest.class, "lab/data/dwyer-11.txt");
-		InputStream is = FileHelper.internalFileToStream(CayleyTest.class, "lab/data/aUb.dot");
+		//InputStream is = FileHelper.internalFileToStream(CayleyTest.class, "ca/uqac/lif/ecp/lab/data/aUb.dot");
+		InputStream is = FileHelper.internalFileToStream(CayleyTest.class, "ca/uqac/lif/ecp/lab/data/simple.dot");
 		Automaton aut = Automaton.parseDot(new Scanner(is));
 		CayleyGraph<AtomicEvent,?> graph = edgeHistory(aut);
 		GraphPlotter<?,?> plotter = graph.plotter();
-		String dot_contents = plotter.toDot(GraphPlotter.Format.LADOT);
-		FileHelper.writeFromString(new File("cayley-out.ladot"), dot_contents);
+		String dot_contents = plotter.toDot(GraphPlotter.Format.DOT);
+		FileHelper.writeFromString(new File("cayley-out.dot"), dot_contents);
 		System.out.printf("Edges: %d, Vertices: %d\n", graph.getEdgeCount(), graph.getVertexCount());
 		
 	}

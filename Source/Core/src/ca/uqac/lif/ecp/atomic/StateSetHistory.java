@@ -7,8 +7,6 @@ import java.util.List;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.MathList;
 import ca.uqac.lif.ecp.MathSet;
-import ca.uqac.lif.ecp.Trace;
-import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
@@ -25,6 +23,16 @@ public class StateSetHistory extends AutomatonFunction<MathSet<Collection<Intege
 	 * Whether the n-grams should be ordered or not
 	 */
 	protected boolean m_ordered = true;
+	
+	/**
+	 * The history of n-grams collected so far
+	 */
+	protected MathSet<Collection<Integer>> m_history;
+
+	/**
+	 * A sliding window of the n last state IDs visited
+	 */
+	protected List<Integer> m_stateWindow;
 
 	/**
 	 * Instantiates the triaging function
@@ -41,59 +49,46 @@ public class StateSetHistory extends AutomatonFunction<MathSet<Collection<Intege
 	}
 
 	@Override
-	public MathSet<Collection<Integer>> getClass(Trace<AtomicEvent> trace)
+	public MathSet<Collection<Integer>> getStartClass()
 	{
-		HistoryVisitor visitor = new HistoryVisitor(m_width);
-		m_automaton.read(trace, visitor);
-		return visitor.m_history;
+		return new MathSet<Collection<Integer>>();
 	}
-
-	protected class HistoryVisitor extends AutomatonVisitor
+	
+	@Override
+	public MathSet<Collection<Integer>> processTransition(Edge<AtomicEvent> edge)
 	{
-		protected MathSet<Collection<Integer>> m_history;
-
-		protected List<Integer> m_stateWindow;
-
-		public HistoryVisitor(int width)
+		m_stateWindow.add(edge.getDestination());
+		if (m_stateWindow.size() == m_width + 1)
 		{
-			super();
-			m_history = new MathSet<Collection<Integer>>();
-			m_stateWindow = new ArrayList<Integer>(width);
+			m_stateWindow.remove(0);
 		}
-
-		@Override
-		public void visit(Vertex<AtomicEvent> start_state, Edge<AtomicEvent> edge)
+		Collection<Integer> ost = newCollection();
+		ost.addAll(m_stateWindow);
+		m_history.add(ost);
+		MathSet<Collection<Integer>> out_set = new MathSet<Collection<Integer>>();
+		out_set.addAll(m_history);
+		return out_set;
+	}
+	
+	@Override
+	public void reset()
+	{
+		super.reset();
+		m_history = new MathSet<Collection<Integer>>();
+		m_stateWindow = new ArrayList<Integer>(m_width);		
+	}
+	
+	/**
+	 * Gets a new collection of states. Depending on whether the visitor
+	 * is ordered or not, a set or a list will be given.
+	 * @return The collection
+	 */
+	protected Collection<Integer> newCollection()
+	{
+		if (m_ordered)
 		{
-			if (edge == null)
-			{
-				m_stateWindow.add(start_state.getId());
-				Collection<Integer> ost = newCollection();
-				ost.addAll(m_stateWindow);
-				m_history.add(ost);
-				return;
-			}
-			m_stateWindow.add(edge.getDestination());
-			if (m_stateWindow.size() == m_width + 1)
-			{
-				m_stateWindow.remove(0);
-			}
-			Collection<Integer> ost = newCollection();
-			ost.addAll(m_stateWindow);
-			m_history.add(ost);
+			return new MathList<Integer>();
 		}
-		
-		/**
-		 * Gets a new collection of states. Depending on whether the visitor
-		 * is ordered or not, a set or a list will be given.
-		 * @return The collection
-		 */
-		protected Collection<Integer> newCollection()
-		{
-			if (m_ordered)
-			{
-				return new MathList<Integer>();
-			}
-			return new MathSet<Integer>();
-		}
+		return new MathSet<Integer>();
 	}
 }

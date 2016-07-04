@@ -1,8 +1,6 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.Trace;
-import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the state of
@@ -16,31 +14,15 @@ public class StateIdentityFunction extends AutomatonFunction<Integer>
 	}
 
 	@Override
-	public Integer getClass(Trace<AtomicEvent> trace)
+	public Integer getStartClass()
 	{
-		IdentityVisitor visitor = new IdentityVisitor();
-		m_automaton.read(trace, visitor);
-		return visitor.m_lastVisited;
+		return 0;
 	}
 	
-	protected static class IdentityVisitor extends AutomatonVisitor
+	@Override
+	public Integer processTransition(Edge<AtomicEvent> edge)
 	{
-		/**
-		 * The ID of the last visited state
-		 */
-		protected int m_lastVisited;
-		
-		@Override
-		public void visit(Vertex<AtomicEvent> start_state, Edge<AtomicEvent> edge)
-		{
-			if (edge == null)
-			{
-				// TODO: should be replaced with initial state of the automaton
-				// (which is not necessarily 0)
-				m_lastVisited = 0;
-			}
-			m_lastVisited = edge.getDestination();
-		}
+		return edge.getDestination();
 	}
 
 }

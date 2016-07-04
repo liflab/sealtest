@@ -7,8 +7,6 @@ import java.util.List;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.MathList;
 import ca.uqac.lif.ecp.MathSet;
-import ca.uqac.lif.ecp.Trace;
-import ca.uqac.lif.ecp.Vertex;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
@@ -31,6 +29,16 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 	 * or just the endpoints (source-destination states)
 	 */
 	protected boolean m_useLabel = false;
+	
+	/**
+	 * The history of n-grams collected so far
+	 */
+	protected MathSet<Collection<Edge<AtomicEvent>>> m_history;
+
+	/**
+	 * A sliding window of the n last edges visited
+	 */
+	protected List<Edge<AtomicEvent>> m_stateWindow;
 
 	/**
 	 * Instantiates the triaging function
@@ -50,63 +58,54 @@ public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<At
 	}
 
 	@Override
-	public MathSet<Collection<Edge<AtomicEvent>>> getClass(Trace<AtomicEvent> trace)
+	public MathSet<Collection<Edge<AtomicEvent>>> getStartClass()
 	{
-		HistoryVisitor visitor = new HistoryVisitor(m_width);
-		m_automaton.read(trace, visitor);
-		return visitor.m_history;
+		return new MathSet<Collection<Edge<AtomicEvent>>>();
 	}
-
-	protected class HistoryVisitor extends AutomatonVisitor
+	
+	@Override
+	public void reset()
 	{
-		protected MathSet<Collection<Edge<AtomicEvent>>> m_history;
-
-		protected List<Edge<AtomicEvent>> m_stateWindow;
-
-		public HistoryVisitor(int width)
+		super.reset();
+		m_history = new MathSet<Collection<Edge<AtomicEvent>>>();
+		m_stateWindow = new ArrayList<Edge<AtomicEvent>>(m_width);		
+	}
+	
+	@Override
+	public MathSet<Collection<Edge<AtomicEvent>>> processTransition(Edge<AtomicEvent> edge)
+	{
+		if (m_useLabel)
 		{
-			super();
-			m_history = new MathSet<Collection<Edge<AtomicEvent>>>();
-			m_stateWindow = new ArrayList<Edge<AtomicEvent>>(width);
+			m_stateWindow.add(edge);
 		}
-
-		@Override
-		public void visit(Vertex<AtomicEvent> start_state, Edge<AtomicEvent> edge)
+		else
 		{
-			if (edge == null)
-			{
-				return;
-			}
-			if (m_useLabel)
-			{
-				m_stateWindow.add(edge);
-			}
-			else
-			{
-				m_stateWindow.add(new EdgeLabelDontCare(edge));	
-			}
-			if (m_stateWindow.size() == m_width + 1)
-			{
-				m_stateWindow.remove(0);
-			}
-			Collection<Edge<AtomicEvent>> ost = newCollection();
-			ost.addAll(m_stateWindow);
-			m_history.add(ost);
+			m_stateWindow.add(new EdgeLabelDontCare(edge));	
 		}
-		
-		/**
-		 * Gets a new collection of states. Depending on whether the visitor
-		 * is ordered or not, a set or a list will be given.
-		 * @return The collection
-		 */
-		protected Collection<Edge<AtomicEvent>> newCollection()
+		if (m_stateWindow.size() == m_width + 1)
 		{
-			if (m_ordered)
-			{
-				return new MathList<Edge<AtomicEvent>>();
-			}
-			return new MathSet<Edge<AtomicEvent>>();
+			m_stateWindow.remove(0);
 		}
+		Collection<Edge<AtomicEvent>> ost = newCollection();
+		ost.addAll(m_stateWindow);
+		m_history.add(ost);
+		MathSet<Collection<Edge<AtomicEvent>>> out_set = new MathSet<Collection<Edge<AtomicEvent>>>();
+		out_set.addAll(m_history);
+		return out_set;		
+	}
+	
+	/**
+	 * Gets a new collection of states. Depending on whether the visitor
+	 * is ordered or not, a set or a list will be given.
+	 * @return The collection
+	 */
+	protected Collection<Edge<AtomicEvent>> newCollection()
+	{
+		if (m_ordered)
+		{
+			return new MathList<Edge<AtomicEvent>>();
+		}
+		return new MathSet<Edge<AtomicEvent>>();
 	}
 	
 	/**

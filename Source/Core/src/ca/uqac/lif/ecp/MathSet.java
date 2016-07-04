@@ -43,4 +43,26 @@ public class MathSet<T> extends HashSet<T>
 		}
 		return true;
 	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder out = new StringBuilder();
+		out.append("{");
+		boolean first = true;
+		for (T e : this)
+		{
+			if (first)
+			{
+				first = false;
+			}
+			else
+			{
+				out.append(",");
+			}
+			out.append(e);
+		}
+		out.append("}");
+		return out.toString();
+	}
 }

@@ -6,7 +6,6 @@ import java.util.regex.Pattern;
 
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.Vertex;
 
 /**
@@ -65,32 +64,6 @@ public class Automaton extends AtomicCayleyGraph<String>
 		scanner.close();
 		return g;
 	}
-
-	
-	/**
-	 * Reads a trace, and calls a visitor for every transition taken
-	 * @param trace The trace to read
-	 * @param visitor The visitor to call
-	 */
-	public void read(Trace<AtomicEvent> trace, AutomatonVisitor visitor)
-	{
-		Vertex<AtomicEvent> current_vertex = getVertexWithId(0);
-		visitor.visit(current_vertex, null); // Call once for the initial state
-		for (AtomicEvent event : trace)
-		{
-			for (Edge<AtomicEvent> edge : current_vertex.getEdges())
-			{
-				if (edge.getLabel().equals(event))
-				{
-					int destination_id = edge.getDestination();
-					Vertex<AtomicEvent> target_vertex = getVertexWithId(destination_id);
-					visitor.visit(current_vertex, edge);
-					current_vertex = target_vertex;
-					break;
-				}
-			}
-		}
-	}
 	
 	/**
 	 * Gets the set of all symbols occurring on edge labels in the graph.
@@ -111,5 +84,23 @@ public class Automaton extends AtomicCayleyGraph<String>
 			break;
 		}
 		return alphabet;
+	}
+	
+	/**
+	 * Takes a transition from a given state
+	 * @param current_vertex The current state
+	 * @param event The event
+	 * @return The edge representing the transition to take
+	 */
+	public Edge<AtomicEvent> getTransition(Vertex<AtomicEvent> current_vertex, AtomicEvent event)
+	{
+		for (Edge<AtomicEvent> edge : current_vertex.getEdges())
+		{
+			if (edge.getLabel().equals(event))
+			{
+				return edge;
+			}
+		}
+		return null;
 	}
 }
