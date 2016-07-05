@@ -32,6 +32,7 @@ import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.GraphPlotter;
 import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.SpanningTreeTraceGenerator;
+import ca.uqac.lif.ecp.TWayScoringTraceGenerator;
 import ca.uqac.lif.ecp.TestSuite;
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicBoundedRandomGenerator;
@@ -48,7 +49,7 @@ public class CayleyTest
 	public static void main(String[] args) throws FileNotFoundException
 	{
 		// Set filenames
-		String automaton_filename = "ca/uqac/lif/ecp/lab/data/simple.dot";
+		String automaton_filename = "ca/uqac/lif/ecp/lab/data/aUb.dot";
 		String traces_filename = "ca/uqac/lif/ecp/lab/data/traces/simple.dot";
 		String output_graph_filename = "cayley-out.dot";
 		// Read property
@@ -91,14 +92,18 @@ public class CayleyTest
 		SpanningTreeTraceGenerator<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph);
 		TestSuite<AtomicEvent> set = stg.generateTraces();
 		System.out.printf("%d resets, %d length\n", set.size(), set.getTotalLength());
-		FileHelper.writeFromString(new File("spanning.dot"), stg.getSpanningTree().plotter().toDot());
+		TWayScoringTraceGenerator<AtomicEvent> twstg = new TWayScoringTraceGenerator<AtomicEvent>(aut.getAlphabet(), 2, new Random());
+		Set<Trace<AtomicEvent>> combin_set = twstg.generateTraces();
+		System.out.println(combin_set);
+		return graph;
+		/*FileHelper.writeFromString(new File("spanning.dot"), stg.getSpanningTree().plotter().toDot());
 		CayleyCategoryCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
 		CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
 		CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
 		System.out.printf("Category Coverage: \t%f\n", cat_coverage.getCoverage(set));
 		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
 		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));
-		return graph;
+		return graph;*/
 	}
 
 	

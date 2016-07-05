@@ -41,6 +41,16 @@ public class Alphabet<T> implements Set<T>
 		super();
 		m_elements = new HashSet<T>();
 	}
+	
+	/**
+	 * Creates a copy of an alphabet
+	 * @param alphabet The alphabet to copy
+	 */
+	public Alphabet(Alphabet<T> alphabet)
+	{
+		this();
+		addAll(alphabet);
+	}
 
 	public boolean add(T arg0) {
 		return m_elements.add(arg0);
