@@ -201,12 +201,12 @@ public class TWayScoringTraceGenerator<T extends Event> extends TraceGenerator<T
 			set.add(current);
 			return set;
 		}
-		for (int i = j + 1; i < trace.size(); i++)
+		for (int i = j; i < trace.size(); i++)
 		{
 			Vector<T> new_current = new Vector<T>();
 			new_current.addAll(current);
 			new_current.add(trace.get(i));
-			set.addAll(getCombinations(trace, new_current, j, n-1));
+			set.addAll(getCombinations(trace, new_current, i + 1, n-1));
 		}
 		return set;
 	}

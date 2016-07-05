@@ -30,8 +30,10 @@ import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.CayleyDiameterCoverage;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.GraphPlotter;
+import ca.uqac.lif.ecp.MathList;
 import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.SpanningTreeTraceGenerator;
+import ca.uqac.lif.ecp.TWayEventSequenceFunction;
 import ca.uqac.lif.ecp.TWayScoringTraceGenerator;
 import ca.uqac.lif.ecp.TestSuite;
 import ca.uqac.lif.ecp.Trace;
@@ -63,7 +65,7 @@ public class CayleyTest
 		//TestSuite<AtomicEvent> set = rtg.generateTraces();
 		// Get Cayley Graph and plot
 		//CayleyGraph<AtomicEvent,?> graph = edgeHistory(aut, set);
-		CayleyGraph<AtomicEvent,?> graph = edgeHistory2(aut);
+		CayleyGraph<AtomicEvent,?> graph = tway(aut);
 		GraphPlotter<AtomicEvent,?> plotter = graph.plotter();
 		String dot_contents = plotter.toDot(GraphPlotter.Format.DOT);
 		FileHelper.writeFromString(new File(output_graph_filename), dot_contents);
@@ -104,6 +106,31 @@ public class CayleyTest
 		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
 		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));
 		return graph;*/
+	}
+	
+	public static CayleyGraph<AtomicEvent,MathSet<MathList<AtomicEvent>>> tway(Automaton aut)
+	{
+		int strength = 2;
+		AutomatonCayleyGraphFactory<MathSet<MathList<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<MathSet<MathList<AtomicEvent>>>(aut.getAlphabet());
+		TWayEventSequenceFunction<AtomicEvent> function = new TWayEventSequenceFunction<AtomicEvent>(strength);
+		CayleyGraph<AtomicEvent,MathSet<MathList<AtomicEvent>>> graph = factory.getGraph(function);
+		SpanningTreeTraceGenerator<AtomicEvent,MathSet<MathList<AtomicEvent>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph);
+		{
+			TestSuite<AtomicEvent> set = stg.generateTraces();
+			System.out.printf("Spanning generator: %d resets, %d length\n", set.size(), set.getTotalLength());
+			CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+			CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+			CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+		}
+		{
+			TWayScoringTraceGenerator<AtomicEvent> twstg = new TWayScoringTraceGenerator<AtomicEvent>(aut.getAlphabet(), strength, new Random());
+			TestSuite<AtomicEvent> set = twstg.generateTraces();
+			System.out.printf("Combinatorial generator: %d resets, %d length\n", set.size(), set.getTotalLength());
+			CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+			CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+			CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);			
+		}
+		return graph;
 	}
 
 	

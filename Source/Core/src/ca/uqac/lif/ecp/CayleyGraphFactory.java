@@ -27,7 +27,7 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 	 * The maximum number of iterations the search algorithm is allowed to
 	 * do
 	 */
-	protected static final int MAX_ITERATIONS = 100000;
+	protected static final int MAX_ITERATIONS = 1000;
 	
 	public CayleyGraph<T,U> getGraph(TriagingFunction<T,U> f)
 	{
