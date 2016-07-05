@@ -55,6 +55,19 @@ public class Vertex<T extends Event>
 	}
 	
 	/**
+	 * Creates a copy of a vertex
+	 * @param v The vertex to copy
+	 */
+	public Vertex(Vertex<T> v)
+	{
+		super();
+		m_id = v.m_id;
+		m_outEdges = new LinkedList<Edge<T>>();
+		// Edges are immutable, so no need to duplicate them
+		m_outEdges.addAll(v.m_outEdges);
+	}
+	
+	/**
 	 * Creates an empty vertex with given ID
 	 */
 	public Vertex(int id)
@@ -117,5 +130,14 @@ public class Vertex<T extends Event>
 	public List<Edge<T>> getEdges()
 	{
 		return m_outEdges;
+	}
+	
+	/**
+	 * Determines if a vertex is a left, i.e. has no outgoing edges
+	 * @return True if the vertex is a leaf, false otherwise
+	 */
+	public boolean isLeaf()
+	{
+		return m_outEdges.isEmpty();
 	}
 }

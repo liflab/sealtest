@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -54,6 +55,20 @@ public class CayleyGraph<T extends Event,U extends Object>
 		super();
 		m_vertices = new HashSet<Vertex<T>>();
 		m_labelling = new VertexLabelling<U>();
+	}
+	
+	/**
+	 * Creates a copy of a Cayley graph
+	 * @param graph The graph to copy
+	 */
+	public CayleyGraph(CayleyGraph<T,U> graph)
+	{
+		this();
+		for (Vertex<T> v : graph.m_vertices)
+		{
+			m_vertices.add(new Vertex<T>(v));
+		}
+		m_labelling = graph.m_labelling;
 	}
 	
 	/**
@@ -118,7 +133,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 			// Iterate over each edge leaving this vertex
 			for (Edge<T> e : v.m_outEdges)
 			{
-				int j = labels.indexOf(e.m_destination);
+				int j = labels.indexOf(e.getDestination());
 				table[j][i]++;
 			}
 		}
@@ -251,7 +266,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 		{
 			V[i] = 0;
 		}
-		V[0] = 1; // TODO: replace 0 by initial state
+		V[getInitialVertex().getId()] = 1;
 		// Repeatedly multiply M by V (n times) 
 		float[] V_prime = null;
 		for (int it_count = 0; it_count < length; it_count++)
@@ -279,5 +294,37 @@ public class CayleyGraph<T extends Event,U extends Object>
 		}
 		return cardinalities;
 	}
+	
+	/**
+	 * Gets the set of vertices of this graph
+	 * @return The set of vertices
+	 */
+	public Set<Vertex<T>> getVertices()
+	{
+		return m_vertices;
+	}
+	
+	/**
+	 * Gets the list of all edges in the graph
+	 * @return The list of edges
+	 */
+	public List<Edge<T>> getEdges()
+	{
+		List<Edge<T>> edges = new LinkedList<Edge<T>>();
+		for (Vertex<T> v : m_vertices)
+		{
+			edges.addAll(v.getEdges());
+		}
+		return edges;
+	}
 
+	/**
+	 * Gets the initial vertex of the Cayley graph
+	 * @return The initial vertex
+	 */
+	public Vertex<T> getInitialVertex()
+	{
+		// TODO: don't hardcode 0
+		return getVertex(0);
+	}
 }

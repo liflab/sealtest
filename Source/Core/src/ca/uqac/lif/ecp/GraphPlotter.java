@@ -108,7 +108,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 	 */
 	protected String printEdge(Edge<T> e, Format format)
 	{
-		return e.m_label.toString();
+		return e.getLabel().toString();
 	}
 		
 	/**
@@ -124,12 +124,13 @@ public class GraphPlotter<T extends Event,U extends Object>
 		for (Edge<T> e : edges)
 		{
 			String edge_label = "";
-			if (edge_labels.containsKey(e.m_destination))
+			int destination = e.getDestination();
+			if (edge_labels.containsKey(destination))
 			{
-				edge_label = edge_labels.get(e.m_destination);
+				edge_label = edge_labels.get(destination);
 			}
 			edge_label += printEdge(e, format) + ",";
-			edge_labels.put(e.m_destination, edge_label);
+			edge_labels.put(destination, edge_label);
 		}
 		for (int dest : edge_labels.keySet())
 		{

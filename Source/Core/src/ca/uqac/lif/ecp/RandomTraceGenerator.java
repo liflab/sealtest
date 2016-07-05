@@ -24,7 +24,7 @@ import java.util.Random;
  * 
  * @param <T> The type of the events in the traces that are generated
  */
-public abstract class RandomTraceGenerator<T> extends TraceGenerator<T>
+public abstract class RandomTraceGenerator<T extends Event> extends TraceGenerator<T>
 {
 	/**
 	 * A random number generator used to generate the random events

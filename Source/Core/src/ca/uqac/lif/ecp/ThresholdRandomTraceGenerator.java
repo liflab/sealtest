@@ -17,16 +17,14 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Trace generator that picks events randomly. The trace generator is
  * instructed to generate <i>n</i> traces, each of length <i>m</i>, by
  * picking at random each event in the set of possible events.
  */
-public abstract class ThresholdRandomTraceGenerator<T> extends RandomTraceGenerator<T>
+public abstract class ThresholdRandomTraceGenerator<T extends Event> extends RandomTraceGenerator<T>
 {
 	/**
 	 * The coverage metric used to compute the coverage of the generated
@@ -58,10 +56,10 @@ public abstract class ThresholdRandomTraceGenerator<T> extends RandomTraceGenera
 	}
 
 	@Override
-	public Set<Trace<T>> generateTraces() 
+	public TestSuite<T> generateTraces() 
 	{
 		float coverage = 0;
-		Set<Trace<T>> out_set = new HashSet<Trace<T>>();
+		TestSuite<T> out_set = new TestSuite<T>();
 		for (int it_count = 0; coverage < m_coverageThreshold && it_count < m_maxTraces; it_count++)
 		{
 			Trace<T> trace = new Trace<T>();

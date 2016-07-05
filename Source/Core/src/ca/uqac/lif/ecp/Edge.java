@@ -29,17 +29,23 @@ public class Edge<T extends Event>
 	/**
 	 * The ID of the vertex in the graph that is the destination of this edge
 	 */
-	protected int m_source;
+	protected final int m_source;
 	
 	/**
 	 * The label attached to this edge
 	 */
-	protected T m_label;
+	protected final T m_label;
 	
 	/**
 	 * The ID of the vertex in the graph that is the destination of this edge
 	 */
-	protected int m_destination;
+	protected final int m_destination;
+	
+	/**
+	 * A weight associated to the edge. Currently unused, but required for
+	 * the minimum spanning tree algorithm we use 
+	 */
+	protected float m_weight = 1;
 	
 	/**
 	 * Creates an edge
@@ -104,5 +110,23 @@ public class Edge<T extends Event>
 	public int getSource()
 	{
 		return m_source;
+	}
+	
+	/**
+	 * Gets the edge's weight
+	 * @return The weight
+	 */
+	public float getWeight()
+	{
+		return m_weight;
+	}
+	
+	/**
+	 * Sets the edge's weight
+	 * @param weight The weight
+	 */
+	public void setWeight(float weight)
+	{
+		m_weight = weight;
 	}
 }

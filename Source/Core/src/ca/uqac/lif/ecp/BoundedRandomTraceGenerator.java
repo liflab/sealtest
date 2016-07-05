@@ -17,9 +17,7 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.HashSet;
 import java.util.Random;
-import java.util.Set;
 
 /**
  * Trace generator that picks events randomly. The trace generator is
@@ -28,7 +26,7 @@ import java.util.Set;
  * 
  * @param <T> The type of the events in the traces that are generated
  */
-public abstract class BoundedRandomTraceGenerator<T> extends RandomTraceGenerator<T> 
+public abstract class BoundedRandomTraceGenerator<T extends Event> extends RandomTraceGenerator<T> 
 {	
 	/**
 	 * The number of traces to generate
@@ -48,9 +46,9 @@ public abstract class BoundedRandomTraceGenerator<T> extends RandomTraceGenerato
 	}
 	
 	@Override
-	public Set<Trace<T>> generateTraces()
+	public TestSuite<T> generateTraces()
 	{
-		Set<Trace<T>> trace_set = new HashSet<Trace<T>>();
+		TestSuite<T> trace_set = new TestSuite<T>();
 		for (int trace_count = 0; trace_count < m_numTraces; trace_count++)
 		{
 			Trace<T> trace = new Trace<T>();

@@ -29,9 +29,9 @@ import java.util.Set;
  * @param <T> The type of events in the trace
  * @param <U> The output type of the triaging function
  */
-public class CayleyEquivalenceCoverage<T extends Event,U extends Object> extends CayleyCoverageMetric<T,U,Float> 
+public class CayleyCategoryCoverage<T extends Event,U extends Object> extends CayleyCoverageMetric<T,U,Float> 
 {
-	public CayleyEquivalenceCoverage(CayleyGraph<T, U> graph, TriagingFunction<T,U> function) 
+	public CayleyCategoryCoverage(CayleyGraph<T, U> graph, TriagingFunction<T,U> function) 
 	{
 		super(graph, function);
 	}
@@ -54,6 +54,8 @@ public class CayleyEquivalenceCoverage<T extends Event,U extends Object> extends
 				covered_classes.add(category);
 			}
 		}
+		// Don't forget that the start class is covered by default
+		covered_classes.add(m_function.getStartClass());
 		return (float) covered_classes.size() / nb_total_classes;
 	}
 

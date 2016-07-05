@@ -43,7 +43,7 @@ public class CountVisitor<T extends Event,U extends Object> extends BreadthFirst
 	{
 		int length = path.size();
 		Edge<T> last_edge = path.get(path.size() - 1);
-		int last_label = last_edge.m_destination;
+		int last_label = last_edge.getDestination();
 		JsonList list = m_experiment.readList(Integer.toString(last_label));
 		JsonNumber j_num = (JsonNumber) list.get(length);
 		list.set(length, new JsonNumber(j_num.numberValue().intValue() + 1));

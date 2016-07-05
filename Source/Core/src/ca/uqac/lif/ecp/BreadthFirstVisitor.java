@@ -41,7 +41,7 @@ public abstract class BreadthFirstVisitor<T extends Event,U extends Object>
 				ArrayList<Edge<T>> path = paths.remove();
 				visit(path);
 				Edge<T> last_edge = path.get(path.size() - 1);
-				Vertex<T> v = g.getVertex(last_edge.m_destination);
+				Vertex<T> v = g.getVertex(last_edge.getDestination());
 				for (Edge<T> e : v.m_outEdges)
 				{
 					ArrayList<Edge<T>> new_path = new ArrayList<Edge<T>>();

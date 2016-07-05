@@ -40,8 +40,7 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 	@Override
 	public void reset()
 	{
-		// TODO: don't hardcode initial state
-		m_currentVertex = m_automaton.getVertex(0); 
+		m_currentVertex = m_automaton.getInitialVertex(); 
 	}
 	
 	@Override
