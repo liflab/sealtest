@@ -44,13 +44,13 @@ public class CayleyCategoryCoverage<T extends Event,U extends Object> extends Ca
 		{
 			return 0f;
 		}
-		Set<U> covered_classes = new HashSet<U>();
+		Set<MathSet<U>> covered_classes = new HashSet<MathSet<U>>();
 		for (Trace<T> trace : traces)
 		{
 			m_function.reset();
 			for (T event : trace)
 			{
-				U category = m_function.read(event);
+				MathSet<U> category = m_function.read(event);
 				covered_classes.add(category);
 			}
 		}

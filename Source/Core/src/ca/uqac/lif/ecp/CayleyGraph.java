@@ -27,11 +27,11 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Implementation of a Cayley Graph.
- * (TODO: describe what a Cayley Graph is)
+ * Implementation of a Cayley Graph. The vertices of the graph are 
+ * identified by integers.
  * 
  * @param <T> The type of event this graph has for edge labels
- * @author Sylvain
+ * @author Sylvain Hallé
  *
  */
 public class CayleyGraph<T extends Event,U extends Object>
@@ -155,16 +155,16 @@ public class CayleyGraph<T extends Event,U extends Object>
 	}
 	
 	/**
-	 * Gets the first vertex that is labelled with a given category
-	 * @param category The category
+	 * Gets the first vertex that is labelled with a given equivalence class
+	 * @param eq_class The equivalence class
 	 * @return The first vertex found, null if no vertex exists with that
 	 *   category
 	 */
-	protected Vertex<T> getFirstVertexWithLabelling(U category)
+	protected Vertex<T> getFirstVertexWithLabelling(MathSet<U> eq_class)
 	{
 		for (Vertex<T> v : m_vertices)
 		{
-			if (m_labelling.get(v.getId()).equals(category))
+			if (m_labelling.get(v.getId()).equals(eq_class))
 			{
 				return v;
 			}
@@ -249,10 +249,10 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 * @return A map telling how many traces there are for each equivalence
 	 *   class
 	 */
-	public Map<U,Integer> getClassCardinality(int length, boolean cumulative)
+	public Map<MathSet<U>,Integer> getClassCardinality(int length, boolean cumulative)
 	{
-		Map<U,Integer> cardinalities = new HashMap<U,Integer>();
-		for (U category : m_labelling.values())
+		Map<MathSet<U>,Integer> cardinalities = new HashMap<MathSet<U>,Integer>();
+		for (MathSet<U> category : m_labelling.values())
 		{
 			cardinalities.put(category, 0);
 		}
@@ -289,7 +289,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 		for (int i = 0; i < V.length; i++)
 		{
 			int vertex_id = labels.get(i);
-			U category = m_labelling.get(vertex_id);
+			MathSet<U> category = m_labelling.get(vertex_id);
 			cardinalities.put(category, cardinalities.get(category) + (int) V_cumul[i]);
 		}
 		return cardinalities;

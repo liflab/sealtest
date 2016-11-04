@@ -23,7 +23,7 @@ package ca.uqac.lif.ecp;
  * @author Sylvain
  *
  */
-public class TWayEventSequenceFunction<T extends Event> extends TriagingFunction<T,MathSet<MathList<T>>>
+public class TWayEventSequenceFunction<T extends Event> extends TriagingFunction<T,MathList<T>>
 {
 	/**
 	 * The trace read so far

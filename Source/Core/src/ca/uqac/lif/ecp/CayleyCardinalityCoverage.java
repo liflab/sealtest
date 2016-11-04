@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * Coverage of a set of traces based on the fraction of all traces whose
- * equivalence class for sometriaging function is represented 
+ * equivalence class for some triaging function is represented 
  * in one of the prefixes of some trace.
  * @author Sylvain
  *
@@ -56,9 +56,9 @@ public class CayleyCardinalityCoverage<T extends Event,U extends Object> extends
 	@Override
 	public Float getCoverage(Set<Trace<T>> traces) 
 	{
-		Set<U> all_classes = new HashSet<U>();
+		Set<MathSet<U>> all_classes = new HashSet<MathSet<U>>();
 		all_classes.addAll(m_graph.getLabelling().values());
-		Set<U> covered_classes = new HashSet<U>();
+		Set<MathSet<U>> covered_classes = new HashSet<MathSet<U>>();
 		int max_length = 0;
 		for (Trace<T> trace : traces)
 		{
@@ -66,13 +66,13 @@ public class CayleyCardinalityCoverage<T extends Event,U extends Object> extends
 			m_function.reset();
 			for (T event : trace)
 			{
-				U category = m_function.read(event);
+				MathSet<U> category = m_function.read(event);
 				covered_classes.add(category);
 			}
 		}
-		Map<U,Integer> cardinalities = m_graph.getClassCardinality(max_length, m_cumulative);
+		Map<MathSet<U>,Integer> cardinalities = m_graph.getClassCardinality(max_length, m_cumulative);
 		float covered_traces = 0, total_traces = 0;
-		for (U category : cardinalities.keySet())
+		for (MathSet<U> category : cardinalities.keySet())
 		{
 			int cardinality = cardinalities.get(category);
 			total_traces += cardinality;

@@ -72,26 +72,26 @@ public class CayleyTest
 		System.out.printf("Edges: %d, Vertices: %d\n", graph.getEdgeCount(), graph.getVertexCount());
 	}
 	
-	public static CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> edgeHistory(Automaton aut, Set<Trace<AtomicEvent>> set)
+	public static CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> edgeHistory(Automaton aut, Set<Trace<AtomicEvent>> set)
 	{
-		AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>> factory = new AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>>(aut.getAlphabet());
+		AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>>(aut.getAlphabet());
 		EdgeSetHistory function = new EdgeSetHistory(aut, 2, false, false);
-		CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> graph = factory.getGraph(function);
-		CayleyCategoryCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
-		CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
-		CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph, function);
+		CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyCategoryCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
+		CayleyCardinalityCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
+		CayleyDiameterCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
 		System.out.printf("Category Coverage: \t%f\n", cat_coverage.getCoverage(set));
 		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
 		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));
 		return graph;
 	}
 	
-	public static CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> edgeHistory2(Automaton aut)
+	public static CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> edgeHistory2(Automaton aut)
 	{
-		AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>> factory = new AutomatonCayleyGraphFactory<MathSet<Collection<Edge<AtomicEvent>>>>(aut.getAlphabet());
+		AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>>(aut.getAlphabet());
 		EdgeSetHistory function = new EdgeSetHistory(aut, 2, true, false);
-		CayleyGraph<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> graph = factory.getGraph(function);
-		SpanningTreeTraceGenerator<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathSet<Collection<Edge<AtomicEvent>>>>(graph);
+		CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> graph = factory.getGraph(function);
+		SpanningTreeTraceGenerator<AtomicEvent,Collection<Edge<AtomicEvent>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph);
 		TestSuite<AtomicEvent> set = stg.generateTraces();
 		System.out.printf("%d resets, %d length\n", set.size(), set.getTotalLength());
 		TWayScoringTraceGenerator<AtomicEvent> twstg = new TWayScoringTraceGenerator<AtomicEvent>(aut.getAlphabet(), 2, new Random());
@@ -108,37 +108,37 @@ public class CayleyTest
 		return graph;*/
 	}
 	
-	public static CayleyGraph<AtomicEvent,MathSet<MathList<AtomicEvent>>> tway(Automaton aut)
+	public static CayleyGraph<AtomicEvent,MathList<AtomicEvent>> tway(Automaton aut)
 	{
 		int strength = 2;
-		AutomatonCayleyGraphFactory<MathSet<MathList<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<MathSet<MathList<AtomicEvent>>>(aut.getAlphabet());
+		AutomatonCayleyGraphFactory<MathList<AtomicEvent>> factory = new AutomatonCayleyGraphFactory<MathList<AtomicEvent>>(aut.getAlphabet());
 		TWayEventSequenceFunction<AtomicEvent> function = new TWayEventSequenceFunction<AtomicEvent>(strength);
-		CayleyGraph<AtomicEvent,MathSet<MathList<AtomicEvent>>> graph = factory.getGraph(function);
-		SpanningTreeTraceGenerator<AtomicEvent,MathSet<MathList<AtomicEvent>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph);
+		CayleyGraph<AtomicEvent,MathList<AtomicEvent>> graph = factory.getGraph(function);
+		SpanningTreeTraceGenerator<AtomicEvent,MathList<AtomicEvent>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathList<AtomicEvent>>(graph);
 		{
 			TestSuite<AtomicEvent> set = stg.generateTraces();
 			System.out.printf("Spanning generator: %d resets, %d length\n", set.size(), set.getTotalLength());
-			CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
-			CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
-			CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
+			CayleyCategoryCoverage<AtomicEvent,MathList<AtomicEvent>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
+			CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
+			CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
 		}
 		{
 			TWayScoringTraceGenerator<AtomicEvent> twstg = new TWayScoringTraceGenerator<AtomicEvent>(aut.getAlphabet(), strength, new Random());
 			TestSuite<AtomicEvent> set = twstg.generateTraces();
 			System.out.printf("Combinatorial generator: %d resets, %d length\n", set.size(), set.getTotalLength());
-			CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
-			CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);
-			CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathSet<MathList<AtomicEvent>>>(graph, function);			
+			CayleyCategoryCoverage<AtomicEvent,MathList<AtomicEvent>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
+			CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
+			CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);			
 		}
 		return graph;
 	}
 
 	
-	public static CayleyGraph<AtomicEvent,MathSet<Collection<Integer>>> stateHistory(Automaton aut)
+	public static CayleyGraph<AtomicEvent,Collection<Integer>> stateHistory(Automaton aut)
 	{
-		AutomatonCayleyGraphFactory<MathSet<Collection<Integer>>> factory = new AutomatonCayleyGraphFactory<MathSet<Collection<Integer>>>(aut.getAlphabet());
+		AutomatonCayleyGraphFactory<Collection<Integer>> factory = new AutomatonCayleyGraphFactory<Collection<Integer>>(aut.getAlphabet());
 		StateSetHistory function = new StateSetHistory(aut, 3, true);
-		CayleyGraph<AtomicEvent,MathSet<Collection<Integer>>> graph = factory.getGraph(function);
+		CayleyGraph<AtomicEvent,Collection<Integer>> graph = factory.getGraph(function);
 		return graph;
 	}
 }

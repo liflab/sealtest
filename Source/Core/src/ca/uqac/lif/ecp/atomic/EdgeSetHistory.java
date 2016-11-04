@@ -29,7 +29,7 @@ import ca.uqac.lif.ecp.MathSet;
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
  * found in the sequence of transitions of the automaton that are visited
  */
-public class EdgeSetHistory extends AutomatonFunction<MathSet<Collection<Edge<AtomicEvent>>>> 
+public class EdgeSetHistory extends AutomatonFunction<Collection<Edge<AtomicEvent>>> 
 {
 	/**
 	 * The width of the history

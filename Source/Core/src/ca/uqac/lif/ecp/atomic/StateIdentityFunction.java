@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.MathSet;
 
 /**
  * Triaging function where the class of a trace is the state of
@@ -31,15 +32,19 @@ public class StateIdentityFunction extends AutomatonFunction<Integer>
 	}
 
 	@Override
-	public Integer getStartClass()
+	public MathSet<Integer> getStartClass()
 	{
-		return 0;
+		MathSet<Integer> out = new MathSet<Integer>();
+		out.add(0);
+		return out;
 	}
 	
 	@Override
-	public Integer processTransition(Edge<AtomicEvent> edge)
+	public MathSet<Integer> processTransition(Edge<AtomicEvent> edge)
 	{
-		return edge.getDestination();
+		MathSet<Integer> out = new MathSet<Integer>();
+		out.add(edge.getDestination());
+		return out;
 	}
 
 }

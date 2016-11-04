@@ -25,12 +25,19 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class VertexLabelling<U extends Object> implements Map<Integer,U>
+/**
+ * Labelling of a Cayley Graph. This is a mapping from a vertex ID (integer)
+ * to some object of type <code>V</code>.
+ * @author Sylvain Hallé
+ *
+ * @param <U> The type of the categories
+ */
+public class VertexLabelling<U extends Object> //implements Map<Integer,MathSet<U>>
 {
 	/**
 	 * The internal map storing the labelling
 	 */
-	private Map<Integer,U> m_map;
+	private Map<Integer,MathSet<U>> m_map;
 	
 	/**
 	 * Creates a new empty vertex labelling
@@ -38,25 +45,25 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 	public VertexLabelling()
 	{
 		super();
-		m_map = new HashMap<Integer,U>();
+		m_map = new HashMap<Integer,MathSet<U>>();
 	}
 
 	public void clear() {
 		m_map.clear();
 	}
 
-	public U compute(Integer arg0,
-			BiFunction<? super Integer, ? super U, ? extends U> arg1) {
+	public MathSet<U> compute(Integer arg0,
+			BiFunction<? super Integer, ? super MathSet<U>, ? extends MathSet<U>> arg1) {
 		return m_map.compute(arg0, arg1);
 	}
 
-	public U computeIfAbsent(Integer arg0,
-			Function<? super Integer, ? extends U> arg1) {
+	public MathSet<U> computeIfAbsent(Integer arg0,
+			Function<? super Integer, ? extends MathSet<U>> arg1) {
 		return m_map.computeIfAbsent(arg0, arg1);
 	}
 
-	public U computeIfPresent(Integer arg0,
-			BiFunction<? super Integer, ? super U, ? extends U> arg1) {
+	public MathSet<U> computeIfPresent(Integer arg0,
+			BiFunction<? super Integer, ? super MathSet<U>, ? extends MathSet<U>> arg1) {
 		return m_map.computeIfPresent(arg0, arg1);
 	}
 
@@ -68,7 +75,7 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 		return m_map.containsValue(arg0);
 	}
 
-	public Set<java.util.Map.Entry<Integer, U>> entrySet() {
+	public Set<java.util.Map.Entry<Integer, MathSet<U>>> entrySet() {
 		return m_map.entrySet();
 	}
 
@@ -76,15 +83,15 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 		return m_map.equals(arg0);
 	}
 
-	public void forEach(BiConsumer<? super Integer, ? super U> arg0) {
+	public void forEach(BiConsumer<? super Integer, ? super MathSet<U>> arg0) {
 		m_map.forEach(arg0);
 	}
 
-	public U get(Object arg0) {
+	public MathSet<U> get(Object arg0) {
 		return m_map.get(arg0);
 	}
 
-	public U getOrDefault(Object arg0, U arg1) {
+	public MathSet<U> getOrDefault(Object arg0, MathSet<U> arg1) {
 		return m_map.getOrDefault(arg0, arg1);
 	}
 
@@ -100,20 +107,24 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 		return m_map.keySet();
 	}
 
-	public U merge(Integer arg0, U arg1,
-			BiFunction<? super U, ? super U, ? extends U> arg2) {
+	public MathSet<U> merge(Integer arg0, MathSet<U> arg1,
+			BiFunction<? super MathSet<U>, ? super MathSet<U>, ? extends MathSet<U>> arg2) {
 		return m_map.merge(arg0, arg1, arg2);
 	}
 
-	public U put(Integer arg0, U arg1) {
+	public MathSet<U> put(int arg0, MathSet<U> arg1) {
+		return m_map.put(arg0, arg1);
+	}
+	
+	public MathSet<U> put(Integer arg0, MathSet<U> arg1) {
 		return m_map.put(arg0, arg1);
 	}
 
-	public void putAll(Map<? extends Integer, ? extends U> arg0) {
+	public void putAll(Map<? extends Integer, ? extends MathSet<U>> arg0) {
 		m_map.putAll(arg0);
 	}
 
-	public U putIfAbsent(Integer arg0, U arg1) {
+	public MathSet<U> putIfAbsent(Integer arg0, MathSet<U> arg1) {
 		return m_map.putIfAbsent(arg0, arg1);
 	}
 
@@ -121,20 +132,20 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 		return m_map.remove(arg0, arg1);
 	}
 
-	public U remove(Object arg0) {
+	public MathSet<U> remove(Object arg0) {
 		return m_map.remove(arg0);
 	}
 
-	public boolean replace(Integer arg0, U arg1, U arg2) {
+	public boolean replace(Integer arg0, MathSet<U> arg1, MathSet<U> arg2) {
 		return m_map.replace(arg0, arg1, arg2);
 	}
 
-	public U replace(Integer arg0, U arg1) {
+	public MathSet<U> replace(Integer arg0, MathSet<U> arg1) {
 		return m_map.replace(arg0, arg1);
 	}
 
 	public void replaceAll(
-			BiFunction<? super Integer, ? super U, ? extends U> arg0) {
+			BiFunction<? super Integer, ? super MathSet<U>, ? extends MathSet<U>> arg0) {
 		m_map.replaceAll(arg0);
 	}
 
@@ -142,7 +153,7 @@ public class VertexLabelling<U extends Object> implements Map<Integer,U>
 		return m_map.size();
 	}
 
-	public Collection<U> values() {
+	public Collection<MathSet<U>> values() {
 		return m_map.values();
 	}
 }

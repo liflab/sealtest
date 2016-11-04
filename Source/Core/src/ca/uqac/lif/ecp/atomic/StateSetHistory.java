@@ -29,7 +29,7 @@ import ca.uqac.lif.ecp.MathSet;
  * Triaging function where the class of a trace is the set of <i>n</i>-grams
  * found in the sequence of states of the automaton that are visited
  */
-public class StateSetHistory extends AutomatonFunction<MathSet<Collection<Integer>>> 
+public class StateSetHistory extends AutomatonFunction<Collection<Integer>> 
 {
 	/**
 	 * The width of the history

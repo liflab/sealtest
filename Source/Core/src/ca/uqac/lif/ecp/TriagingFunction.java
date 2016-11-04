@@ -17,6 +17,13 @@
  */
 package ca.uqac.lif.ecp;
 
+/**
+ * Abstract class defining a function mapping traces to categories
+ * @author Sylvain Hallé
+ *
+ * @param <T> The type of the events in the trace
+ * @param <U> The type of the categories
+ */
 public abstract class TriagingFunction<T,U> 
 {
 	/**
@@ -24,10 +31,10 @@ public abstract class TriagingFunction<T,U>
 	 * @param The trace to read
 	 * @return The equivalence class
 	 */
-	public U getClass(Trace<T> trace)
+	public MathSet<U> getClass(Trace<T> trace)
 	{
 		reset();
-		U last = getStartClass();
+		MathSet<U> last = getStartClass();
 		for (T event : trace)
 		{
 			last = read(event);
@@ -49,11 +56,11 @@ public abstract class TriagingFunction<T,U>
 	 * @return The equivalence class that the trace read since
 	 *   the last call to {@link #reset()} belongs to
 	 */
-	public abstract U read(T event);
+	public abstract MathSet<U> read(T event);
 	
 	/**
 	 * Gets the equivalence class for the empty trace
 	 * @return The class
 	 */
-	public abstract U getStartClass();
+	public abstract MathSet<U> getStartClass();
 }

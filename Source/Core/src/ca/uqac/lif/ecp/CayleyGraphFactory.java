@@ -21,6 +21,19 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+/**
+ * Generates a Cayley graph using a generic algorithm. This procedure works
+ * only if the undelrying triaging function respects the "monoid condition"
+ * described in the paper. Otherwise, it may not terminate, or may return an
+ * incorrect graph. 
+ * @author Sylvain Hallé
+ *
+ * @param <T> The type of the events; events are used as edge labels
+ * @param <U> The type of the categories of the triaging function. The 
+ *   labelling of the states in the resulting graph will be made of
+ *   <em>sets</em> of elements of type <code>U</code>
+ * 
+ */
 public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 {
 	/**
@@ -36,7 +49,7 @@ public abstract class CayleyGraphFactory<T extends Event,U extends Object>
 		Queue<VertexEventTracePair> explored = new LinkedList<VertexEventTracePair>();
 		Vertex<T> current_vertex = new Vertex<T>();
 		Trace<T> current_trace = new Trace<T>();
-		U category = f.getClass(current_trace);
+		MathSet<U> category = f.getClass(current_trace);
 		graph.add(current_vertex);
 		graph.m_labelling.put(current_vertex.getId(), category);
 		Set<T> nexts = getNextEvents();

@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.Vertex;
 
@@ -44,7 +45,7 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 	}
 	
 	@Override
-	public U read(AtomicEvent e)
+	public MathSet<U> read(AtomicEvent e)
 	{
 		Edge<AtomicEvent> edge = m_automaton.getTransition(m_currentVertex, e);
 		m_currentVertex = m_automaton.getVertex(edge.getDestination());
@@ -52,5 +53,5 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 		return processTransition(edge);
 	}
 	
-	public abstract U processTransition(Edge<AtomicEvent> edge);
+	public abstract MathSet<U> processTransition(Edge<AtomicEvent> edge);
 }
