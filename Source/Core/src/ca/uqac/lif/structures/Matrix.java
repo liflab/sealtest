@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.structures;
 
 /**
  * Simple implementation of a matrix and its multiplication operation

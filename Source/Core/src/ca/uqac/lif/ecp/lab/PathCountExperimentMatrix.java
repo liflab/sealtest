@@ -21,9 +21,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.Matrix;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.json.JsonNumber;
+import ca.uqac.lif.structures.Matrix;
 
 public class PathCountExperimentMatrix extends PathCountExperiment 
 {

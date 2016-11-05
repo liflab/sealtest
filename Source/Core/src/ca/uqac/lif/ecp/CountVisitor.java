@@ -19,11 +19,12 @@ package ca.uqac.lif.ecp;
 
 import java.util.ArrayList;
 
+import ca.uqac.lif.ecp.graphs.BreadthFirstVisitor;
 import ca.uqac.lif.ecp.lab.GraphExperiment;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.json.JsonNumber;
 
-public class CountVisitor<T extends Event,U extends Object> extends BreadthFirstVisitor<T,U>
+public class CountVisitor<T extends Event,U extends Object> extends BreadthFirstVisitor<T>
 {
 	protected GraphExperiment m_experiment;
 	

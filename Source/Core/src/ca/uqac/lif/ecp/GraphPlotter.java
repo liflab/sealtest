@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ca.uqac.lif.ecp.graphs.Vertex;
+
 /**
  * Generates a plot from a Cayley Graph
  *
@@ -67,11 +69,11 @@ public class GraphPlotter<T extends Event,U extends Object>
 	{
 		StringBuilder out = new StringBuilder();
 		out.append("digraph G {\n");
-		for (Vertex<T> v : m_graph.m_vertices)
+		for (Vertex<T> v : m_graph.getVertices())
 		{
 			int id = v.getId();
 			out.append(" ").append(id).append("[label=\"").append(printVertex(v, format)).append("\"];\n");
-			out.append(printEdges(v.m_outEdges, id, format));
+			out.append(printEdges(v.getEdges(), id, format));
 		}
 		// Add initial state
 		out.append("i -> 0;\n");

@@ -30,8 +30,6 @@ import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.CayleyDiameterCoverage;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.GraphPlotter;
-import ca.uqac.lif.ecp.MathList;
-import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.SpanningTreeTraceGenerator;
 import ca.uqac.lif.ecp.TWayEventSequenceFunction;
 import ca.uqac.lif.ecp.TWayScoringTraceGenerator;
@@ -45,6 +43,8 @@ import ca.uqac.lif.ecp.atomic.AutomatonCayleyGraphFactory;
 import ca.uqac.lif.ecp.atomic.EdgeSetHistory;
 import ca.uqac.lif.ecp.atomic.StateSetHistory;
 import ca.uqac.lif.parkbench.FileHelper;
+import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
 
 public class CayleyTest 
 {

@@ -17,8 +17,9 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.Iterator;
-import java.util.List;
+import ca.uqac.lif.ecp.graphs.SpanningTree;
+import ca.uqac.lif.ecp.graphs.UnionFindSpanningTree;
+import ca.uqac.lif.ecp.graphs.Vertex;
 
 public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extends TraceGenerator<T> 
 {
@@ -33,6 +34,11 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	protected CayleyGraph<T,U> m_tree = null;
 	
 	/**
+	 * The solver that will resolve the underlying spanning tree problem
+	 */
+	protected SpanningTree<T,U> m_solver;
+	
+	/**
 	 * Creates a new spanning tree generator
 	 * @param graph The Cayley graph used to generate the traces
 	 */
@@ -40,6 +46,20 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	{
 		super();
 		m_graph = graph;
+		// This is currently the only spanning tree solver we have
+		m_solver = new UnionFindSpanningTree<T,U>(graph);
+	}
+	
+	/**
+	 * Creates a new spanning tree generator
+	 * @param graph The Cayley graph used to generate the traces
+	 */
+	public SpanningTreeTraceGenerator(CayleyGraph<T,U> graph, SpanningTree<T,U> solver)
+	{
+		super();
+		m_graph = graph;
+		m_solver = solver;
+		m_solver.setGraph(graph);
 	}
 
 	@Override
@@ -47,12 +67,30 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	{
 		CayleyGraph<T,U> tree = getSpanningTree();
 		TestSuite<T> traces = new TestSuite<T>();
-		Trace<T> start_trace = new Trace<T>();
 		Vertex<T> root = tree.getInitialVertex();
-		depthFirstCollect(tree, root, traces, start_trace);
+		depthFirstCollect(tree, root, traces);
 		return traces;
 	}
+
+	/**
+	 * Collects all the root-to-leaf paths in a spanning tree
+	 * @param graph The tree (it is actually an instance of Cayley graph)
+	 * @param v The root of the spanning tree
+	 * @param traces An empty set of traces that will be filled by the method
+	 */
+	protected void depthFirstCollect(CayleyGraph<T,U> graph, Vertex<T> v, TestSuite<T> traces)
+	{
+		depthFirstCollect(graph, v, traces, new Trace<T>());
+	}
 	
+	/**
+	 * Collects all the root-to-leaf paths in a spanning tree
+	 * @param graph The tree (it is actually an instance of Cayley graph)
+	 * @param v The root of the spanning tree
+	 * @param traces An empty set of traces that will be filled by the method
+	 * @param current_trace The current trace, to which events will be appended.
+	 *   The procedure starts with an empty trace
+	 */
 	protected void depthFirstCollect(CayleyGraph<T,U> graph, Vertex<T> v, TestSuite<T> traces, Trace<T> current_trace)
 	{
 		if (v.isLeaf())
@@ -61,7 +99,7 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 			traces.add(new_trace);
 			return;
 		}
-		for (Edge<T> edge : v.m_outEdges)
+		for (Edge<T> edge : v.getEdges())
 		{
 			Vertex<T> target_vertex = graph.getVertex(edge.getDestination());
 			current_trace.add(edge.getLabel());
@@ -79,26 +117,11 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	{
 		if (m_tree != null)
 		{
-			// We generate the spanning tree only on demand
+			// We are lazy and generate the spanning tree only if we don't
+			// already have one
 			return m_tree;
 		}
-		ForestNode<T> forest = new ForestNode<T>(null);
-		List<Edge<T>> edges = forest.getOrderedSpanningTree(m_graph);
-		CayleyGraph<T,U> tree = new CayleyGraph<T,U>(m_graph);
-		for (Vertex<T> v : tree.getVertices())
-		{
-			Iterator<Edge<T>> e_it = v.getEdges().iterator();
-			while (e_it.hasNext())
-			{
-				Edge<T> e = e_it.next();
-				if (!edges.contains(e))
-				{
-					// This edge is not in the list; take it off
-					e_it.remove();
-				}
-			}
-		}
-		m_tree = tree;
-		return tree;
+		m_tree = m_solver.getSpanningTree();
+		return m_tree;
 	}
 }

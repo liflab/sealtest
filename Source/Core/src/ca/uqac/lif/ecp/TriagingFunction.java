@@ -17,6 +17,8 @@
  */
 package ca.uqac.lif.ecp;
 
+import ca.uqac.lif.structures.MathSet;
+
 /**
  * Abstract class defining a function mapping traces to categories
  * @author Sylvain Hallé
@@ -24,7 +26,7 @@ package ca.uqac.lif.ecp;
  * @param <T> The type of the events in the trace
  * @param <U> The type of the categories
  */
-public abstract class TriagingFunction<T,U> 
+public abstract class TriagingFunction<T extends Event,U> 
 {
 	/**
 	 * Gets the equivalence class associated with a given trace
@@ -63,4 +65,15 @@ public abstract class TriagingFunction<T,U>
 	 * @return The class
 	 */
 	public abstract MathSet<U> getStartClass();
+	
+	/**
+	 * Gets the Cayley Graph corresponding to this triaging function
+	 * @return A Cayley Graph, or <code>null</code> if a graph is not
+	 *   available
+	 */
+	public CayleyGraph<T,U> getCayleyGraph()
+	{
+		return null;
+	}
+	
 }

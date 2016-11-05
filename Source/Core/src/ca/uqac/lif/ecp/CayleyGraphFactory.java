@@ -21,6 +21,9 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+import ca.uqac.lif.ecp.graphs.Vertex;
+import ca.uqac.lif.structures.MathSet;
+
 /**
  * Generates a Cayley graph using a generic algorithm. This procedure works
  * only if the undelrying triaging function respects the "monoid condition"

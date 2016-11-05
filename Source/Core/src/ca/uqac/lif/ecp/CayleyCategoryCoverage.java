@@ -20,6 +20,8 @@ package ca.uqac.lif.ecp;
 import java.util.HashSet;
 import java.util.Set;
 
+import ca.uqac.lif.structures.MathSet;
+
 /**
  * Coverage of a set of traces based on the fraction of all equivalence classes
  * of the triaging function that are present in one of the prefixes of some

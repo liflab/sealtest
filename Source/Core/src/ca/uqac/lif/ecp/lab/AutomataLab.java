@@ -23,9 +23,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.Vertex;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
+import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
@@ -104,9 +104,9 @@ public class AutomataLab extends Laboratory
 		PathCountExperiment exp = new PathCountExperimentMatrix(scanner, max_length);
 		scanner.close();
 		Automaton g = exp.getGraph();
-		String[] vertices = new String[g.m_vertices.size()];
+		String[] vertices = new String[g.getVertexCount()];
 		int i = 0;
-		for (Vertex<AtomicEvent> v : g.m_vertices)
+		for (Vertex<AtomicEvent> v : g.getVertices())
 		{
 			vertices[i++] = Integer.toString(v.getId());
 		}
@@ -134,9 +134,9 @@ public class AutomataLab extends Laboratory
 		StateDistributionExperiment exp = new StateDistributionExperiment(scanner, iterations);
 		scanner.close();
 		Automaton g = exp.getGraph();
-		String[] vertices = new String[g.m_vertices.size()];
+		String[] vertices = new String[g.getVertexCount()];
 		int i = 0;
-		for (Vertex<AtomicEvent> v : g.m_vertices)
+		for (Vertex<AtomicEvent> v : g.getVertices())
 		{
 			vertices[i++] = Integer.toString(v.getId());
 		}

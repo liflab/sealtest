@@ -15,17 +15,18 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.structures;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 /**
- * Set implementation that behaves like a real set, i.e. two sets
- * are equal if and only if they contain the same elements.
+ * List implementation that behaves like a real list, i.e. two lists
+ * are equal if and only if they contain the same elements in the
+ * same order.
  *
- * @param <T> The type of the set's elements
+ * @param <T> The type of the lists's elements
  */
-public class MathSet<T> extends HashSet<T> 
+public class MathList<T> extends ArrayList<T> 
 {
 	/**
 	 * Dummy UID
@@ -41,45 +42,25 @@ public class MathSet<T> extends HashSet<T>
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == null || !(o instanceof MathSet))
+		if (o == null || !(o instanceof MathList))
 		{
 			return false;
 		}
 		@SuppressWarnings("unchecked")
-		MathSet<T> h = (MathSet<T>) o;
+		MathList<T> h = (MathList<T>) o;
 		if (h.size() != size())
 		{
 			return false;
 		}
-		for (T st : this)
+		for (int i = 0; i < size(); i++)
 		{
-			if (!h.contains(st))
+			T e1 = get(i);
+			T e2 = h.get(i);
+			if (!e1.equals(e2))
 			{
 				return false;
 			}
 		}
 		return true;
-	}
-	
-	@Override
-	public String toString()
-	{
-		StringBuilder out = new StringBuilder();
-		out.append("{");
-		boolean first = true;
-		for (T e : this)
-		{
-			if (first)
-			{
-				first = false;
-			}
-			else
-			{
-				out.append(",");
-			}
-			out.append(e);
-		}
-		out.append("}");
-		return out.toString();
 	}
 }

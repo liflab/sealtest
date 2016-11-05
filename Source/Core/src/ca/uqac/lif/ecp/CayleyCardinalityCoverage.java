@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import ca.uqac.lif.structures.MathSet;
+
 /**
  * Coverage of a set of traces based on the fraction of all traces whose
  * equivalence class for some triaging function is represented 

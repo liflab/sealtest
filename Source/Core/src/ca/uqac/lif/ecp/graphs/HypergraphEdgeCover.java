@@ -15,36 +15,33 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.atomic;
+package ca.uqac.lif.ecp.graphs;
 
-import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.graphs.Hypergraph.Hyperedge;
 import ca.uqac.lif.structures.MathSet;
 
 /**
- * Triaging function where the class of a trace is the state of
- * the automaton you end on while reading it
+ * Solver for the hypergraph edge covering problem. Different descendents
+ * of this abstract class will solve the problem using different algorithms.
+ * @author Sylvain Hallé
+ *
  */
-public class StateIdentityFunction extends AutomatonFunction<Integer> 
+public abstract class HypergraphEdgeCover 
 {
-	public StateIdentityFunction(Automaton a)
+	/**
+	 * The hypergraph this solver will work on
+	 */
+	protected Hypergraph m_graph;
+	
+	public HypergraphEdgeCover(Hypergraph g)
 	{
-		super(a);
-	}
-
-	@Override
-	public MathSet<Integer> getStartClass()
-	{
-		MathSet<Integer> out = new MathSet<Integer>();
-		out.add(0);
-		return out;
+		super();
+		m_graph = g;
 	}
 	
-	@Override
-	public MathSet<Integer> processTransition(Edge<AtomicEvent> edge)
-	{
-		MathSet<Integer> out = new MathSet<Integer>();
-		out.add(edge.getDestination());
-		return out;
-	}
-
+	/**
+	 * Gets a covering of the hyperedges
+	 * @return The covering
+	 */
+	public abstract MathSet<Hyperedge> getCover();
 }

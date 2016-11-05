@@ -18,19 +18,30 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.MathSet;
 import ca.uqac.lif.ecp.TriagingFunction;
-import ca.uqac.lif.ecp.Vertex;
+import ca.uqac.lif.ecp.graphs.Vertex;
+import ca.uqac.lif.structures.MathSet;
 
 /**
  * Triaging function based on a finite-state automaton
  */
 public abstract class AutomatonFunction<U extends Object> extends TriagingFunction<AtomicEvent,U>
 {
+	/**
+	 * The automaton this function uses as its reference
+	 */
 	protected Automaton m_automaton;
 	
+	/**
+	 * The current vertex in the automaton after reading the previous
+	 * events
+	 */
 	protected Vertex<AtomicEvent> m_currentVertex;
 	
+	/**
+	 * Creates a new triaging function from an automaton
+	 * @param a The automaton this function uses as its reference
+	 */
 	public AutomatonFunction(Automaton a)
 	{
 		super();

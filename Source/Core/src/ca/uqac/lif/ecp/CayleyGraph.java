@@ -17,14 +17,15 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+
+import ca.uqac.lif.ecp.graphs.LabelledGraph;
+import ca.uqac.lif.ecp.graphs.Vertex;
+import ca.uqac.lif.structures.MathSet;
+import ca.uqac.lif.structures.Matrix;
 
 /**
  * Implementation of a Cayley Graph. The vertices of the graph are 
@@ -34,18 +35,13 @@ import java.util.Set;
  * @author Sylvain Hallé
  *
  */
-public class CayleyGraph<T extends Event,U extends Object>
+public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph<T>
 {
-	/**
-	 * The set of vertices of this graph. Each vertex is responsible
-	 * for storing its outgoing edges.
-	 */
-	public Set<Vertex<T>> m_vertices;
 	
 	/**
 	 * The labelling associated to each vertex
 	 */
-	VertexLabelling<U> m_labelling;
+	CayleyVertexLabelling<U> m_labelling;
 	
 	/**
 	 * Creates an empty graph
@@ -53,8 +49,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	public CayleyGraph()
 	{
 		super();
-		m_vertices = new HashSet<Vertex<T>>();
-		m_labelling = new VertexLabelling<U>();
+		m_labelling = new CayleyVertexLabelling<U>();
 	}
 	
 	/**
@@ -63,42 +58,10 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 */
 	public CayleyGraph(CayleyGraph<T,U> graph)
 	{
-		this();
-		for (Vertex<T> v : graph.m_vertices)
-		{
-			m_vertices.add(new Vertex<T>(v));
-		}
+		super(graph);
 		m_labelling = graph.m_labelling;
 	}
-	
-	/**
-	 * Gets the vertex with given ID
-	 * @param id The ID
-	 * @return The vertex, or null if no vertex exists with that ID
-	 */
-	public Vertex<T> getVertex(int id)
-	{
-		for (Vertex<T> v : m_vertices)
-		{
-			if (v.m_id == id)
-			{
-				return v;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Adds a vertex to this graph
-	 * @param v The vertex
-	 * @return This graph
-	 */
-	public CayleyGraph<T,U> add(Vertex<T> v)
-	{
-		m_vertices.add(v);
-		return this;
-	}
-	
+		
 	/**
 	 * Produces the adjacency matrix of the Cayley Graph. This matrix is
 	 * such that entry (<i>i</i>,<i>j</i>) = <i>k</i> if there exist <i>k</i> 
@@ -112,7 +75,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 */
 	public float[][] getAdjacencyMatrix()
 	{
-		int size = m_vertices.size();
+		int size = getVertexCount();
 		// Create empty table and fill with 0
 		float table[][] = new float[size][size];
 		for (int i = 0; i < size; i++)
@@ -131,27 +94,13 @@ public class CayleyGraph<T extends Event,U extends Object>
 			int label = labels.get(i);
 			Vertex<T> v = getVertex(label);
 			// Iterate over each edge leaving this vertex
-			for (Edge<T> e : v.m_outEdges)
+			for (Edge<T> e : v.getEdges())
 			{
 				int j = labels.indexOf(e.getDestination());
 				table[j][i]++;
 			}
 		}
 		return table;
-	}
-	
-	/**
-	 * Fetches the list of all vertex IDs present in the graph 
-	 * @return The list of IDs
-	 */
-	public List<Integer> getVertexLabels()
-	{
-		List<Integer> out = new ArrayList<Integer>();
-		for (Vertex<T> v : m_vertices)
-		{
-			out.add(v.m_id);
-		}
-		return out;
 	}
 	
 	/**
@@ -162,7 +111,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 */
 	protected Vertex<T> getFirstVertexWithLabelling(MathSet<U> eq_class)
 	{
-		for (Vertex<T> v : m_vertices)
+		for (Vertex<T> v : getVertices())
 		{
 			if (m_labelling.get(v.getId()).equals(eq_class))
 			{
@@ -172,45 +121,6 @@ public class CayleyGraph<T extends Event,U extends Object>
 		return null;
 	}
 
-	/**
-	 * Gets the vertex with given ID
-	 * @param id The ID
-	 * @return The vertex, or null if not found
-	 */
-	public Vertex<T> getVertexWithId(int id)
-	{
-		for (Vertex<T> v : m_vertices)
-		{
-			if (v.getId() == id)
-			{
-				return v;
-			}
-		}
-		return null;
-	}
-	
-	/**
-	 * Gets the number of edges in the graph
-	 * @return The number of edges
-	 */
-	public int getEdgeCount()
-	{
-		int count = 0;
-		for (Vertex<T> v : m_vertices)
-		{
-			count += v.m_outEdges.size();
-		}
-		return count;
-	}
-	
-	/**
-	 * Gets the number of vertices in the graph
-	 * @return The number of vertices
-	 */
-	public int getVertexCount()
-	{
-		return m_vertices.size();
-	}
 	
 	/**
 	 * Gets an instance of a plotter for this Cayley graph
@@ -225,7 +135,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 * Sets the labelling associated to the vertices of the graph
 	 * @param l The labelling
 	 */
-	public void setLabelling(VertexLabelling<U> l)
+	public void setLabelling(CayleyVertexLabelling<U> l)
 	{
 		m_labelling = l;
 	}
@@ -234,7 +144,7 @@ public class CayleyGraph<T extends Event,U extends Object>
 	 * Gets the labelling associated to the vertices of the graph
 	 * @return The labelling
 	 */
-	public VertexLabelling<U> getLabelling()
+	public CayleyVertexLabelling<U> getLabelling()
 	{
 		return m_labelling;
 	}
@@ -293,38 +203,5 @@ public class CayleyGraph<T extends Event,U extends Object>
 			cardinalities.put(category, cardinalities.get(category) + (int) V_cumul[i]);
 		}
 		return cardinalities;
-	}
-	
-	/**
-	 * Gets the set of vertices of this graph
-	 * @return The set of vertices
-	 */
-	public Set<Vertex<T>> getVertices()
-	{
-		return m_vertices;
-	}
-	
-	/**
-	 * Gets the list of all edges in the graph
-	 * @return The list of edges
-	 */
-	public List<Edge<T>> getEdges()
-	{
-		List<Edge<T>> edges = new LinkedList<Edge<T>>();
-		for (Vertex<T> v : m_vertices)
-		{
-			edges.addAll(v.getEdges());
-		}
-		return edges;
-	}
-
-	/**
-	 * Gets the initial vertex of the Cayley graph
-	 * @return The initial vertex
-	 */
-	public Vertex<T> getInitialVertex()
-	{
-		// TODO: don't hardcode 0
-		return getVertex(0);
-	}
+	}	
 }

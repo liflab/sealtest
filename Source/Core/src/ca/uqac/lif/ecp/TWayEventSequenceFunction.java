@@ -17,10 +17,13 @@
  */
 package ca.uqac.lif.ecp;
 
+import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
+
 /**
  * Triaging function that returns the number of t-way sequences 
  * contained in the trace
- * @author Sylvain
+ * @author Sylvain Hallé
  *
  */
 public class TWayEventSequenceFunction<T extends Event> extends TriagingFunction<T,MathList<T>>

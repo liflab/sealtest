@@ -22,8 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.MathList;
-import ca.uqac.lif.ecp.MathSet;
+import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
 
 /**
  * Triaging function where the class of a trace is the set of <i>n</i>-grams

@@ -20,8 +20,8 @@ package ca.uqac.lif.ecp.lab;
 import java.util.Scanner;
 
 import ca.uqac.lif.ecp.CountVisitor;
-import ca.uqac.lif.ecp.Vertex;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.json.JsonList;
 
 public class PathCountExperiment extends GraphExperiment 
@@ -40,7 +40,7 @@ public class PathCountExperiment extends GraphExperiment
 		}
 		describe("length", "The list of path lengths");
 		write("length", len_list);
-		for (Vertex<AtomicEvent> v : m_graph.m_vertices)
+		for (Vertex<AtomicEvent> v : m_graph.getVertices())
 		{
 			JsonList list = new JsonList();
 			for (int i = 0; i <= max_length; i++)

@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.Vertex;
+import ca.uqac.lif.ecp.graphs.Vertex;
 
 /**
  * Implementation of a deterministic finite-state automaton. For the 
@@ -89,7 +89,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	public Alphabet<AtomicEvent> getAlphabet()
 	{
 		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
-		for (Vertex<AtomicEvent> v : m_vertices)
+		for (Vertex<AtomicEvent> v : getVertices())
 		{
 			for (Edge<AtomicEvent> e : v.getEdges())
 			{
