@@ -2,15 +2,44 @@ package ca.uqac.lif.ecp.graphs;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.Event;
 
 public abstract class BreadthFirstVisitor<T extends Event>
 {
+	/**
+	 * If set to true, a call to {@link #visit(ArrayList) visit()} will be
+	 * done only once per node
+	 */
+	protected boolean m_visitOnce = false;
+	
+	/**
+	 * Creates a new visitor
+	 */
+	public BreadthFirstVisitor()
+	{
+		super();
+	}
+
+	/**
+	 * Creates a new visitor
+	 * @param visit_once If set to true, a call to 
+	 * {@link #visit(ArrayList) visit()} will be
+	 * done only once per node
+	 */
+	public BreadthFirstVisitor(boolean visit_once)
+	{
+		super();
+		m_visitOnce = visit_once;
+	}
+	
 	public void start(LabelledGraph<T> g, int start_id, int max_depth)
 	{
+		Set<Integer> visited = new HashSet<Integer>();
 		Vertex<T> start = g.getVertex(start_id);
 		Queue<ArrayList<Edge<T>>> paths = new ArrayDeque<ArrayList<Edge<T>>>();
 		for (Edge<T> e : start.m_outEdges)
@@ -25,9 +54,14 @@ public abstract class BreadthFirstVisitor<T extends Event>
 			while (!paths.isEmpty())
 			{
 				ArrayList<Edge<T>> path = paths.remove();
-				visit(path);
 				Edge<T> last_edge = path.get(path.size() - 1);
-				Vertex<T> v = g.getVertex(last_edge.getDestination());
+				int id_dest = last_edge.getDestination();
+				Vertex<T> v = g.getVertex(id_dest);
+				if (!m_visitOnce || !visited.contains(id_dest))
+				{
+					visit(path);
+					visited.add(id_dest);
+				}
 				for (Edge<T> e : v.m_outEdges)
 				{
 					ArrayList<Edge<T>> new_path = new ArrayList<Edge<T>>();

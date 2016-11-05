@@ -18,12 +18,18 @@ public class LabelledGraph<T extends Event>
 	private Set<Vertex<T>> m_vertices;
 	
 	/**
+	 * The ID of the initial index
+	 */
+	private int m_initialId;
+	
+	/**
 	 * Creates an empty graph
 	 */
 	public LabelledGraph()
 	{
 		super();
 		m_vertices = new HashSet<Vertex<T>>();
+		m_initialId = 0;
 	}
 
 	/**
@@ -188,7 +194,15 @@ public class LabelledGraph<T extends Event>
 	 */
 	public Vertex<T> getInitialVertex()
 	{
-		// TODO: don't hardcode 0
-		return getVertex(0);
+		return getVertex(m_initialId);
+	}
+	
+	/**
+	 * Sets the ID of the initial vertex
+	 * @param id The ID
+	 */
+	public void setInitialVertexId(int id)
+	{
+		m_initialId = id;
 	}
 }

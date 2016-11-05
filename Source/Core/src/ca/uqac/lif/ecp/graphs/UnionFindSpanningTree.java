@@ -38,6 +38,7 @@ public class UnionFindSpanningTree<T extends Event,U> extends SpanningTree<T,U>
 		super(graph);
 	}
 
+	@Override
 	public CayleyGraph<T,U> getSpanningTree()
 	{
 		ForestNode<T> forest = new ForestNode<T>(null);

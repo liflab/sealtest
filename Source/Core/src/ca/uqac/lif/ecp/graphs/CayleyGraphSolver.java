@@ -3,6 +3,13 @@ package ca.uqac.lif.ecp.graphs;
 import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.Event;
 
+/**
+ * Solves a problem on a generalized Cayley graph
+ * @author Sylvain Hallé
+ *
+ * @param <T>
+ * @param <U>
+ */
 public abstract class CayleyGraphSolver<T extends Event,U>
 {
 	/**
