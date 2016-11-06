@@ -84,4 +84,10 @@ public class GreedyHypergraphEdgeCover extends HypergraphEdgeCover
 		return n;
 	}
 
+	@Override
+	public HypergraphEdgeCover newSolver(Hypergraph g) 
+	{
+		return new GreedyHypergraphEdgeCover(g);
+	}
+
 }

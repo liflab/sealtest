@@ -21,13 +21,17 @@ import ca.uqac.lif.ecp.graphs.SpanningTree;
 import ca.uqac.lif.ecp.graphs.UnionFindSpanningTree;
 import ca.uqac.lif.ecp.graphs.Vertex;
 
-public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extends TraceGenerator<T> 
-{
-	/**
-	 * The Cayley graph used to generate the traces
-	 */
-	protected final CayleyGraph<T,U> m_graph;
-	
+/**
+ * Trace generator that uses a spanning tree of the Cayley graph. This
+ * generator can achieve total coverage with respect to the equivalence class
+ * coverage metric, <b>c<sub>e</sub></b>.
+ * @author Sylvain Hallé
+ *
+ * @param <T>
+ * @param <U>
+ */
+public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extends CayleyGraphTraceGenerator<T,U> 
+{	
 	/**
 	 * The spanning tree obtained from this Cayley graph
 	 */
@@ -44,8 +48,7 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	 */
 	public SpanningTreeTraceGenerator(CayleyGraph<T,U> graph)
 	{
-		super();
-		m_graph = graph;
+		super(graph);
 		// This is currently the only spanning tree solver we have
 		m_solver = new UnionFindSpanningTree<T,U>(graph);
 	}
@@ -56,8 +59,7 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	 */
 	public SpanningTreeTraceGenerator(CayleyGraph<T,U> graph, SpanningTree<T,U> solver)
 	{
-		super();
-		m_graph = graph;
+		super(graph);
 		m_solver = solver;
 		m_solver.setGraph(graph);
 	}

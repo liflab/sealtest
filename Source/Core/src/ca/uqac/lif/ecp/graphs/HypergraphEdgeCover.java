@@ -44,4 +44,11 @@ public abstract class HypergraphEdgeCover
 	 * @return The covering
 	 */
 	public abstract MathSet<Hyperedge> getCover();
+	
+	/**
+	 * Gets a new, empty instance of this solver
+	 * @param g The hypergraph to solve
+	 * @return The solver
+	 */
+	public abstract HypergraphEdgeCover newSolver(Hypergraph g);
 }
