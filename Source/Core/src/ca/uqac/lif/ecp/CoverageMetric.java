@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -19,7 +19,7 @@ package ca.uqac.lif.ecp;
 
 import java.util.Set;
 
-public abstract class CoverageMetric<T,V> 
+public abstract class CoverageMetric<T extends Event,V> 
 {
 	/**
 	 * Creates a new coverage metric instance

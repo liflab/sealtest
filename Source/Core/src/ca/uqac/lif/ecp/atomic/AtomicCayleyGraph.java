@@ -18,7 +18,6 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.CayleyGraph;
-import java.util.Scanner;
 
 /**
  * Special case of Cayley graph where the triaging function operates
@@ -28,25 +27,7 @@ import java.util.Scanner;
  * @author Sylvain
  */
 public class AtomicCayleyGraph<U> extends CayleyGraph<AtomicEvent,U>
-{
-	public static AtomicCayleyGraph<String> parse(Scanner scanner)
-	{
-		AtomicCayleyGraph<String> out_g = new AtomicCayleyGraph<String>();
-		while (scanner.hasNextLine())
-		{
-			String line = scanner.nextLine().trim();
-			if (line.isEmpty() || line.startsWith("#"))
-			{
-				continue;
-			}
-			if (line.contains("->"))
-			{
-				// Edge definition
-			}
-		}
-		return out_g;
-	}
-	
+{	
 	@Override
 	public AtomicGraphPlotter<U> plotter()
 	{

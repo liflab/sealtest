@@ -22,8 +22,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import ca.uqac.lif.ecp.Alphabet;
+import ca.uqac.lif.ecp.CayleyVertexLabelling;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.graphs.Vertex;
+import ca.uqac.lif.structures.MathSet;
 
 /**
  * Implementation of a deterministic finite-state automaton. For the 
@@ -54,7 +56,9 @@ public class Automaton extends AtomicCayleyGraph<String>
 	public static Automaton parseDot(Scanner scanner)
 	{
 		Automaton g = new Automaton();
+		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();
 		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
+		Pattern pat_vertex = Pattern.compile("(\\d+?) \\[label=\"(.*?)\"\\];");
 		while(scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
@@ -88,7 +92,26 @@ public class Automaton extends AtomicCayleyGraph<String>
 					from.add(e);
 				}
 			}
+			else
+			{
+				// New vertex
+				mat = pat_vertex.matcher(line);
+				if (!mat.find())
+				{
+					// Ignore line
+					continue;
+				}
+				int vertex_id = Integer.parseInt(mat.group(1));
+				String[] vertex_labels = mat.group(2).split(",");
+				MathSet<String> labels = new MathSet<String>();
+				for (String label : vertex_labels)
+				{
+					labels.add(label);
+				}
+				labelling.put(vertex_id, labels);
+			}
 		}
+		g.setLabelling(labelling);
 		scanner.close();
 		return g;
 	}

@@ -20,24 +20,42 @@ package ca.uqac.lif.ecp;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Trace<T> extends LinkedList<T>
+/**
+ * An ordered sequence of events
+ * @author Sylvain Hallé
+ *
+ * @param <T> The type of the events
+ */
+public class Trace<T extends Event> extends LinkedList<T>
 {
 	/**
 	 * Dummy UID
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	/**
+	 * Creates an empty trace
+	 */
 	public Trace()
 	{
 		super();
 	}
 	
+	/**
+	 * Creates a trace by copying the contents of another trace
+	 * @param t The other trace
+	 */
 	public Trace(Trace<T> t)
 	{
 		this();
 		addAll(t);
 	}
 
+	/**
+	 * Returns the suffix of the trace starting from a given position
+	 * @param index The position
+	 * @return A new trace containing the suffix of the current trace
+	 */
 	public Trace<T> suffixFrom(int index)
 	{
 		Trace<T> out = new Trace<T>();

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -25,7 +25,7 @@ import ca.uqac.lif.ecp.graphs.Vertex;
  * Trace generator that uses a spanning tree of the Cayley graph. This
  * generator can achieve total coverage with respect to the equivalence class
  * coverage metric, <b>c<sub>e</sub></b>.
- * @author Sylvain Hallé
+ * @author Sylvain Hallï¿½
  *
  * @param <T>
  * @param <U>

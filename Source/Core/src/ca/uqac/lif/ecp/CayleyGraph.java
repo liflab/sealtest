@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -17,11 +17,15 @@
  */
 package ca.uqac.lif.ecp;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import ca.uqac.lif.ecp.graphs.BreadthFirstVisitor;
 import ca.uqac.lif.ecp.graphs.LabelledGraph;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
@@ -37,7 +41,6 @@ import ca.uqac.lif.structures.Matrix;
  */
 public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph<T>
 {
-	
 	/**
 	 * The labelling associated to each vertex
 	 */
@@ -203,5 +206,85 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			cardinalities.put(category, cardinalities.get(category) + (int) V_cumul[i]);
 		}
 		return cardinalities;
-	}	
+	}
+	
+	/**
+	 * Determines if some graph is isomorphic to the current graph.
+	 * The two graphs are isomorphic if there exists a one-to-one mapping
+	 * between the vertices of the two graphs, such that their labelled
+	 * transition function is identical modulo this mapping.
+	 * <p>
+	 * This method is not used for test case generation, but is useful
+	 * to perform unit tests to check the output of various graph solvers.
+	 * 
+	 * @param other_graph The other graph
+	 * @return true if they are isomorphic, false otherwise
+	 */
+	public boolean isIsomorphicTo(CayleyGraph<T,U> other_graph)
+	{
+		Map<Integer,Integer> correspondence = new HashMap<Integer,Integer>();
+		if (other_graph == null)
+		{
+			return false;
+		}
+		if (other_graph.getVertexCount() != getVertexCount() || other_graph.getEdgeCount() != getEdgeCount())
+		{
+			return false;
+		}
+		return checkMapping();
+	}
+	
+	protected boolean checkMapping(int current_node_id, CayleyGraph<T,U> other_graph, int other_node_id, Map<Integer,Integer> mapping)
+	{
+		if (getLabelling().get(current_node_id).equals(other_graph.getLabelling().get(other_node_id)))
+		{
+			// These two vertices don't have the same labelling
+			return false;
+		}
+		Vertex<T> current_vertex = getVertex(current_node_id);
+		Vertex<T> other_vertex = other_graph.getVertex(other_node_id);
+		if (mapping.containsKey(current_node_id))
+		{
+			// We already checked this vertex
+			return true;
+		}
+		mapping.put(current_node_id, other_node_id);
+		List<Edge<T>> current_edges = current_vertex.getEdges();
+		Set<Edge<T>> other_edges = new HashSet<Edge<T>>();
+		other_edges.addAll(other_vertex.getEdges());
+		if (current_edges.size() != other_edges.size())
+		{
+			// These two vertices don't have the same out-degree
+			return false;
+		}
+		for (Edge<T> current_edge : current_edges)
+		{
+			int edge_dest = current_edge.getDestination();
+			MathSet<U> current_dest_labelling = getLabelling().get(edge_dest);
+			
+		}
+	}
+	
+	protected class IsomorphicVisitor extends BreadthFirstVisitor<T>
+	{
+		Map<Integer,Integer> m_correspondence = new HashMap<Integer,Integer>();
+		
+		CayleyGraph<T,U> m_otherGraph;
+		
+		public IsomorphicVisitor(CayleyGraph<T,U> other_graph)
+		{
+			super(true);
+			m_otherGraph = other_graph;
+			m_correspondence = new HashMap<Integer,Integer>();
+		}
+
+		@Override
+		public void visit(ArrayList<Edge<T>> path)
+		{
+			Edge<T> last_edge = path.get(path.size() - 1);
+			
+			
+		}
+		
+	}
 }

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -23,8 +23,17 @@ import java.util.Set;
 
 import ca.uqac.lif.ecp.Trace;
 
+/**
+ * An ordered sequence of atomic events
+ * @author Sylvain Hallé
+ */
 public class AtomicTrace extends Trace<AtomicEvent> 
 {
+	/**
+	 * Dummy UID
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * The OS-dependent line separator 
 	 */

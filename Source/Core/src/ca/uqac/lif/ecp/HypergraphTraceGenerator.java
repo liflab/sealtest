@@ -12,7 +12,7 @@ import ca.uqac.lif.structures.MathSet;
  * Trace generator that uses the hypergraph&nbsp;+&nbsp;Steiner tree method. 
  * This generator can achieve total coverage with respect to the category
  * coverage metric, <b>c<sub>c</sub></b>.
- * @author Sylvain Hallé
+ * @author Sylvain Hallï¿½
  *
  * @param <T>
  * @param <U>
@@ -39,7 +39,7 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 		MathSet<Hyperedge> hyperedges = h_solver.getCover();
 		// Find a vertex in the Cayley graph for each of the hyperedges
 		MathSet<Vertex<T>> important_vertices = new MathSet<Vertex<T>>();
-		for (Hyperedge he : hyperedges)
+		/*for (Hyperedge he : hyperedges)
 		{
 			
 			Vertex<T> found_vertex = m_graph.getFirstVertexWithLabelling(he);
@@ -47,13 +47,14 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 		return null;
 		// Get a set of traces reaching these hyperedges
 		SteinerTree<T,U> bfst = new BreadthFirstSteinerTree<T,U>(m_graph);
-		bfst.getTree();
+		bfst.getTree();*/
+		return null;
 	}
 	
 	Hypergraph createHypergraph()
 	{
-		Hypergraph g = new Hypergraph();
-		return out;
+		//Hypergraph g = new Hypergraph();
+		return null;
 	}
 
 }
