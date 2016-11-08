@@ -1,6 +1,7 @@
 package ca.uqac.lif.ecp.graphs;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -76,6 +77,23 @@ public class LabelledGraph<T extends Event>
 			m_initialId = v.getId();
 		}
 		m_vertices.add(v);
+	}
+	
+	/**
+	 * Adds a set of vertices to this graph. If the first vertex is added to
+	 * an empty graph, it will by default be taken as the initial vertex of the
+	 * graph.
+	 * @param v The vertex
+	 * @return This graph
+	 */
+	public void addAll(Collection<Vertex<T>> vertices)
+	{
+		m_vertices.addAll(vertices);
+		for (Vertex<T> first_v : vertices)
+		{
+			m_initialId = first_v.getId();
+			break;
+		}
 	}
 	
 	/**

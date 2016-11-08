@@ -220,13 +220,38 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	 */
 	public boolean isIsomorphicTo(CayleyGraph<T,U> other_graph)
 	{
-		if (other_graph == null)
+		try
 		{
+			// This may throw something
+			return isIsomorphicToThrowable(other_graph);
+		}
+		catch (IsomorphismException e)
+		{
+			// Do nothing
 			return false;
 		}
-		if (other_graph.getVertexCount() != getVertexCount() || other_graph.getEdgeCount() != getEdgeCount())
+	}
+	
+	/**
+	 * Same as {@link #isIsomorphicTo(CayleyGraph)} but throws an exception
+	 * explaining why the graphs are not isomorphic when they are not.
+	 * @param other_graph The other graph
+	 * @return true if they are isomorphic, false otherwise
+	 * @throws IsomorphismException
+	 */
+	public boolean isIsomorphicToThrowable(CayleyGraph<T,U> other_graph) throws IsomorphismException
+	{
+		if (other_graph == null)
 		{
-			return false;
+			throw new IsomorphismException("Other graph is null");
+		}
+		if (other_graph.getVertexCount() != getVertexCount())
+		{
+			throw new IsomorphismException("This graph has " + getVertexCount() + " vertices; other graph has " + other_graph.getVertexCount());
+		}
+		if (other_graph.getEdgeCount() != getEdgeCount())
+		{
+			throw new IsomorphismException("This graph has " + getEdgeCount() + " edges; other graph has " + other_graph.getEdgeCount());
 		}
 		int current_start_id = getInitialVertex().getId();
 		int other_start_id = other_graph.getInitialVertex().getId();
@@ -234,14 +259,14 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 		return checkMapping(current_start_id, other_graph, other_start_id, mapping);
 	}
 	
-	protected boolean checkMapping(int current_node_id, CayleyGraph<T,U> other_graph, int other_node_id, Map<Integer,Integer> mapping)
+	protected boolean checkMapping(int current_node_id, CayleyGraph<T,U> other_graph, int other_node_id, Map<Integer,Integer> mapping) throws IsomorphismException
 	{
 		MathSet<U> current_labelling = getLabelling().get(current_node_id);
 		MathSet<U> other_labelling = other_graph.getLabelling().get(other_node_id);
 		if (current_labelling == null || other_labelling == null || !current_labelling.equals(other_labelling))
 		{
 			// These two vertices don't have the same labelling, if any			
-			return false;
+			throw new IsomorphismException("Matching vertices don't have the same labelling");
 		}
 		Vertex<T> current_vertex = getVertex(current_node_id);
 		Vertex<T> other_vertex = other_graph.getVertex(other_node_id);
@@ -251,13 +276,13 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			return true;
 		}
 		mapping.put(current_node_id, other_node_id);
-		List<Edge<T>> current_edges = current_vertex.getEdges();
+		Set<Edge<T>> current_edges = current_vertex.getEdges();
 		Set<Edge<T>> other_edges = new HashSet<Edge<T>>();
 		other_edges.addAll(other_vertex.getEdges());
 		if (current_edges.size() != other_edges.size())
 		{
 			// These two vertices don't have the same out-degree
-			return false;
+			throw new IsomorphismException("Matching vertices don't have the same out-degree");
 		}
 		// Check the mapping of each outgoing edge
 		for (Edge<T> current_edge : current_edges)
@@ -268,7 +293,7 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			if (other_edge == null)
 			{
 				// No edge with same label found in other graph
-				return false;
+				throw new IsomorphismException("No edge with same label found in other graph");
 			}
 			int other_edge_dest_id = other_edge.getDestination();
 			if (!checkMapping(current_edge_dest_id, other_graph, other_edge_dest_id, mapping))
@@ -301,5 +326,56 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public String toString()
+	{
+		StringBuilder out = new StringBuilder();
+		String crlf = System.getProperty("line.separator");
+		StringBuilder vertex_string = new StringBuilder();
+		out.append("digraph G {").append(crlf);
+		for (Vertex<T> v : getVertices())
+		{
+			int id = v.getId();
+			vertex_string.append(id).append(" [label=\"").append(getLabelling().get(id)).append("\"];").append(crlf);
+			for (Edge<T> e : v.getEdges())
+			{
+				out.append(e.getSource()).append(" -> ").append(e.getDestination()).append(" [label=\"").append(e.getLabel()).append("\"];").append(crlf);
+			}
+		}
+		out.append(vertex_string);
+		out.append("}");
+		return out.toString();
+	}
+	
+	public static class IsomorphismException extends Exception
+	{
+		/**
+		 * Dummy UID
+		 */
+		private static final long serialVersionUID = 1L;
+		
+		/**
+		 * A message associated with the exception
+		 */
+		private String m_message = "";
+		
+		public IsomorphismException()
+		{
+			this("No message was given");
+		}
+		
+		public IsomorphismException(String message)
+		{
+			super();
+			m_message = message;
+		}
+		
+		@Override
+		public String getMessage()
+		{
+			return m_message;
+		}
 	}
 }

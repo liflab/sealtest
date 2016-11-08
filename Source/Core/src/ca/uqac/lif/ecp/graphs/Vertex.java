@@ -17,8 +17,8 @@
  */
 package ca.uqac.lif.ecp.graphs;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.Event;
@@ -45,7 +45,7 @@ public class Vertex<T extends Event>
 	/**
 	 * The set of edges in this graph
 	 */
-	protected List<Edge<T>> m_outEdges;
+	protected Set<Edge<T>> m_outEdges;
 	
 	/**
 	 * Creates an empty vertex
@@ -54,7 +54,7 @@ public class Vertex<T extends Event>
 	{
 		super();
 		m_id = s_idCount++;
-		m_outEdges = new LinkedList<Edge<T>>();
+		m_outEdges = new HashSet<Edge<T>>();
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class Vertex<T extends Event>
 	{
 		super();
 		m_id = v.m_id;
-		m_outEdges = new LinkedList<Edge<T>>();
+		m_outEdges = new HashSet<Edge<T>>();
 		// Edges are immutable, so no need to duplicate them
 		m_outEdges.addAll(v.m_outEdges);
 	}
@@ -77,7 +77,7 @@ public class Vertex<T extends Event>
 	{
 		super();
 		m_id = id;
-		m_outEdges = new LinkedList<Edge<T>>();
+		m_outEdges = new HashSet<Edge<T>>();
 	}
 	
 	/**
@@ -130,7 +130,7 @@ public class Vertex<T extends Event>
 	 * Gets the outgoing edges from this vertex
 	 * @return The list of edges
 	 */
-	public List<Edge<T>> getEdges()
+	public Set<Edge<T>> getEdges()
 	{
 		return m_outEdges;
 	}

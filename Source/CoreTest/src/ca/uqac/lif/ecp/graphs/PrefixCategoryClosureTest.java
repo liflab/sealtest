@@ -25,6 +25,7 @@ import java.util.Scanner;
 import org.junit.Test;
 
 import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.CayleyGraph.IsomorphismException;
 import ca.uqac.lif.ecp.PrefixCategoryClosure;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
@@ -37,16 +38,26 @@ import ca.uqac.lif.ecp.atomic.Automaton;
 public class PrefixCategoryClosureTest 
 {
 	@Test
-	public void test1()
+	public void test1() throws IsomorphismException
 	{
-		Automaton g = loadAutomaton("test1.dot");
-		Automaton expected_graph = loadAutomaton("test1-pcc.dot");
-		assertEquals(4, g.getVertexCount());
-		assertEquals(4, g.getEdgeCount());
+		solve("test1.dot", "test1-pcc.dot");
+	}
+	
+	@Test
+	public void test2() throws IsomorphismException
+	{
+		solve("test2.dot", "test2-pcc.dot");
+	}
+	
+	public void solve(String in_filename, String expected_filename) throws IsomorphismException
+	{
+		Automaton g = loadAutomaton(in_filename);
+		Automaton expected_graph = loadAutomaton(expected_filename);
 		PrefixCategoryClosure<AtomicEvent,String> solver = new PrefixCategoryClosure<AtomicEvent,String>();
 		CayleyGraph<AtomicEvent,String> new_graph = solver.getClosureGraph(g, 3);
 		assertNotNull(new_graph);
-		assertTrue(new_graph.isIsomorphicTo(expected_graph));
+		assertTrue(new_graph.isIsomorphicToThrowable(expected_graph));
+
 	}
 		
 	public Automaton loadAutomaton(String filename)

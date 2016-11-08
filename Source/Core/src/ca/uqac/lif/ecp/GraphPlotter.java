@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -18,8 +18,8 @@
 package ca.uqac.lif.ecp;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ca.uqac.lif.ecp.graphs.Vertex;
 
@@ -119,7 +119,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 	 * @param edges The list of edges
 	 * @param source_id The ID of the source state for all the labels
 	 */
-	protected String printEdges(List<Edge<T>> edges, int source_id, Format format)
+	protected String printEdges(Set<Edge<T>> edges, int source_id, Format format)
 	{
 		StringBuilder out = new StringBuilder();
 		Map<Integer,String> edge_labels = new HashMap<Integer,String>();
