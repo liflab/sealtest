@@ -63,12 +63,18 @@ public class LabelledGraph<T extends Event>
 	}
 	
 	/**
-	 * Adds a vertex to this graph
+	 * Adds a vertex to this graph. If this is the first vertex to be
+	 * added, it will by default be taken as the initial vertex of the
+	 * graph.
 	 * @param v The vertex
 	 * @return This graph
 	 */
 	public void add(Vertex<T> v)
 	{
+		if (m_vertices.isEmpty())
+		{
+			m_initialId = v.getId();
+		}
 		m_vertices.add(v);
 	}
 	

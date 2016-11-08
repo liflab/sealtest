@@ -40,13 +40,13 @@ public class PrefixCategoryClosureTest
 	public void test1()
 	{
 		Automaton g = loadAutomaton("test1.dot");
+		Automaton expected_graph = loadAutomaton("test1-pcc.dot");
 		assertEquals(4, g.getVertexCount());
 		assertEquals(4, g.getEdgeCount());
 		PrefixCategoryClosure<AtomicEvent,String> solver = new PrefixCategoryClosure<AtomicEvent,String>();
 		CayleyGraph<AtomicEvent,String> new_graph = solver.getClosureGraph(g, 3);
 		assertNotNull(new_graph);
-		assertEquals(6, new_graph.getVertexCount());
-		//assertEquals(1, new_graph.getEdgeCount());
+		assertTrue(new_graph.isIsomorphicTo(expected_graph));
 	}
 		
 	public Automaton loadAutomaton(String filename)

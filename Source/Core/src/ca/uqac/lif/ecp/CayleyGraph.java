@@ -17,7 +17,6 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ca.uqac.lif.ecp.graphs.BreadthFirstVisitor;
 import ca.uqac.lif.ecp.graphs.LabelledGraph;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
@@ -222,7 +220,6 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	 */
 	public boolean isIsomorphicTo(CayleyGraph<T,U> other_graph)
 	{
-		Map<Integer,Integer> correspondence = new HashMap<Integer,Integer>();
 		if (other_graph == null)
 		{
 			return false;
@@ -231,14 +228,19 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 		{
 			return false;
 		}
-		return checkMapping();
+		int current_start_id = getInitialVertex().getId();
+		int other_start_id = other_graph.getInitialVertex().getId();
+		Map<Integer,Integer> mapping = new HashMap<Integer,Integer>();
+		return checkMapping(current_start_id, other_graph, other_start_id, mapping);
 	}
 	
 	protected boolean checkMapping(int current_node_id, CayleyGraph<T,U> other_graph, int other_node_id, Map<Integer,Integer> mapping)
 	{
-		if (getLabelling().get(current_node_id).equals(other_graph.getLabelling().get(other_node_id)))
+		MathSet<U> current_labelling = getLabelling().get(current_node_id);
+		MathSet<U> other_labelling = other_graph.getLabelling().get(other_node_id);
+		if (current_labelling == null || other_labelling == null || !current_labelling.equals(other_labelling))
 		{
-			// These two vertices don't have the same labelling
+			// These two vertices don't have the same labelling, if any			
 			return false;
 		}
 		Vertex<T> current_vertex = getVertex(current_node_id);
@@ -257,34 +259,47 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			// These two vertices don't have the same out-degree
 			return false;
 		}
+		// Check the mapping of each outgoing edge
 		for (Edge<T> current_edge : current_edges)
 		{
-			int edge_dest = current_edge.getDestination();
-			MathSet<U> current_dest_labelling = getLabelling().get(edge_dest);
-			
+			int current_edge_dest_id = current_edge.getDestination();
+			T current_edge_label = current_edge.getLabel();
+			Edge<T> other_edge = findEdgeWithLabel(other_edges, current_edge_label);
+			if (other_edge == null)
+			{
+				// No edge with same label found in other graph
+				return false;
+			}
+			int other_edge_dest_id = other_edge.getDestination();
+			if (!checkMapping(current_edge_dest_id, other_graph, other_edge_dest_id, mapping))
+			{
+				return false;
+			}
 		}
+		return true;
 	}
 	
-	protected class IsomorphicVisitor extends BreadthFirstVisitor<T>
+	protected Edge<T> findEdgeWithLabel(Set<Edge<T>> edges, T label)
 	{
-		Map<Integer,Integer> m_correspondence = new HashMap<Integer,Integer>();
-		
-		CayleyGraph<T,U> m_otherGraph;
-		
-		public IsomorphicVisitor(CayleyGraph<T,U> other_graph)
+		for (Edge<T> e : edges)
 		{
-			super(true);
-			m_otherGraph = other_graph;
-			m_correspondence = new HashMap<Integer,Integer>();
+			if (e.getLabel().equals(label))
+			{
+				return e;
+			}
 		}
-
-		@Override
-		public void visit(ArrayList<Edge<T>> path)
+		return null;		
+	}
+	
+	protected Edge<T> getEdgeWithDestinationId(Set<Edge<T>> edges, T label, int id)
+	{
+		for (Edge<T> e : edges)
 		{
-			Edge<T> last_edge = path.get(path.size() - 1);
-			
-			
+			if (e.getLabel().equals(label) && e.getDestination() == id)
+			{
+				return e;
+			}
 		}
-		
+		return null;
 	}
 }

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -46,6 +46,7 @@ import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.structures.MathList;
 import ca.uqac.lif.structures.MathSet;
 
+@SuppressWarnings("unused")
 public class CayleyTest 
 {
 	public static void main(String[] args) throws FileNotFoundException
