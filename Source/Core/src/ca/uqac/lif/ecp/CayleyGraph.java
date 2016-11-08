@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -32,7 +32,7 @@ import ca.uqac.lif.structures.Matrix;
  * identified by integers.
  * 
  * @param <T> The type of event this graph has for edge labels
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  *
  */
 public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph<T>

@@ -1,6 +1,24 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp.graphs;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -17,21 +35,30 @@ import ca.uqac.lif.structures.MathSet;
  * Note that this method of solving the problem is simple, but probably not
  * very optimal.
  * 
- * @author Sylvain Hall�
+ * @author Sylvain Hallé
  *
  * @param <T> The type of the events that are the labels of the edges
  * @param <U> The type of categories of the underlying triaging function
  */
 public class BreadthFirstSteinerTree<T extends Event, U> extends SteinerTree<T, U>
 {
-	public BreadthFirstSteinerTree(CayleyGraph<T, U> graph)
-	{
-		super(graph);
-	}
+	/**
+	 * The max depth for the breadth first traversal
+	 */
+	protected int m_maxDepth = 1000;
 	
 	public BreadthFirstSteinerTree(CayleyGraph<T, U> graph, MathSet<Integer> vertices)
 	{
 		super(graph, vertices);
+	}
+	
+	/**
+	 * Sets the maximum depth for the breadth first traversal
+	 * @param max_depth The depth
+	 */
+	public void setDepth(int max_depth)
+	{
+		m_maxDepth = max_depth;
 	}
 
 	@Override
@@ -96,11 +123,12 @@ public class BreadthFirstSteinerTree<T extends Event, U> extends SteinerTree<T, 
 		{
 			// Visit each node only once
 			super(true);
+			m_selectedPaths = new HashSet<List<Edge<T>>>();
 		}
 		
 		public void start()
 		{
-			super.start(m_graph, m_graph.getInitialVertex().getId(), 1000);
+			super.start(m_graph, m_graph.getInitialVertex().getId(), m_maxDepth);
 		}
 		
 		@Override

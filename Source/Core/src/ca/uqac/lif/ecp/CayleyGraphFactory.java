@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -29,7 +29,7 @@ import ca.uqac.lif.structures.MathSet;
  * only if the undelrying triaging function respects the "monoid condition"
  * described in the paper. Otherwise, it may not terminate, or may return an
  * incorrect graph. 
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  *
  * @param <T> The type of the events; events are used as edge labels
  * @param <U> The type of the categories of the triaging function. The 

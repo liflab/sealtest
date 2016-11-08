@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.CayleyGraph;
+import java.util.Scanner;
 
 /**
  * Special case of Cayley graph where the triaging function operates
@@ -28,6 +29,23 @@ import ca.uqac.lif.ecp.CayleyGraph;
  */
 public class AtomicCayleyGraph<U> extends CayleyGraph<AtomicEvent,U>
 {
+	public static AtomicCayleyGraph<String> parse(Scanner scanner)
+	{
+		AtomicCayleyGraph<String> out_g = new AtomicCayleyGraph<String>();
+		while (scanner.hasNextLine())
+		{
+			String line = scanner.nextLine().trim();
+			if (line.isEmpty() || line.startsWith("#"))
+			{
+				continue;
+			}
+			if (line.contains("->"))
+			{
+				// Edge definition
+			}
+		}
+		return out_g;
+	}
 	
 	@Override
 	public AtomicGraphPlotter<U> plotter()

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -38,22 +38,33 @@ public class Automaton extends AtomicCayleyGraph<String>
 	
 	/**
 	 * Creates an automaton from a dot string
+	 * @param input A dot string
+	 * @return The graph
+	 */
+	public static Automaton parseDot(String s)
+	{
+		return parseDot(new Scanner(s));
+	}
+	
+	/**
+	 * Creates an automaton from a dot string
 	 * @param input A scanner to a dot string
 	 * @return The graph
 	 */
 	public static Automaton parseDot(Scanner scanner)
 	{
 		Automaton g = new Automaton();
-		Pattern pat = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
+		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
 		while(scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
 			line = line.trim();
 			if (line.isEmpty() || line.startsWith(("#")))
 				continue;
-			Matcher mat = pat.matcher(line);
+			Matcher mat = pat_edge.matcher(line);
 			if (mat.find())
 			{
+				// New edge
 				String s_from = mat.group(1).trim();
 				int i_from = Integer.parseInt(s_from);
 				Vertex<AtomicEvent> from = g.getVertex(i_from);

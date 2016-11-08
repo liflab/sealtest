@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -18,12 +18,13 @@
 package ca.uqac.lif.ecp.graphs;
 
 import java.util.Collection;
+import java.util.Scanner;
 
 import ca.uqac.lif.structures.MathSet;
 
 /**
  * Implementation of an undirected hypergraph
- * @author Sylvain Hallé
+ * @author Sylvain Hallï¿½
  */
 public class Hypergraph 
 {
@@ -82,8 +83,59 @@ public class Hypergraph
 	{
 		return m_vertices.size();
 	}
-
 	
+	/**
+	 * Creates a hypergraph from a character string.
+	 * @see #parse(Scanner)
+	 * @param s The string
+	 * @return A hypergraph, or null if the graph could not be
+	 *   created
+	 */
+	public static Hypergraph parse(String s)
+	{
+		Scanner scanner = new Scanner(s);
+		return parse(scanner);
+	}
+	
+	/**
+	 * Creates a hypergraph from a stream of characters. The character string
+	 * should be formatted like this:
+	 * <pre>
+	 * # Empty lines and lines that start with '#' are ignored
+	 * # The remaining lines should contain a comma-separated list of
+	 * # vertex numbers (integers)
+	 * 0,1,2,3
+	 * 1,2,4
+	 * 2,3,6,1
+	 * ...
+	 * </pre>
+	 * @param s The string, formatted as specified above
+	 * @return A hypergraph, or null if the graph could not be
+	 *   created
+	 */
+	public static Hypergraph parse(Scanner scanner)
+	{
+		Hypergraph g_out = new Hypergraph();
+		while (scanner.hasNextLine())
+		{
+			String line = scanner.nextLine();
+			line = line.trim();
+			if (line.isEmpty() || line.startsWith("#"))
+			{
+				continue;
+			}
+			String[] vertices = line.split(",");
+			Hyperedge edge = new Hyperedge();
+			for (String v : vertices)
+			{
+				int v_id = Integer.parseInt(v);
+				edge.add(v_id);
+			}
+			g_out.addEdge(edge);
+		}
+		return g_out;
+	}
+
 	public static class Hyperedge extends MathSet<Integer>
 	{
 		/**
