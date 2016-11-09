@@ -1,3 +1,20 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp.graphs;
 
 import java.util.ArrayDeque;
@@ -16,6 +33,12 @@ public abstract class BreadthFirstVisitor<T extends Event>
 	 * done only once per node
 	 */
 	protected boolean m_visitOnce = false;
+	
+	/**
+	 * The maximum number of traversal steps. This is used as an upper
+	 * bound to avoid infinite looping.
+	 */
+	protected static int s_maxDepth = 10000;
 	
 	/**
 	 * Creates a new visitor
@@ -37,6 +60,12 @@ public abstract class BreadthFirstVisitor<T extends Event>
 		m_visitOnce = visit_once;
 	}
 	
+	public void start(LabelledGraph<T> g)
+	{
+		int start_id = g.getInitialVertex().getId();
+		start(g, start_id, s_maxDepth);
+	}
+	
 	public void start(LabelledGraph<T> g, int start_id, int max_depth)
 	{
 		Set<Integer> visited = new HashSet<Integer>();
@@ -48,8 +77,12 @@ public abstract class BreadthFirstVisitor<T extends Event>
 			l.add(e);
 			paths.add(l);
 		}
-		for (int depth = 0; depth < max_depth; depth++)
+		boolean new_visited = true;
+		for (int depth = 0; depth < max_depth && new_visited; depth++)
 		{
+			// If visit_once = true, we end the loop as soon as an iteration
+			// does not visit any new vertex
+			new_visited = false;
 			Queue<ArrayList<Edge<T>>> new_paths = new ArrayDeque<ArrayList<Edge<T>>>();
 			while (!paths.isEmpty())
 			{
@@ -61,6 +94,7 @@ public abstract class BreadthFirstVisitor<T extends Event>
 				{
 					visit(path);
 					visited.add(id_dest);
+					new_visited = true;
 				}
 				for (Edge<T> e : v.m_outEdges)
 				{

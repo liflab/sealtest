@@ -1,3 +1,20 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp.graphs;
 
 import java.util.ArrayList;
@@ -10,6 +27,12 @@ import java.util.Set;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.Event;
 
+/**
+ * A graph with labels on its edges
+ * @author Sylvain Hallé
+ *
+ * @param <T> The type of the labels on the edges
+ */
 public class LabelledGraph<T extends Event>
 {
 	/**
@@ -228,5 +251,53 @@ public class LabelledGraph<T extends Event>
 	public void setInitialVertexId(int id)
 	{
 		m_initialId = id;
+	}
+	
+	/**
+	 * Gets the depth of the graph. The depth is defined as the length
+	 * of the shortest path to the vertex furthest from the start
+	 * vertex.
+	 * @return The length
+	 */
+	public int getDepth()
+	{
+		DepthVisitor visitor = new DepthVisitor();
+		visitor.start(this);
+		return visitor.getDepth();
+	}
+	
+	/**
+	 * Graph visitor computing the depth of a graph
+	 */
+	protected class DepthVisitor extends BreadthFirstVisitor<T>
+	{
+		/**
+		 * The maximum length of a path seen so far
+		 */
+		int m_lastLength;
+		
+		/**
+		 * Creates a new depth visitor
+		 */
+		DepthVisitor()
+		{
+			super(true);
+			m_lastLength = 0;
+		}
+
+		@Override
+		public void visit(ArrayList<Edge<T>> path)
+		{
+			m_lastLength = Math.max(m_lastLength, path.size());
+		}
+		
+		/**
+		 * Gets the depth of the graph
+		 * @return The depth
+		 */
+		public int getDepth()
+		{
+			return m_lastLength;
+		}
 	}
 }
