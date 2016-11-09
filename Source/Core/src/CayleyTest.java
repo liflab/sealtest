@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -40,8 +40,7 @@ import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.AtomicTrace;
 import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.ecp.atomic.AutomatonCayleyGraphFactory;
-import ca.uqac.lif.ecp.atomic.EdgeSetHistory;
-import ca.uqac.lif.ecp.atomic.StateSetHistory;
+import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
 import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.structures.MathList;
 import ca.uqac.lif.structures.MathSet;
@@ -73,26 +72,26 @@ public class CayleyTest
 		System.out.printf("Edges: %d, Vertices: %d\n", graph.getEdgeCount(), graph.getVertexCount());
 	}
 	
-	public static CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> edgeHistory(Automaton aut, Set<Trace<AtomicEvent>> set)
+	public static CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> edgeHistory(Automaton aut, Set<Trace<AtomicEvent>> set)
 	{
-		AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>>(aut.getAlphabet());
-		EdgeSetHistory function = new EdgeSetHistory(aut, 2, false, false);
-		CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> graph = factory.getGraph(function);
-		CayleyCategoryCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
-		CayleyCardinalityCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
-		CayleyDiameterCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph, function);
+		AutomatonCayleyGraphFactory<MathList<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<MathList<Edge<AtomicEvent>>>(aut.getAlphabet());
+		TransitionShallowHistory function = new TransitionShallowHistory(aut, 2);
+		CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyCategoryCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>> cat_coverage = new CayleyCategoryCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>>(graph, function);
+		CayleyCardinalityCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>>(graph, function);
+		CayleyDiameterCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>>(graph, function);
 		System.out.printf("Category Coverage: \t%f\n", cat_coverage.getCoverage(set));
 		System.out.printf("Cardinality Coverage: \t%f\n", card_coverage.getCoverage(set));
 		System.out.printf("Max-Len Coverage: \t%f\n", len_coverage.getCoverage(set));
 		return graph;
 	}
 	
-	public static CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> edgeHistory2(Automaton aut)
+	public static CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> edgeHistory2(Automaton aut)
 	{
-		AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<Collection<Edge<AtomicEvent>>>(aut.getAlphabet());
-		EdgeSetHistory function = new EdgeSetHistory(aut, 2, true, false);
-		CayleyGraph<AtomicEvent,Collection<Edge<AtomicEvent>>> graph = factory.getGraph(function);
-		SpanningTreeTraceGenerator<AtomicEvent,Collection<Edge<AtomicEvent>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,Collection<Edge<AtomicEvent>>>(graph);
+		AutomatonCayleyGraphFactory<MathList<Edge<AtomicEvent>>> factory = new AutomatonCayleyGraphFactory<MathList<Edge<AtomicEvent>>>(aut.getAlphabet());
+		TransitionShallowHistory function = new TransitionShallowHistory(aut, 2);
+		CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> graph = factory.getGraph(function);
+		SpanningTreeTraceGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>> stg = new SpanningTreeTraceGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>>(graph);
 		TestSuite<AtomicEvent> set = stg.generateTraces();
 		System.out.printf("%d resets, %d length\n", set.size(), set.getTotalLength());
 		TWayScoringTraceGenerator<AtomicEvent> twstg = new TWayScoringTraceGenerator<AtomicEvent>(aut.getAlphabet(), 2, new Random());
@@ -131,15 +130,6 @@ public class CayleyTest
 			CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>> card_coverage = new CayleyCardinalityCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);
 			CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>> len_coverage = new CayleyDiameterCoverage<AtomicEvent,MathList<AtomicEvent>>(graph, function);			
 		}
-		return graph;
-	}
-
-	
-	public static CayleyGraph<AtomicEvent,Collection<Integer>> stateHistory(Automaton aut)
-	{
-		AutomatonCayleyGraphFactory<Collection<Integer>> factory = new AutomatonCayleyGraphFactory<Collection<Integer>>(aut.getAlphabet());
-		StateSetHistory function = new StateSetHistory(aut, 3, true);
-		CayleyGraph<AtomicEvent,Collection<Integer>> graph = factory.getGraph(function);
 		return graph;
 	}
 }

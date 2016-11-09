@@ -37,7 +37,7 @@ import ca.uqac.lif.structures.MathSet;
  *   <em>sets</em> of elements of type <code>U</code>
  * 
  */
-public abstract class CayleyGraphFactory<T extends Event,U extends Object>
+public abstract class CayleyGraphFactory<T extends Event,U>
 {
 	/**
 	 * The maximum number of iterations the search algorithm is allowed to

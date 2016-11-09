@@ -17,38 +17,29 @@
  */
 package ca.uqac.lif.ecp.atomic;
 
-import ca.uqac.lif.ecp.Event;
+import java.io.InputStream;
+import java.util.Scanner;
 
-public class StringAtom extends AtomicEvent
+import org.junit.Test;
+
+public class TestSettings
 {
-	private final String x;
+	/**
+	 * The folder where the test data is located
+	 */
+	public static String s_dataFolder = "data/";
 	
-	public StringAtom()
+	@Test
+	public void dummyTest()
 	{
-		this("");
+		
 	}
 	
-	public StringAtom(String x)
+	public static Automaton loadAutomaton(String filename)
 	{
-		super();
-		this.x = x;
+		 InputStream is = TestSettings.class.getResourceAsStream(s_dataFolder + filename);
+		 Scanner scanner = new Scanner(is);
+		 return Automaton.parseDot(scanner);
 	}
 	
-	@Override
-	public int hashCode()
-	{
-		return x.hashCode();
-	}
-	
-	@Override
-	public boolean equals(Object o)
-	{
-		return o != null && o instanceof StringAtom && ((StringAtom) o).x.compareTo(this.x) == 0;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "\"" + x + "\"";
-	}
 }

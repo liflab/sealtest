@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -21,7 +21,7 @@ import ca.uqac.lif.structures.MathSet;
 
 /**
  * Abstract class defining a function mapping traces to categories
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  *
  * @param <T> The type of the events in the trace
  * @param <U> The type of the categories
@@ -71,9 +71,6 @@ public abstract class TriagingFunction<T extends Event,U>
 	 * @return A Cayley Graph, or <code>null</code> if a graph is not
 	 *   available
 	 */
-	public CayleyGraph<T,U> getCayleyGraph()
-	{
-		return null;
-	}
+	public abstract CayleyGraph<T,U> getCayleyGraph();
 	
 }

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -27,7 +27,7 @@ import ca.uqac.lif.ecp.CayleyGraphFactory;
  * finite-state automaton.
  * @param <U> The output type of the triaging function
  */
-public class AutomatonCayleyGraphFactory<U extends Object> extends CayleyGraphFactory<AtomicEvent,U>
+public class AutomatonCayleyGraphFactory<U> extends CayleyGraphFactory<AtomicEvent,U>
 {
 	protected Alphabet<AtomicEvent> m_alphabet;
 	

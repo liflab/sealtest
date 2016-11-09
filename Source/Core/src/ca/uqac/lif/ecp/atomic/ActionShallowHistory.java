@@ -17,38 +17,34 @@
  */
 package ca.uqac.lif.ecp.atomic;
 
-import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
 
-public class StringAtom extends AtomicEvent
+public class ActionShallowHistory extends ShallowHistoryFunction<AtomicEvent> 
 {
-	private final String x;
-	
-	public StringAtom()
+	public ActionShallowHistory(Automaton a, int size) 
 	{
-		this("");
+		super(a, size);
 	}
-	
-	public StringAtom(String x)
-	{
-		super();
-		this.x = x;
-	}
-	
+
 	@Override
-	public int hashCode()
+	public MathSet<MathList<AtomicEvent>> processTransition(Edge<AtomicEvent> edge)
 	{
-		return x.hashCode();
+		m_window.add(edge.getLabel());
+		MathSet<MathList<AtomicEvent>> out = new MathSet<MathList<AtomicEvent>>();
+		MathList<AtomicEvent> new_list = new MathList<AtomicEvent>();
+		new_list.addAll(m_window);
+		out.add(new_list);
+		return out;
 	}
-	
+
 	@Override
-	public boolean equals(Object o)
+	public MathSet<MathList<AtomicEvent>> getStartClass()
 	{
-		return o != null && o instanceof StringAtom && ((StringAtom) o).x.compareTo(this.x) == 0;
-	}
-	
-	@Override
-	public String toString()
-	{
-		return "\"" + x + "\"";
+		MathSet<MathList<AtomicEvent>> out = new MathSet<MathList<AtomicEvent>>();
+		MathList<AtomicEvent> new_list = new MathList<AtomicEvent>();
+		out.add(new_list);
+		return out;
 	}
 }
