@@ -1,0 +1,9 @@
+# State shallow history of depth 1 for test1.dot
+digraph G {
+ 0 -> 0 [label="a"];
+ 0 -> 1 [label="b"];
+ 1 -> 0 [label="a"];
+ 1 -> 1 [label="b"];
+ 0 [label="{[0]}"];
+ 1 [label="{[1]}"];
+}

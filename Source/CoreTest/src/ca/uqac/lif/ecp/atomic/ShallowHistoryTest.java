@@ -27,6 +27,7 @@ import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.CayleyGraph.IsomorphismException;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
 import static ca.uqac.lif.ecp.atomic.TestSettings.loadAutomaton;
 import static org.junit.Assert.*;
 
@@ -37,9 +38,8 @@ import static org.junit.Assert.*;
 public class ShallowHistoryTest
 {
 	@Test
-	public void testStateHistory1() throws IsomorphismException
+	public void testStateHistory1d1() throws IsomorphismException
 	{
-		// The Cayley graph for state shallow history of depth 1 is the original graph itself
 		Automaton aut = loadAutomaton("test1.dot");
 		CayleyGraph<AtomicEvent,MathList<Integer>> expected = getStateGraph("test1-ssh-1.dot");
 		StateShallowHistory shs = new StateShallowHistory(aut, 1);
@@ -49,46 +49,86 @@ public class ShallowHistoryTest
 	}
 	
 	@Test
-	public void testStateHistory2() throws IsomorphismException
+	public void testStateHistory1d2() throws IsomorphismException
 	{
-		// The Cayley graph for state shallow history of depth 1 is the original graph itself
+		Automaton aut = loadAutomaton("test1.dot");
+		CayleyGraph<AtomicEvent,MathList<Integer>> expected = getStateGraph("test1-ssh-2.dot");
+		StateShallowHistory shs = new StateShallowHistory(aut, 2);
+		CayleyGraph<AtomicEvent,MathList<Integer>> graph = shs.getCayleyGraph();
+		assertNotNull(graph);
+		assertTrue(graph.isIsomorphicToThrowable(expected));
+	}
+
+	
+	@Test
+	public void testStateHistory2d1() throws IsomorphismException
+	{
 		Automaton aut = loadAutomaton("test2.dot");
-		Automaton expected = loadAutomaton("test2.dot");
+		CayleyGraph<AtomicEvent,MathList<Integer>> expected = getStateGraph("test2-ssh-2.dot");
 		StateShallowHistory shs = new StateShallowHistory(aut, 1);
 		CayleyGraph<AtomicEvent,MathList<Integer>> graph = shs.getCayleyGraph();
 		assertNotNull(graph);
-		assertTrue(aut.isIsomorphicToThrowable(expected));
+		assertTrue(graph.isIsomorphicToThrowable(expected));
 	}
 	
 	public static CayleyGraph<AtomicEvent,MathList<Integer>> getStateGraph(String filename)
 	{
 		CayleyGraph<AtomicEvent,MathList<Integer>> graph = new CayleyGraph<AtomicEvent,MathList<Integer>>();
-		Scanner scanner = new Scanner(ShallowHistoryTest.class.getResourceAsStream(filename));
+		Scanner scanner = new Scanner(ShallowHistoryTest.class.getResourceAsStream(TestSettings.s_dataFolder + filename));
 		Pattern edge_pat = Pattern.compile("(\\d+) -> (\\d+) \\[label=\"(.*?)\"\\];");
-		
+		Pattern vertex_pat = Pattern.compile("(\\d+) \\[label=\"(.*?)\"\\];");
 		while (scanner.hasNextLine())
 		{
 			String line = scanner.nextLine().trim();
 			if (line.isEmpty() || line.startsWith("#"))
 			{
-				Matcher edge_mat = edge_pat.matcher(line);
-				if (edge_mat.find())
+				// Ignore this ling
+				continue;
+			}
+			Matcher edge_mat = edge_pat.matcher(line);
+			if (edge_mat.find())
+			{
+				// Edge line
+				int source_id = Integer.parseInt(edge_mat.group(1));
+				int dest_id = Integer.parseInt(edge_mat.group(2));
+				String[] labels = edge_mat.group(3).split(",");
+				Vertex<AtomicEvent> v = graph.getVertex(source_id);
+				if (v == null)
 				{
-					// Edge line
-					int source_id = Integer.parseInt(edge_mat.group(1));
-					int dest_id = Integer.parseInt(edge_mat.group(2));
-					String[] labels = edge_mat.group(3).split(",");
-					for (String label : labels)
+					v = new Vertex<AtomicEvent>(source_id);
+					graph.add(v);
+				}
+				for (String label : labels)
+				{
+					AtomicEdge edge = new AtomicEdge(source_id, new AtomicEvent(label), dest_id);						
+					v.add(edge);
+				}
+			}
+			else
+			{
+				// Vertex line
+				Matcher vertex_mat = vertex_pat.matcher(line);
+				if (!vertex_mat.find())
+				{
+					// Ignore line
+					continue;
+				}
+				int vertex_id = Integer.parseInt(vertex_mat.group(1));
+				String s_label = vertex_mat.group(2);
+				Pattern set_pat = Pattern.compile("\\[(.*?)\\]");
+				Matcher set_mat = set_pat.matcher(s_label);
+				MathSet<MathList<Integer>> labelling = new MathSet<MathList<Integer>>();
+				while (set_mat.find())
+				{
+					String[] ids = set_mat.group(1).split(",");
+					MathList<Integer> list = new MathList<Integer>();
+					for (String s_id : ids)
 					{
-						AtomicEdge edge = new AtomicEdge(source_id, new AtomicEvent(label), dest_id);
-						Vertex<AtomicEvent> v = graph.getVertex(source_id);
-						v.add(edge);
+						list.add(Integer.parseInt(s_id.trim()));
 					}
+					labelling.add(list);
 				}
-				else
-				{
-					// Vertex line
-				}
+				graph.getLabelling().put(vertex_id, labelling);
 			}
 		}
 		scanner.close();

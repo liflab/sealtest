@@ -21,8 +21,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.IntegerAtom;
-import ca.uqac.lif.ecp.atomic.StringAtom;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
 
@@ -41,7 +41,7 @@ public class CayleyGraphTest
 	{
 		Vertex<IntegerAtom> vertex;
 		// First graph
-		CayleyGraph<IntegerAtom,StringAtom> graph1 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph1 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(0);
 			vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(0), 0));
@@ -50,15 +50,15 @@ public class CayleyGraphTest
 			graph1.add(vertex);
 			graph1.add(new Vertex<IntegerAtom>(1));
 			graph1.add(new Vertex<IntegerAtom>(2));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(0, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(1, new MathSet<StringAtom>(new StringAtom("b")));
-			labelling.put(2, new MathSet<StringAtom>(new StringAtom("c")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(0, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(1, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+			labelling.put(2, new MathSet<AtomicEvent>(new AtomicEvent("c")));
 			graph1.setLabelling(labelling);
 		}
 		// Second graph; recall that vertex IDs continue to be incremented,
 		// so that graph2 does not have the same IDs as graph 1
-		CayleyGraph<IntegerAtom,StringAtom> graph2 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph2 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(3);
 			vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(0), 3));
@@ -67,10 +67,10 @@ public class CayleyGraphTest
 			graph2.add(vertex);
 			graph2.add(new Vertex<IntegerAtom>(4));
 			graph2.add(new Vertex<IntegerAtom>(5));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(3, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(4, new MathSet<StringAtom>(new StringAtom("b")));
-			labelling.put(5, new MathSet<StringAtom>(new StringAtom("c")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(3, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(4, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+			labelling.put(5, new MathSet<AtomicEvent>(new AtomicEvent("c")));
 			graph2.setLabelling(labelling);
 		}
 		assertTrue(graph1.isIsomorphicTo(graph1));
@@ -86,7 +86,7 @@ public class CayleyGraphTest
 	{
 		Vertex<IntegerAtom> vertex;
 		// First graph
-		CayleyGraph<IntegerAtom,StringAtom> graph1 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph1 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(0);
 			vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(0), 0));
@@ -95,14 +95,14 @@ public class CayleyGraphTest
 			graph1.add(vertex);
 			graph1.add(new Vertex<IntegerAtom>(1));
 			graph1.add(new Vertex<IntegerAtom>(2));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(0, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(1, new MathSet<StringAtom>(new StringAtom("b")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(0, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(1, new MathSet<AtomicEvent>(new AtomicEvent("b")));
 			graph1.setLabelling(labelling);
 		}
 		// Second graph; recall that vertex IDs continue to be incremented,
 		// so that graph2 does not have the same IDs as graph 1
-		CayleyGraph<IntegerAtom,StringAtom> graph2 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph2 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(3);
 			vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(0), 3));
@@ -111,10 +111,10 @@ public class CayleyGraphTest
 			graph2.add(vertex);
 			graph2.add(new Vertex<IntegerAtom>(4));
 			graph2.add(new Vertex<IntegerAtom>(5));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(3, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(4, new MathSet<StringAtom>(new StringAtom("b")));
-			labelling.put(5, new MathSet<StringAtom>(new StringAtom("c")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(3, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(4, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+			labelling.put(5, new MathSet<AtomicEvent>(new AtomicEvent("c")));
 			graph2.setLabelling(labelling);
 		}
 		assertFalse(graph1.isIsomorphicTo(graph2));
@@ -129,7 +129,7 @@ public class CayleyGraphTest
 	{
 		Vertex<IntegerAtom> vertex;
 		// First graph
-		CayleyGraph<IntegerAtom,StringAtom> graph1 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph1 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(0);
 			vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(0), 0));
@@ -138,15 +138,15 @@ public class CayleyGraphTest
 			graph1.add(vertex);
 			graph1.add(new Vertex<IntegerAtom>(1));
 			graph1.add(new Vertex<IntegerAtom>(2));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(0, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(1, new MathSet<StringAtom>(new StringAtom("b")));
-			labelling.put(2, new MathSet<StringAtom>(new StringAtom("c")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(0, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(1, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+			labelling.put(2, new MathSet<AtomicEvent>(new AtomicEvent("c")));
 			graph1.setLabelling(labelling);
 		}
 		// Second graph; recall that vertex IDs continue to be incremented,
 		// so that graph2 does not have the same IDs as graph 1
-		CayleyGraph<IntegerAtom,StringAtom> graph2 = new CayleyGraph<IntegerAtom,StringAtom>();
+		CayleyGraph<IntegerAtom,AtomicEvent> graph2 = new CayleyGraph<IntegerAtom,AtomicEvent>();
 		{
 			vertex = new Vertex<IntegerAtom>(3);
 			vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(0), 3));
@@ -155,10 +155,10 @@ public class CayleyGraphTest
 			graph2.add(vertex);
 			graph2.add(new Vertex<IntegerAtom>(4));
 			graph2.add(new Vertex<IntegerAtom>(5));
-			CayleyVertexLabelling<StringAtom> labelling = new CayleyVertexLabelling<StringAtom>();
-			labelling.put(3, new MathSet<StringAtom>(new StringAtom("a")));
-			labelling.put(4, new MathSet<StringAtom>(new StringAtom("c")));
-			labelling.put(5, new MathSet<StringAtom>(new StringAtom("b")));
+			CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+			labelling.put(3, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+			labelling.put(4, new MathSet<AtomicEvent>(new AtomicEvent("c")));
+			labelling.put(5, new MathSet<AtomicEvent>(new AtomicEvent("b")));
 			graph2.setLabelling(labelling);
 		}
 		assertTrue(graph1.isIsomorphicTo(graph2));

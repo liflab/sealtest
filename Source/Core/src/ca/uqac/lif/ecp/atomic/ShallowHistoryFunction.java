@@ -48,6 +48,7 @@ public abstract class ShallowHistoryFunction<T> extends AutomatonFunction<MathLi
 		public FixedSizeWindow(int size)
 		{
 			super();
+			m_size = size;
 		}
 		
 		@Override
