@@ -54,3 +54,6 @@ Source/**/.cproject
 
 # PDT-specific
 Source/**/.buildpath
+
+# PDFs, used for debugging
+*.pdf

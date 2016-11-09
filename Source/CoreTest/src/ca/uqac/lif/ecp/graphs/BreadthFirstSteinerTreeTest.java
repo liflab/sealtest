@@ -80,7 +80,7 @@ public class BreadthFirstSteinerTreeTest
 	
 	public Automaton loadAutomaton(String filename)
 	{
-		 InputStream is = this.getClass().getResourceAsStream(filename);
+		 InputStream is = this.getClass().getResourceAsStream(TestSettings.s_dataFolder + filename);
 		 Scanner scanner = new Scanner(is);
 		 return Automaton.parseDot(scanner);
 	}

@@ -21,6 +21,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import ca.uqac.lif.ecp.atomic.IntegerAtom;
+import ca.uqac.lif.ecp.atomic.StringAtom;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
 

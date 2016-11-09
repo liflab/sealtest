@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.IntegerAtom;
+import ca.uqac.lif.ecp.atomic.IntegerAtom;
 
 public class LabelledGraphTest 
 {

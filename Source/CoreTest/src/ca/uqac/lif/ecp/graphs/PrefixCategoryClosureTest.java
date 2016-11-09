@@ -37,10 +37,6 @@ import ca.uqac.lif.ecp.atomic.Automaton;
  */
 public class PrefixCategoryClosureTest 
 {
-	/**
-	 * The folder where the test data is located
-	 */
-	protected static String s_dataFolder = "data/";
 	
 	@Test
 	public void test1() throws IsomorphismException
@@ -56,16 +52,15 @@ public class PrefixCategoryClosureTest
 	
 	public void solve(String in_filename, String expected_filename) throws IsomorphismException
 	{
-		Automaton g = loadAutomaton(s_dataFolder + in_filename);
+		Automaton g = loadAutomaton(TestSettings.s_dataFolder + in_filename);
 		int depth = g.getDepth();
-		Automaton expected_graph = loadAutomaton(s_dataFolder + expected_filename);
+		Automaton expected_graph = loadAutomaton(TestSettings.s_dataFolder + expected_filename);
 		PrefixCategoryClosure<AtomicEvent,String> solver = new PrefixCategoryClosure<AtomicEvent,String>();
 		CayleyGraph<AtomicEvent,String> new_graph = solver.getClosureGraph(g, depth + 2);
 		assertNotNull(new_graph);
 		assertTrue(new_graph.isIsomorphicToThrowable(expected_graph));
-
 	}
-		
+	
 	public Automaton loadAutomaton(String filename)
 	{
 		 InputStream is = this.getClass().getResourceAsStream(filename);

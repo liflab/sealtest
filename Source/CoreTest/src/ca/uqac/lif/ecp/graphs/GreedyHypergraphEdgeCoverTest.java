@@ -60,7 +60,7 @@ public class GreedyHypergraphEdgeCoverTest
 	
 	public Hypergraph loadGraph(String filename)
 	{
-		 InputStream is = this.getClass().getResourceAsStream(filename);
+		 InputStream is = this.getClass().getResourceAsStream(TestSettings.s_dataFolder + filename);
 		 Scanner scanner = new Scanner(is);
 		 return Hypergraph.parse(scanner);
 	}
