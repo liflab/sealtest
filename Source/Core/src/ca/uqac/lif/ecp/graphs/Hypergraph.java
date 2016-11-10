@@ -39,6 +39,11 @@ public class Hypergraph
 	public MathSet<Integer> m_vertices;
 	
 	/**
+	 * A counter for vertex IDs for this graph
+	 */
+	protected int m_vertexId;
+	
+	/**
 	 * Creates a new empty hypergraph
 	 */
 	public Hypergraph()
@@ -46,6 +51,7 @@ public class Hypergraph
 		super();
 		m_edges = new MathSet<Hyperedge>();
 		m_vertices = new MathSet<Integer>();
+		m_vertexId = 0;
 	}
 	
 	/**
@@ -56,6 +62,17 @@ public class Hypergraph
 	{
 		m_edges.add(e);
 		m_vertices.addAll(e);
+	}
+	
+	/**
+	 * Gets the ID of the next new vertex in this graph
+	 * @return The ID
+	 */
+	public int newVertex()
+	{
+		int value = m_vertexId;
+		m_vertexId++;
+		return value;
 	}
 	
 	@Override

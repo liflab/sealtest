@@ -18,14 +18,14 @@
 package ca.uqac.lif.ecp;
 
 import ca.uqac.lif.ecp.graphs.SpanningTree;
+import ca.uqac.lif.ecp.graphs.TreeCollector;
 import ca.uqac.lif.ecp.graphs.UnionFindSpanningTree;
-import ca.uqac.lif.ecp.graphs.Vertex;
 
 /**
  * Trace generator that uses a spanning tree of the Cayley graph. This
  * generator can achieve total coverage with respect to the equivalence class
  * coverage metric, <b>c<sub>e</sub></b>.
- * @author Sylvain Hall�
+ * @author Sylvain Hallé
  *
  * @param <T>
  * @param <U>
@@ -68,48 +68,11 @@ public class SpanningTreeTraceGenerator<T extends Event,U extends Object> extend
 	public TestSuite<T> generateTraces()
 	{
 		CayleyGraph<T,U> tree = getSpanningTree();
-		TestSuite<T> traces = new TestSuite<T>();
-		Vertex<T> root = tree.getInitialVertex();
-		depthFirstCollect(tree, root, traces);
+		TreeCollector<T> collector = new TreeCollector<T>(tree);
+		TestSuite<T> traces = collector.getTraces();
 		return traces;
 	}
 
-	/**
-	 * Collects all the root-to-leaf paths in a spanning tree
-	 * @param graph The tree (it is actually an instance of Cayley graph)
-	 * @param v The root of the spanning tree
-	 * @param traces An empty set of traces that will be filled by the method
-	 */
-	protected void depthFirstCollect(CayleyGraph<T,U> graph, Vertex<T> v, TestSuite<T> traces)
-	{
-		depthFirstCollect(graph, v, traces, new Trace<T>());
-	}
-	
-	/**
-	 * Collects all the root-to-leaf paths in a spanning tree
-	 * @param graph The tree (it is actually an instance of Cayley graph)
-	 * @param v The root of the spanning tree
-	 * @param traces An empty set of traces that will be filled by the method
-	 * @param current_trace The current trace, to which events will be appended.
-	 *   The procedure starts with an empty trace
-	 */
-	protected void depthFirstCollect(CayleyGraph<T,U> graph, Vertex<T> v, TestSuite<T> traces, Trace<T> current_trace)
-	{
-		if (v.isLeaf())
-		{
-			Trace<T> new_trace = new Trace<T>(current_trace);
-			traces.add(new_trace);
-			return;
-		}
-		for (Edge<T> edge : v.getEdges())
-		{
-			Vertex<T> target_vertex = graph.getVertex(edge.getDestination());
-			current_trace.add(edge.getLabel());
-			depthFirstCollect(graph, target_vertex, traces, current_trace);
-			current_trace.remove(current_trace.size() - 1);
-		}
-	}
-	
 	/**
 	 * Creates the minimum spanning tree of the Cayley graph
 	 * @return A subset of the original Cayley graph that is a spanning

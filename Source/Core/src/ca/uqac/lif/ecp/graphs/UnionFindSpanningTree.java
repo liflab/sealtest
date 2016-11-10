@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -26,7 +26,7 @@ import ca.uqac.lif.ecp.Event;
 
 /**
  * Solves the spanning tree problem using the union-find technique 
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  *
  * @param <T> The type of the events that are the labels of the edges
  * @param <U> The type of categories of the underlying triaging function
@@ -58,6 +58,12 @@ public class UnionFindSpanningTree<T extends Event,U> extends SpanningTree<T,U>
 			}
 		}
 		return tree;
+	}
+
+	@Override
+	public SpanningTree<T,U> newSolver(CayleyGraph<T,U> g) 
+	{
+		return new UnionFindSpanningTree<T,U>(g);
 	}
 
 }

@@ -1,6 +1,6 @@
 package ca.uqac.lif.ecp.graphs;
 
-import java.util.HashMap;
+import ca.uqac.lif.structures.MathMap;
 
 /**
  * Labelling of a Graph. This is a mapping from a vertex ID (integer)
@@ -9,7 +9,7 @@ import java.util.HashMap;
  *
  * @param <V> The type of the mapping
  */
-public class VertexLabelling<V> extends HashMap<Integer,V>
+public class VertexLabelling<V> extends MathMap<Integer,V>
 {
 	/**
 	 * Dummy UID

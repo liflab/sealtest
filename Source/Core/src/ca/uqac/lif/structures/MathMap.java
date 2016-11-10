@@ -17,51 +17,38 @@
  */
 package ca.uqac.lif.structures;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
- * List implementation that behaves like a real list, i.e. two lists
- * are equal if and only if they contain the same elements in the
- * same order.
+ * Implementation of a map with a few extra methods.
  *
- * @param <T> The type of the lists's elements
+ * @param <K> The type of the map's keys
+ * @param <V> The type of the map's values
  */
-public class MathList<T> extends ArrayList<T> 
+public class MathMap<K,V> extends HashMap<K,V> 
 {
 	/**
 	 * Dummy UID
 	 */
 	private static final long serialVersionUID = 1L;
-
-	@Override
-	public int hashCode()
-	{
-		//return size();
-		return 0;
-	}
 	
-	@Override
-	public boolean equals(Object o)
+	/**
+	 * Gets the index of the key for a given value. If the map
+	 * is not injective, any of the keys associated to the value
+	 * may be returned.
+	 * @param value The value
+	 * @return The key, of null if not found
+	 */
+	public K getWithValue(V value)
 	{
-		if (o == null || !(o instanceof MathList))
+		for (K i : keySet())
 		{
-			return false;
-		}
-		@SuppressWarnings("unchecked")
-		MathList<T> h = (MathList<T>) o;
-		if (h.size() != size())
-		{
-			return false;
-		}
-		for (int i = 0; i < size(); i++)
-		{
-			T e1 = get(i);
-			T e2 = h.get(i);
-			if (!e1.equals(e2))
+			if (get(i).equals(value))
 			{
-				return false;
+				return i;
 			}
 		}
-		return true;
+		return null;
 	}
+
 }
