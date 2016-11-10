@@ -293,7 +293,10 @@ public class ShallowHistoryTest
 					MathList<AtomicEvent> list = new MathList<AtomicEvent>();
 					for (String s_id : ids)
 					{
-						list.add(new AtomicEvent(s_id.trim()));
+						if (!s_id.trim().isEmpty())
+						{
+							list.add(new AtomicEvent(s_id.trim()));
+						}
 					}
 					labelling.add(list);
 				}
