@@ -74,4 +74,76 @@ public class HypergraphTraceGeneratorTest
 		assertNotNull(suite);
 		assertEquals(2, suite.size());
 	}
+	
+	@Test
+	public void test3()
+	{
+		// Begin graph
+		Vertex<IntegerAtom> vertex;
+		CayleyGraph<IntegerAtom,AtomicEvent> graph = new CayleyGraph<IntegerAtom,AtomicEvent>();
+		vertex = new Vertex<IntegerAtom>(0);
+		vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(1), 1));
+		vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(2), 2));
+		graph.add(vertex);
+		vertex = new Vertex<IntegerAtom>(1);
+		vertex.add(new Edge<IntegerAtom>(1, new IntegerAtom(1), 3));
+		vertex.add(new Edge<IntegerAtom>(1, new IntegerAtom(2), 1));
+		graph.add(vertex);	
+		vertex = new Vertex<IntegerAtom>(2);
+		vertex.add(new Edge<IntegerAtom>(2, new IntegerAtom(1), 2));
+		vertex.add(new Edge<IntegerAtom>(2, new IntegerAtom(2), 2));
+		graph.add(vertex);
+		vertex = new Vertex<IntegerAtom>(3);
+		vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(1), 3));
+		vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(2), 3));
+		graph.add(vertex);
+		CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+		labelling.put(0, new MathSet<AtomicEvent>(new AtomicEvent("a"), new AtomicEvent("b")));
+		labelling.put(1, new MathSet<AtomicEvent>(new AtomicEvent("c")));
+		labelling.put(2, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+		labelling.put(3, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+		graph.setLabelling(labelling);
+		// End graph
+		HypergraphTraceGenerator<IntegerAtom,AtomicEvent> generator = new HypergraphTraceGenerator<IntegerAtom,AtomicEvent>(graph);
+		TestSuite<IntegerAtom> suite = generator.generateTraces();
+		assertNotNull(suite);
+		assertEquals(1, suite.size());
+		assertEquals(1, suite.getTotalLength());
+	}
+	
+	@Test
+	public void test4()
+	{
+		// Begin graph
+		Vertex<IntegerAtom> vertex;
+		CayleyGraph<IntegerAtom,AtomicEvent> graph = new CayleyGraph<IntegerAtom,AtomicEvent>();
+		vertex = new Vertex<IntegerAtom>(0);
+		vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(1), 1));
+		vertex.add(new Edge<IntegerAtom>(0, new IntegerAtom(2), 2));
+		graph.add(vertex);
+		vertex = new Vertex<IntegerAtom>(1);
+		vertex.add(new Edge<IntegerAtom>(1, new IntegerAtom(1), 3));
+		vertex.add(new Edge<IntegerAtom>(1, new IntegerAtom(2), 1));
+		graph.add(vertex);	
+		vertex = new Vertex<IntegerAtom>(2);
+		vertex.add(new Edge<IntegerAtom>(2, new IntegerAtom(1), 2));
+		vertex.add(new Edge<IntegerAtom>(2, new IntegerAtom(2), 2));
+		graph.add(vertex);
+		vertex = new Vertex<IntegerAtom>(3);
+		vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(1), 3));
+		vertex.add(new Edge<IntegerAtom>(3, new IntegerAtom(2), 3));
+		graph.add(vertex);
+		CayleyVertexLabelling<AtomicEvent> labelling = new CayleyVertexLabelling<AtomicEvent>();
+		labelling.put(0, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+		labelling.put(1, new MathSet<AtomicEvent>(new AtomicEvent("a")));
+		labelling.put(2, new MathSet<AtomicEvent>(new AtomicEvent("b")));
+		labelling.put(3, new MathSet<AtomicEvent>(new AtomicEvent("c")));
+		graph.setLabelling(labelling);
+		// End graph
+		HypergraphTraceGenerator<IntegerAtom,AtomicEvent> generator = new HypergraphTraceGenerator<IntegerAtom,AtomicEvent>(graph);
+		TestSuite<IntegerAtom> suite = generator.generateTraces();
+		assertNotNull(suite);
+		assertEquals(2, suite.size());
+		assertEquals(3, suite.getTotalLength());
+	}
 }
