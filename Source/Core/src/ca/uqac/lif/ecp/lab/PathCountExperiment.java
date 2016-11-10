@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,7 @@ import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.json.JsonList;
 
-public class PathCountExperiment extends GraphExperiment 
+public class PathCountExperiment extends AutomatonExperiment 
 {
 	public PathCountExperiment(Scanner scanner, int max_length)
 	{

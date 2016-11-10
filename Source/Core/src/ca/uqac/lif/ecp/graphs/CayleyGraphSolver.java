@@ -5,7 +5,7 @@ import ca.uqac.lif.ecp.Event;
 
 /**
  * Solves a problem on a generalized Cayley graph
- * @author Sylvain Hallé
+ * @author Sylvain Hallï¿½
  *
  * @param <T>
  * @param <U>

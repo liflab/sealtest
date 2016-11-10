@@ -26,6 +26,11 @@ import ca.uqac.lif.ecp.atomic.IntegerAtom;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
 
+/**
+ * Unit tests for the hypergraph + Steiner trace generator
+ * @author Sylvain Hallé
+ *
+ */
 public class HypergraphTraceGeneratorTest
 {
 	@Test

@@ -69,7 +69,7 @@ public class TreeCollector<T extends Event>
 	 */
 	protected void depthFirstCollect(LabelledGraph<T> graph, Vertex<T> v, TestSuite<T> traces, Trace<T> current_trace, int depth)
 	{
-		if (depth == 0)
+		if (depth == 0 || v == null)
 		{
 			// Maximum recursion depth reached
 			return;

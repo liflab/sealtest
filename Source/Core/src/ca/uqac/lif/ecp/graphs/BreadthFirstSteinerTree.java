@@ -17,7 +17,6 @@
  */
 package ca.uqac.lif.ecp.graphs;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -132,7 +131,7 @@ public class BreadthFirstSteinerTree<T extends Event, U> extends SteinerTree<T, 
 		}
 		
 		@Override
-		public void visit(ArrayList<Edge<T>> path)
+		public void visit(List<Edge<T>> path)
 		{
 			if (path.isEmpty())
 			{

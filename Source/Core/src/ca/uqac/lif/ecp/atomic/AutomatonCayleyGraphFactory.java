@@ -25,6 +25,9 @@ import ca.uqac.lif.ecp.CayleyGraphFactory;
 /**
  * Class that creates a Cayley graph out of a triaging function based on a
  * finite-state automaton.
+ * <p>
+ * <strong>Caveat emptor:</strong> the transition function of the automaton
+ * must be total. 
  * @param <U> The output type of the triaging function
  */
 public class AutomatonCayleyGraphFactory<U> extends CayleyGraphFactory<AtomicEvent,U>

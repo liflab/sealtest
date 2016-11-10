@@ -20,6 +20,8 @@ package ca.uqac.lif.ecp.graphs;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
@@ -75,10 +77,10 @@ public abstract class BreadthFirstVisitor<T extends Event>
 		visit(empty_trace);
 		visited.add(start.getId());
 		// Now visit transitions
-		Queue<ArrayList<Edge<T>>> paths = new ArrayDeque<ArrayList<Edge<T>>>();
+		Queue<LinkedList<Edge<T>>> paths = new ArrayDeque<LinkedList<Edge<T>>>();
 		for (Edge<T> e : start.m_outEdges)
 		{
-			ArrayList<Edge<T>> l = new ArrayList<Edge<T>>();
+			LinkedList<Edge<T>> l = new LinkedList<Edge<T>>();
 			l.add(e);
 			paths.add(l);
 		}
@@ -88,10 +90,10 @@ public abstract class BreadthFirstVisitor<T extends Event>
 			// If visit_once = true, we end the loop as soon as an iteration
 			// does not visit any new vertex
 			new_visited = false;
-			Queue<ArrayList<Edge<T>>> new_paths = new ArrayDeque<ArrayList<Edge<T>>>();
+			Queue<LinkedList<Edge<T>>> new_paths = new ArrayDeque<LinkedList<Edge<T>>>();
 			while (!paths.isEmpty())
 			{
-				ArrayList<Edge<T>> path = paths.remove();
+				LinkedList<Edge<T>> path = paths.remove();
 				Edge<T> last_edge = path.get(path.size() - 1);
 				int id_dest = last_edge.getDestination();
 				Vertex<T> v = g.getVertex(id_dest);
@@ -103,7 +105,7 @@ public abstract class BreadthFirstVisitor<T extends Event>
 				}
 				for (Edge<T> e : v.m_outEdges)
 				{
-					ArrayList<Edge<T>> new_path = new ArrayList<Edge<T>>();
+					LinkedList<Edge<T>> new_path = new LinkedList<Edge<T>>();
 					new_path.addAll(path);
 					new_path.add(e);
 					new_paths.add(new_path);
@@ -119,5 +121,5 @@ public abstract class BreadthFirstVisitor<T extends Event>
 		// Do nothing
 	}
 	
-	public abstract void visit(ArrayList<Edge<T>> path);
+	public abstract void visit(List<Edge<T>> path);
 }

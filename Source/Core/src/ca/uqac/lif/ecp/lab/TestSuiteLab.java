@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -38,7 +38,7 @@ import ca.uqac.lif.parkbench.table.NormalizeRows;
 import ca.uqac.lif.parkbench.table.Table;
 import ca.uqac.lif.parkbench.Laboratory;
 
-public class AutomataLab extends Laboratory
+public class TestSuiteLab extends Laboratory
 {
 	protected static transient final String s_dataPath = "data/";
 
@@ -47,7 +47,7 @@ public class AutomataLab extends Laboratory
 	 */
 	public static void main(String[] args) 
 	{
-		initialize(args, AutomataLab.class);
+		initialize(args, TestSuiteLab.class);
 	}
 	
 	@Override
@@ -70,9 +70,10 @@ public class AutomataLab extends Laboratory
 		// Experiment groups
 		Group length_group = new Group("Distribution according to length");
 		Group limit_group = new Group("Limit of distribution");
+		Group state_t_way_group = new Group("State shallow history");
 		
 		// Setup the experiments
-		URL url = AutomataLab.class.getResource(s_dataPath);
+		URL url = TestSuiteLab.class.getResource(s_dataPath);
 		File f = null;
 		try 
 		{
@@ -83,7 +84,11 @@ public class AutomataLab extends Laboratory
 				{
 					if (uris.endsWith(".txt"))
 					{
-						addPathCountExperiment(uris, max_length, length_group);
+						for (int t = 1; t <= 3; t++)
+						{
+							addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
+						}
+						//addPathCountExperiment(uris, max_length, length_group);
 						//addStateDistributionExperiment(uris, max_length, limit_group);
 					}
 				}
@@ -95,15 +100,16 @@ public class AutomataLab extends Laboratory
 		}
 		add(length_group);
 		add(limit_group);
+		add(state_t_way_group);
 	}
 	
 	protected void addPathCountExperiment(String filename, int max_length, Group group)
 	{
-		InputStream is = FileHelper.internalFileToStream(AutomataLab.class, s_dataPath + filename);
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
 		PathCountExperiment exp = new PathCountExperimentMatrix(scanner, max_length);
 		scanner.close();
-		Automaton g = exp.getGraph();
+		Automaton g = exp.getAutomaton();
 		String[] vertices = new String[g.getVertexCount()];
 		int i = 0;
 		for (Vertex<AtomicEvent> v : g.getVertices())
@@ -129,11 +135,11 @@ public class AutomataLab extends Laboratory
 	
 	protected void addStateDistributionExperiment(String filename, int iterations, Group group)
 	{
-		InputStream is = FileHelper.internalFileToStream(AutomataLab.class, s_dataPath + filename);
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
 		StateDistributionExperiment exp = new StateDistributionExperiment(scanner, iterations);
 		scanner.close();
-		Automaton g = exp.getGraph();
+		Automaton g = exp.getAutomaton();
 		String[] vertices = new String[g.getVertexCount()];
 		int i = 0;
 		for (Vertex<AtomicEvent> v : g.getVertices())
@@ -149,5 +155,17 @@ public class AutomataLab extends Laboratory
 		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
 		plot.rowStacked();
 		add(plot);
+	}
+	
+	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group)
+	{
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
+		Scanner scanner = new Scanner(is);
+		CayleyStateShallowHistoryExperiment exp = new CayleyStateShallowHistoryExperiment();
+		exp.setStrength(strength);
+		CayleyAutomatonExperiment.fillExperiment(exp, scanner);
+		scanner.close();
+		add(exp);
+		group.add(exp);
 	}
 }

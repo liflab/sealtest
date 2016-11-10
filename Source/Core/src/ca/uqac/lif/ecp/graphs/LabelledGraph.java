@@ -286,7 +286,7 @@ public class LabelledGraph<T extends Event>
 		}
 
 		@Override
-		public void visit(ArrayList<Edge<T>> path)
+		public void visit(List<Edge<T>> path)
 		{
 			m_lastLength = Math.max(m_lastLength, path.size());
 		}

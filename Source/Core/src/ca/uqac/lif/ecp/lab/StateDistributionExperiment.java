@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,7 @@ import java.util.Scanner;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.structures.Matrix;
 
-public class StateDistributionExperiment extends GraphExperiment 
+public class StateDistributionExperiment extends AutomatonExperiment 
 {
 	public StateDistributionExperiment(Scanner scanner, int iterations)
 	{

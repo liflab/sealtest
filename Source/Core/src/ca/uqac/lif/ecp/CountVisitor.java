@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -17,18 +17,18 @@
  */
 package ca.uqac.lif.ecp;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ca.uqac.lif.ecp.graphs.BreadthFirstVisitor;
-import ca.uqac.lif.ecp.lab.GraphExperiment;
+import ca.uqac.lif.ecp.lab.AutomatonExperiment;
 import ca.uqac.lif.json.JsonList;
 import ca.uqac.lif.json.JsonNumber;
 
 public class CountVisitor<T extends Event,U extends Object> extends BreadthFirstVisitor<T>
 {
-	protected GraphExperiment m_experiment;
+	protected AutomatonExperiment m_experiment;
 	
-	public CountVisitor(GraphExperiment experiment)
+	public CountVisitor(AutomatonExperiment experiment)
 	{
 		super();
 		m_experiment = experiment;
@@ -40,7 +40,7 @@ public class CountVisitor<T extends Event,U extends Object> extends BreadthFirst
 	}
 
 	@Override
-	public void visit(ArrayList<Edge<T>> path)
+	public void visit(List<Edge<T>> path)
 	{
 		int length = path.size();
 		Edge<T> last_edge = path.get(path.size() - 1);

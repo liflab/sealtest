@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -21,22 +21,53 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.parkbench.Experiment;
 
-public abstract class GraphExperiment extends Experiment
+/**
+ * Cayley-graph experiment based on a finite-state automaton
+ * 
+ * @author Sylvain Hallé
+ */
+public abstract class CayleyAutomatonExperiment<U> extends CayleyCategoryCoverageExperiment<AtomicEvent,U>
 {
-	protected transient Automaton m_graph;
+	public static String PROPERTY_NAME = "property-name";
 	
-	GraphExperiment()
+	/**
+	 * The automaton
+	 */
+	protected transient Automaton m_automaton;
+
+	public CayleyAutomatonExperiment() 
 	{
 		super();
-		describe("property", "Name of the property this automaton represents");
+		describe(PROPERTY_NAME, "The name of the property represented by the automaton");
 	}
 	
-	public GraphExperiment(Scanner scanner)
+	public CayleyAutomatonExperiment(Automaton a) 
 	{
-		this();
+		super();
+		m_automaton = a;
+	}
+	
+	public void setAutomaton(Automaton a)
+	{
+		m_automaton = a;
+	}
+	
+	public void setPropertyName(String name)
+	{
+		setInput(PROPERTY_NAME, name);
+	}
+	
+	/**
+	 * Fills the automaton and title for this experiments from the contents
+	 * read from a scanner
+	 * @param exp The experiment to fill
+	 * @param scanner The scanner
+	 */
+	public static void fillExperiment(CayleyAutomatonExperiment<?> exp, Scanner scanner)
+	{
 		Pattern pat_title = Pattern.compile("Title: (.*)");
 		while (scanner.hasNextLine())
 		{
@@ -46,21 +77,9 @@ public abstract class GraphExperiment extends Experiment
 			Matcher mat = pat_title.matcher(line);
 			if (mat.find())
 			{
-				setInput("property", mat.group(1));
+				exp.setPropertyName(mat.group(1));
 			}
 		}
-		Automaton g = Automaton.parseDot(scanner);
-		m_graph = g;
-	}
-	
-	public GraphExperiment setGraph(Automaton g)
-	{
-		m_graph = g;
-		return this;
-	}
-	
-	public Automaton getGraph()
-	{
-		return m_graph;
+		exp.setAutomaton(Automaton.parseDot(scanner));
 	}
 }

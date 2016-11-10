@@ -63,6 +63,7 @@ public class PrefixCategoryClosure<T extends Event,U>
 		{
 			new_graph.add(vertex);
 		}
+		new_graph.setInitialVertexId(start_vertex.getId());
 		new_graph.setLabelling(labelling);
 		return new_graph;
 	}

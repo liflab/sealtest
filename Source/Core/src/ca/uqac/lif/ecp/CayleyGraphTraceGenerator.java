@@ -2,7 +2,7 @@ package ca.uqac.lif.ecp;
 
 /**
  * Trace generator using a Cayley Graph.
- * @author Sylvain Hallé
+ * @author Sylvain Hallï¿½
  *
  * @param <T>
  * @param <U>
