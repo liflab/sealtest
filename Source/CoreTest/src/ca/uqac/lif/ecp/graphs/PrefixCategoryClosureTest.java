@@ -53,10 +53,9 @@ public class PrefixCategoryClosureTest
 	public void solve(String in_filename, String expected_filename) throws IsomorphismException
 	{
 		Automaton g = loadAutomaton(TestSettings.s_dataFolder + in_filename);
-		int depth = g.getDepth();
 		Automaton expected_graph = loadAutomaton(TestSettings.s_dataFolder + expected_filename);
 		PrefixCategoryClosure<AtomicEvent,String> solver = new PrefixCategoryClosure<AtomicEvent,String>();
-		CayleyGraph<AtomicEvent,String> new_graph = solver.getClosureGraph(g, depth + 2);
+		CayleyGraph<AtomicEvent,String> new_graph = solver.getClosureGraph(g);
 		assertNotNull(new_graph);
 		assertTrue(new_graph.isIsomorphicToThrowable(expected_graph));
 	}

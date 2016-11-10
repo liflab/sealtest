@@ -134,6 +134,10 @@ public class BreadthFirstSteinerTree<T extends Event, U> extends SteinerTree<T, 
 		@Override
 		public void visit(ArrayList<Edge<T>> path)
 		{
+			if (path.isEmpty())
+			{
+				return;
+			}
 			Edge<T> last_edge = path.get(path.size() - 1);
 			int id_vertex = last_edge.getDestination();
 			// Is this vertex part of the important vertices?

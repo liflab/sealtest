@@ -38,7 +38,17 @@ import ca.uqac.lif.structures.MathSet;
  */
 public class PrefixCategoryClosure<T extends Event,U> 
 {
-	public CayleyGraph<T,U> getClosureGraph(CayleyGraph<T,U> graph, int distance)
+	/**
+	 * The maximum recursion depth
+	 */
+	protected static final int s_maxDepth = 1000;
+	
+	/**
+	 * Gets the prefix closure graph of the Cayley graph
+	 * @param graph The graph
+	 * @return The prefix closure graph
+	 */
+	public CayleyGraph<T,U> getClosureGraph(CayleyGraph<T,U> graph)
 	{
 		int start_id = graph.getInitialVertex().getId();
 		MathSet<U> start_labelling = graph.getLabelling().get(start_id);
@@ -47,7 +57,7 @@ public class PrefixCategoryClosure<T extends Event,U>
 		new_vertices.add(start_vertex);
 		CayleyVertexLabelling<U> labelling = new CayleyVertexLabelling<U>();
 		labelling.put(start_vertex.getId(), start_labelling);
-		traversalStep(graph, graph.getInitialVertex().getId(), distance, start_labelling, new_vertices, labelling);
+		traversalStep(graph, graph.getInitialVertex().getId(), s_maxDepth, start_labelling, new_vertices, labelling);
 		CayleyGraph<T,U> new_graph = new CayleyGraph<T,U>();
 		for (StateVertex<T> vertex : new_vertices)
 		{
@@ -72,16 +82,18 @@ public class PrefixCategoryClosure<T extends Event,U>
 			new_labels.addAll(dest_labelling);
 			// Does this vertex already exist?
 			StateVertex<T> out_graph_dest = getVertex(new_vertices, labelling, new_labels, in_graph_dest_id);
+			boolean new_target = false;
 			if (out_graph_dest == null)
 			{
 				out_graph_dest = new StateVertex<T>(in_graph_dest_id);
 				new_vertices.add(out_graph_dest);
+				new_target = true;
 			}
 			int out_graph_dest_id = out_graph_dest.getId();
 			Edge<T> new_edge = new Edge<T>(out_graph_source_id, edge.getLabel(), out_graph_dest_id);
 			out_graph_source.add(new_edge);
 			labelling.put(out_graph_dest_id, new_labels);
-			if (distance > 0)
+			if (new_target && distance > 0)
 			{
 				traversalStep(in_graph, in_graph_dest_id, distance - 1, new_labels, new_vertices, labelling);
 			}

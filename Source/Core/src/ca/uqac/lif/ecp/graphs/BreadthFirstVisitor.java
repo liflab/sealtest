@@ -70,6 +70,11 @@ public abstract class BreadthFirstVisitor<T extends Event>
 	{
 		Set<Integer> visited = new HashSet<Integer>();
 		Vertex<T> start = g.getVertex(start_id);
+		// Don't forget to visit the initial state with the empty trace
+		ArrayList<Edge<T>> empty_trace = new ArrayList<Edge<T>>();
+		visit(empty_trace);
+		visited.add(start.getId());
+		// Now visit transitions
 		Queue<ArrayList<Edge<T>>> paths = new ArrayDeque<ArrayList<Edge<T>>>();
 		for (Edge<T> e : start.m_outEdges)
 		{

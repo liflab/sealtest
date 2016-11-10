@@ -78,6 +78,20 @@ public class BreadthFirstSteinerTreeTest
 		assertEquals(2, tree.getEdgeCount());
 	}
 	
+	@Test
+	public void test4()
+	{
+		Automaton g = loadAutomaton("test3.dot");
+		assertEquals(3, g.getVertexCount());
+		assertEquals(3, g.getEdgeCount());
+		MathSet<Integer> important_vertices = new MathSet<Integer>(0, 1, 2);
+		BreadthFirstSteinerTree<AtomicEvent,String> solver = new BreadthFirstSteinerTree<AtomicEvent,String>(g, important_vertices);
+		CayleyGraph<AtomicEvent,String> tree = solver.getTree();
+		assertNotNull(tree);
+		assertEquals(3, tree.getVertexCount());
+		assertEquals(2, tree.getEdgeCount());
+	}
+	
 	public Automaton loadAutomaton(String filename)
 	{
 		 InputStream is = this.getClass().getResourceAsStream(TestSettings.s_dataFolder + filename);
