@@ -81,7 +81,28 @@ public class ShallowHistoryTest
 		assertNotNull(graph);
 		assertTrue(graph.isIsomorphicToThrowable(expected));
 	}
-
+	
+	@Test
+	public void testTransitionHistory1d2() throws IsomorphismException
+	{
+		Automaton aut = loadAutomaton("test1.dot");
+		CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> expected = getEdgeGraph("test1-tsh-2.dot");
+		TransitionShallowHistory shs = new TransitionShallowHistory(aut, 2);
+		CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> graph = shs.getCayleyGraph();
+		assertNotNull(graph);
+		assertTrue(graph.isIsomorphicToThrowable(expected));
+	}
+	
+	@Test
+	public void testActionHistory1d1() throws IsomorphismException
+	{
+		Automaton aut = loadAutomaton("test1.dot");
+		CayleyGraph<AtomicEvent,MathList<AtomicEvent>> expected = getActionGraph("test1-ash-1.dot");
+		ActionShallowHistory shs = new ActionShallowHistory(aut, 1);
+		CayleyGraph<AtomicEvent,MathList<AtomicEvent>> graph = shs.getCayleyGraph();
+		assertNotNull(graph);
+		assertTrue(graph.isIsomorphicToThrowable(expected));
+	}
 	
 	public static CayleyGraph<AtomicEvent,MathList<Integer>> getStateGraph(String filename)
 	{
@@ -218,5 +239,70 @@ public class ShallowHistoryTest
 		scanner.close();
 		return graph;
 	}
+	
+	public static CayleyGraph<AtomicEvent,MathList<AtomicEvent>> getActionGraph(String filename)
+	{
+		CayleyGraph<AtomicEvent,MathList<AtomicEvent>> graph = new CayleyGraph<AtomicEvent,MathList<AtomicEvent>>();
+		Scanner scanner = new Scanner(ShallowHistoryTest.class.getResourceAsStream(TestSettings.s_dataFolder + filename));
+		Pattern edge_pat = Pattern.compile("(\\d+) -> (\\d+) \\[label=\"(.*?)\"\\];");
+		Pattern vertex_pat = Pattern.compile("(\\d+) \\[label=\"(.*?)\"\\];");
+		while (scanner.hasNextLine())
+		{
+			String line = scanner.nextLine().trim();
+			if (line.isEmpty() || line.startsWith("#"))
+			{
+				// Ignore this ling
+				continue;
+			}
+			Matcher edge_mat = edge_pat.matcher(line);
+			if (edge_mat.find())
+			{
+				// Edge line
+				int source_id = Integer.parseInt(edge_mat.group(1));
+				int dest_id = Integer.parseInt(edge_mat.group(2));
+				String[] labels = edge_mat.group(3).split(",");
+				Vertex<AtomicEvent> v = graph.getVertex(source_id);
+				if (v == null)
+				{
+					v = new Vertex<AtomicEvent>(source_id);
+					graph.add(v);
+				}
+				for (String label : labels)
+				{
+					AtomicEdge edge = new AtomicEdge(source_id, new AtomicEvent(label), dest_id);						
+					v.add(edge);
+				}
+			}
+			else
+			{
+				// Vertex line
+				Matcher vertex_mat = vertex_pat.matcher(line);
+				if (!vertex_mat.find())
+				{
+					// Ignore line
+					continue;
+				}
+				int vertex_id = Integer.parseInt(vertex_mat.group(1));
+				String s_label = vertex_mat.group(2);
+				Pattern set_pat = Pattern.compile("\\[(.*?)\\]");
+				Matcher set_mat = set_pat.matcher(s_label);
+				MathSet<MathList<AtomicEvent>> labelling = new MathSet<MathList<AtomicEvent>>();
+				while (set_mat.find())
+				{
+					String[] ids = set_mat.group(1).split(",");
+					MathList<AtomicEvent> list = new MathList<AtomicEvent>();
+					for (String s_id : ids)
+					{
+						list.add(new AtomicEvent(s_id.trim()));
+					}
+					labelling.add(list);
+				}
+				graph.getLabelling().put(vertex_id, labelling);
+			}
+		}
+		scanner.close();
+		return graph;
+	}
+
 
 }

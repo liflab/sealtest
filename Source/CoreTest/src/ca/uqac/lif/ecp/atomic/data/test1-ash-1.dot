@@ -1,0 +1,12 @@
+# Action shallow history of depth 1 for test1.dot
+digraph G {
+ 0 -> 1 [label="a"];
+ 0 -> 2 [label="b"];
+ 1 -> 1 [label="a"];
+ 1 -> 2 [label="b"];
+ 2 -> 1 [label="a"];
+ 2 -> 2 [label="b"];
+ 0 [label="{[]}"];
+ 1 [label="{[a]}"];
+ 2 [label="{[b]}"];
+}
