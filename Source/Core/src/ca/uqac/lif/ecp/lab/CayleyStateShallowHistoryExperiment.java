@@ -36,8 +36,10 @@ public class CayleyStateShallowHistoryExperiment extends CayleyAutomatonExperime
 	{
 		StateShallowHistory hist = new StateShallowHistory(m_automaton, m_strength);
 		CayleyGraph<AtomicEvent,MathList<Integer>> first_graph = hist.getCayleyGraph();
+		System.err.println("Size of original CG: " + first_graph.getVertexCount() + " vertices, " + first_graph.getEdgeCount() + " edges");
 		PrefixCategoryClosure<AtomicEvent,MathList<Integer>> closure = new PrefixCategoryClosure<AtomicEvent,MathList<Integer>>();
 		CayleyGraph<AtomicEvent,MathList<Integer>> second_graph = closure.getClosureGraph(first_graph);
+		System.err.println("Size of closure CG: " + second_graph.getVertexCount() + " vertices, " + second_graph.getEdgeCount() + " edges");
 		return second_graph;
 	}
 }

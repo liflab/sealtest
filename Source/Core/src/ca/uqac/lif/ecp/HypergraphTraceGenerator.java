@@ -17,7 +17,7 @@
  */
 package ca.uqac.lif.ecp;
 
-import ca.uqac.lif.ecp.graphs.BreadthFirstSteinerTree;
+import ca.uqac.lif.ecp.graphs.DijkstraSteinerTree;
 import ca.uqac.lif.ecp.graphs.GreedyHypergraphEdgeCover;
 import ca.uqac.lif.ecp.graphs.Hypergraph;
 import ca.uqac.lif.ecp.graphs.Hypergraph.Hyperedge;
@@ -45,6 +45,11 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 	protected HypergraphEdgeCover m_hypergraphSolver;
 	
 	/**
+	 * Solver used for the directed Steiner tree problem
+	 */
+	protected SteinerTree<T,U> m_dstSolver;
+	
+	/**
 	 * Creates a new trace generator
 	 * @param graph The Cayley graph to use as the input
 	 */
@@ -52,6 +57,7 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 	{
 		super(graph);
 		m_hypergraphSolver = new GreedyHypergraphEdgeCover(null);
+		m_dstSolver = new DijkstraSteinerTree<T,U>(null, null);
 	}
 
 	@Override
@@ -62,7 +68,9 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 		Hypergraph hg = createHypergraph(hyper_labelling);
 		// Select the important vertices
 		HypergraphEdgeCover h_solver = m_hypergraphSolver.newSolver(hg);
+		
 		MathSet<Hyperedge> hyperedges = h_solver.getCover();
+		System.err.println("Cover contains " + hyperedges.size() + " hyperedges");
 		// Find a vertex in the Cayley graph for each of the hyperedges
 		MathSet<Integer> important_vertices = new MathSet<Integer>();
 		for (Hyperedge he : hyperedges)
@@ -71,11 +79,14 @@ public class HypergraphTraceGenerator<T extends Event,U extends Object> extends 
 			Vertex<T> found_vertex = m_graph.getFirstVertexWithLabelling(equiv_class);
 			important_vertices.add(found_vertex.getId());
 		}
+		System.err.println("Get Steiner tree");
 		// Get a set of traces reaching these vertices
-		SteinerTree<T,U> bfst = new BreadthFirstSteinerTree<T,U>(m_graph, important_vertices);
+		SteinerTree<T,U> bfst = m_dstSolver.newSolver(m_graph, important_vertices);
 		CayleyGraph<T,U> tree = bfst.getTree();
+		System.err.println("Get traces from tree");
 		TreeCollector<T> collector = new TreeCollector<T>(tree);
 		TestSuite<T> suite = collector.getTraces();
+		System.err.println("Done");
 		return suite;
 	}
 	

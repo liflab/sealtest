@@ -54,5 +54,13 @@ public abstract class SteinerTree<T extends Event, U> extends CayleyGraphSolver<
 	 *   also the root of the returned tree.
 	 */
 	public abstract CayleyGraph<T,U> getTree();
+	
+	/**
+	 * Gets a new instance of this solver
+	 * @param graph The graph this solver will work on
+	 * @param vertices The set of vertices that must be included in the tree 
+	 * @return A new solver
+	 */
+	public abstract SteinerTree<T,U> newSolver(CayleyGraph<T,U> graph, MathSet<Integer> vertices);
 
 }

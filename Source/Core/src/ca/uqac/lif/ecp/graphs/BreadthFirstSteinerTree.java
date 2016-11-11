@@ -151,5 +151,11 @@ public class BreadthFirstSteinerTree<T extends Event, U> extends SteinerTree<T, 
 			return m_selectedPaths;
 		}
 	}
+	
+	@Override
+	public BreadthFirstSteinerTree<T,U> newSolver(CayleyGraph<T,U> graph, MathSet<Integer> vertices)
+	{
+		return new BreadthFirstSteinerTree<T,U>(graph, vertices);
+	}
 
 }
