@@ -1,4 +1,7 @@
-Title: globally, b responds to a
+# -----------------------------------
+# Title: Globally, b responds to a
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
 
 digraph G {
   0 -> 0 [label="b,c,d"];

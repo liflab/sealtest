@@ -1,4 +1,7 @@
-Title: globally, S,T preceeds P
+# -----------------------------------
+# Title: Globally, S,T preceeds P
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
 
 digraph G {
   0 -> 0 [label="Q,R,T"];

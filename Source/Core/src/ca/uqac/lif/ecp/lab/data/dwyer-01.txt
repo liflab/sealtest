@@ -1,5 +1,7 @@
-Title: P is false before R
-
+# -----------------------------------
+# Title: P is false before R
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
 digraph G {
   0 -> 1 [label="P"];
   0 -> 0 [label="Q,S"];

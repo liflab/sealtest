@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -17,10 +17,13 @@
  */
 package ca.uqac.lif.ecp.atomic;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.CayleyGraphFactory;
+import ca.uqac.lif.ecp.Edge;
+import ca.uqac.lif.ecp.graphs.Vertex;
 
 /**
  * Class that creates a Cayley graph out of a triaging function based on a
@@ -41,9 +44,13 @@ public class AutomatonCayleyGraphFactory<U> extends CayleyGraphFactory<AtomicEve
 	}
 
 	@Override
-	protected Set<AtomicEvent> getNextEvents() 
+	protected Set<AtomicEvent> getNextEvents(Vertex<AtomicEvent> vertex) 
 	{
+		Set<AtomicEvent> events = new HashSet<AtomicEvent>();
+		for (Edge<AtomicEvent> e : vertex.getEdges())
+		{
+			events.add(e.getLabel());
+		}
 		return m_alphabet;
 	}
-
 }

@@ -71,6 +71,7 @@ public class TestSuiteLab extends Laboratory
 		Group length_group = new Group("Distribution according to length");
 		Group limit_group = new Group("Limit of distribution");
 		Group state_t_way_group = new Group("State shallow history");
+		Group action_t_way_group = new Group("Action shallow history");
 		
 		// Setup the experiments
 		URL url = TestSuiteLab.class.getResource(s_dataPath);
@@ -87,6 +88,7 @@ public class TestSuiteLab extends Laboratory
 						for (int t = 1; t <= 3; t++)
 						{
 							addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
+							addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
 						}
 						//addPathCountExperiment(uris, max_length, length_group);
 						//addStateDistributionExperiment(uris, max_length, limit_group);
@@ -101,6 +103,7 @@ public class TestSuiteLab extends Laboratory
 		add(length_group);
 		add(limit_group);
 		add(state_t_way_group);
+		add(action_t_way_group);
 	}
 	
 	protected void addPathCountExperiment(String filename, int max_length, Group group)
@@ -162,6 +165,18 @@ public class TestSuiteLab extends Laboratory
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
 		CayleyStateShallowHistoryExperiment exp = new CayleyStateShallowHistoryExperiment();
+		exp.setStrength(strength);
+		CayleyAutomatonExperiment.fillExperiment(exp, scanner);
+		scanner.close();
+		add(exp);
+		group.add(exp);
+	}
+	
+	protected void addCayleyActionHistoryExperiment(String filename, int strength, Group group)
+	{
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
+		Scanner scanner = new Scanner(is);
+		CayleyActionShallowHistoryExperiment exp = new CayleyActionShallowHistoryExperiment();
 		exp.setStrength(strength);
 		CayleyAutomatonExperiment.fillExperiment(exp, scanner);
 		scanner.close();

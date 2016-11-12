@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain Hallï¿½
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -37,6 +37,12 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 	 * events
 	 */
 	protected Vertex<AtomicEvent> m_currentVertex;
+	
+	/**
+	 * A label given to a state of the automaton to indicate it is
+	 * the sink state for invalid transitions 
+	 */
+	public static String s_invalidLabel = "invalid";
 	
 	/**
 	 * Creates a new triaging function from an automaton

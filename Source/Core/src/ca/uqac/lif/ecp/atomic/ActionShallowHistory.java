@@ -23,6 +23,11 @@ import ca.uqac.lif.structures.MathSet;
 
 public class ActionShallowHistory extends ShallowHistoryFunction<AtomicEvent> 
 {
+	/**
+	 * An event designating an invalid action
+	 */
+	protected static final AtomicEvent s_invalidEvent = new AtomicEvent(s_invalidLabel);
+	
 	public ActionShallowHistory(Automaton a, int size) 
 	{
 		super(a, size);
@@ -31,7 +36,16 @@ public class ActionShallowHistory extends ShallowHistoryFunction<AtomicEvent>
 	@Override
 	public MathSet<MathList<AtomicEvent>> processTransition(Edge<AtomicEvent> edge)
 	{
-		m_window.add(edge.getLabel());
+		MathSet<String> destination_label = m_automaton.getLabelling().get(edge.getDestination());
+		if (destination_label.contains(s_invalidLabel))
+		{
+			// All actions going to the "invalid" sink state are the same
+			m_window.add(s_invalidEvent);
+		}
+		else
+		{
+			m_window.add(edge.getLabel());
+		}
 		MathSet<MathList<AtomicEvent>> out = new MathSet<MathList<AtomicEvent>>();
 		MathList<AtomicEvent> new_list = new MathList<AtomicEvent>();
 		new_list.addAll(m_window);

@@ -37,6 +37,16 @@ import ca.uqac.lif.structures.MathSet;
  */
 public class Automaton extends AtomicCayleyGraph<String>
 {
+	/**
+	 * The alphabet associated to this automaton
+	 */
+	protected Alphabet<AtomicEvent> m_alphabet;
+	
+	public Automaton()
+	{
+		super();
+		m_alphabet = new Alphabet<AtomicEvent>();
+	}
 	
 	/**
 	 * Creates an automaton from a dot string
@@ -49,6 +59,30 @@ public class Automaton extends AtomicCayleyGraph<String>
 	}
 	
 	/**
+	 * Sets the alphabet for this automaton
+	 * @param alphabet The alphabet
+	 */
+	public void setAlphabet(Alphabet<AtomicEvent> alphabet)
+	{
+		m_alphabet = alphabet;
+	}
+	
+	@Override
+	public void add(Vertex<AtomicEvent> v)
+	{
+		super.add(v);
+		// Look into the vertex's edges to update the alphabet
+		for (Edge<AtomicEvent> e : v.getEdges())
+		{
+			AtomicEvent ae = e.getLabel();
+			if (!(ae instanceof ElseEvent))
+			{
+				m_alphabet.add(e.getLabel());
+			}
+		}
+	}
+	
+	/**
 	 * Creates an automaton from a dot string
 	 * @param input A scanner to a dot string
 	 * @return The graph
@@ -56,6 +90,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	public static Automaton parseDot(Scanner scanner)
 	{
 		Automaton g = new Automaton();
+		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();
 		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
 		Pattern pat_vertex = Pattern.compile("(\\d+?) \\[label=\"(.*?)\"\\];");
@@ -88,7 +123,19 @@ public class Automaton extends AtomicCayleyGraph<String>
 				String[] labels = mat.group(3).trim().split(",");
 				for (String label : labels)
 				{
-					Edge<AtomicEvent> e = new Edge<AtomicEvent>(i_from, new AtomicEvent(label), i_to);
+					Edge<AtomicEvent> e;
+					if (label.compareTo(ElseEvent.label) == 0)
+					{
+						// "Else" transition
+						e = new Edge<AtomicEvent>(i_from, ElseEvent.instance, i_to);
+					}
+					else
+					{
+						// Normal transition
+						AtomicEvent ae = new AtomicEvent(label);
+						e = new Edge<AtomicEvent>(i_from, ae, i_to);
+						alphabet.add(ae);
+					}
 					from.add(e);
 				}
 			}
@@ -112,6 +159,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 			}
 		}
 		g.setLabelling(labelling);
+		g.setAlphabet(alphabet);
 		scanner.close();
 		return g;
 	}
@@ -122,19 +170,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	 */
 	public Alphabet<AtomicEvent> getAlphabet()
 	{
-		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
-		for (Vertex<AtomicEvent> v : getVertices())
-		{
-			for (Edge<AtomicEvent> e : v.getEdges())
-			{
-				alphabet.add(e.getLabel());
-			}
-			// Since the transition relation is supposed to be total, we
-			// have found all the symbols by looking at the outgoing edges
-			// of a single vertex
-			break;
-		}
-		return alphabet;
+		return m_alphabet;
 	}
 	
 	/**
@@ -145,13 +181,27 @@ public class Automaton extends AtomicCayleyGraph<String>
 	 */
 	public Edge<AtomicEvent> getTransition(Vertex<AtomicEvent> current_vertex, AtomicEvent event)
 	{
+		Edge<AtomicEvent> else_edge = null;
 		for (Edge<AtomicEvent> edge : current_vertex.getEdges())
 		{
-			if (edge.getLabel().equals(event))
+			AtomicEvent label = edge.getLabel();
+			if (label instanceof ElseEvent)
 			{
+				// Remember "else" edge in case nothing else matches
+				else_edge = edge;
+			}
+			else if (edge.getLabel().equals(event))
+			{
+				// Labels match: this is the edge
 				return edge;
 			}
 		}
+		if (else_edge != null)
+		{
+			// No match, but "else" edge exists: take it
+			return else_edge;
+		}
+		// This should not happen in the transition function is complete
 		return null;
 	}
 }

@@ -1,4 +1,7 @@
-Title: P is false after Q until R
+# -----------------------------------
+# Title: P is false after Q until R
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
 
 digraph G {
   0 -> 1 [label="Q"];

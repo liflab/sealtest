@@ -1,4 +1,8 @@
-Title: P is false between Q and R
+# -----------------------------------
+# Title: P is false between Q and R
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
+
 
 digraph G {
   0 -> 1 [label="Q"];

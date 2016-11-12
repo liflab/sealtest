@@ -1,4 +1,7 @@
-Title: globally, transitions to p states occur at most 2 times
+# -----------------------------------
+# Title: Globally, transitions to P states occur at most 2 times
+# From:  http://patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml
+# -----------------------------------
 
 digraph G {
   0 -> 0 [label="Q,R,S"];

@@ -55,7 +55,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 		MathSet<U> category = f.getClass(current_trace);
 		graph.add(current_vertex);
 		graph.m_labelling.put(current_vertex.getId(), category);
-		Set<T> nexts = getNextEvents();
+		Set<T> nexts = getNextEvents(current_vertex);
 		for (T e : nexts)
 		{
 			VertexEventTracePair vep = new VertexEventTracePair(current_vertex, current_trace, e);
@@ -81,7 +81,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 			}
 			Edge<T> edge = new Edge<T>(source_vertex.getId(), vep.event, target_vertex.getId());
 			source_vertex.add(edge);
-			nexts = getNextEvents();
+			nexts = getNextEvents(target_vertex);
 			for (T e : nexts)
 			{
 				vep = new VertexEventTracePair(target_vertex, current_trace, e);
@@ -137,5 +137,5 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 		}
 	}
 	
-	protected abstract Set<T> getNextEvents();
+	protected abstract Set<T> getNextEvents(Vertex<T> vertex);
 }

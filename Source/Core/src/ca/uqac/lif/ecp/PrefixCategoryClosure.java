@@ -88,6 +88,10 @@ public class PrefixCategoryClosure<T extends Event,U>
 			{
 				out_graph_dest = new StateVertex<T>(in_graph_dest_id);
 				new_vertices.add(out_graph_dest);
+				if (new_vertices.size() % 1000 == 0)
+				{
+					System.err.print(new_vertices.size() + " ");
+				}
 				new_target = true;
 			}
 			int out_graph_dest_id = out_graph_dest.getId();
