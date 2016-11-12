@@ -17,7 +17,9 @@
  */
 package ca.uqac.lif.ecp;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.graphs.Vertex;
@@ -42,7 +44,7 @@ public class PrefixCategoryClosure<T extends Event,U>
 	 * The maximum recursion depth
 	 */
 	protected static final int s_maxDepth = 1000;
-	
+
 	/**
 	 * Gets the prefix closure graph of the Cayley graph
 	 * @param graph The graph
@@ -53,22 +55,28 @@ public class PrefixCategoryClosure<T extends Event,U>
 		int start_id = graph.getInitialVertex().getId();
 		MathSet<U> start_labelling = graph.getLabelling().get(start_id);
 		StateVertex<T> start_vertex = new StateVertex<T>(start_id);
-		Set<StateVertex<T>> new_vertices = new HashSet<StateVertex<T>>();
-		new_vertices.add(start_vertex);
+		//Set<StateVertex<T>> new_vertices = new HashSet<StateVertex<T>>();
+		Map<Integer,Set<StateVertex<T>>> new_vertices = new HashMap<Integer,Set<StateVertex<T>>>();
+		Set<StateVertex<T>> sv = new HashSet<StateVertex<T>>();
+		sv.add(start_vertex);
+		new_vertices.put(start_vertex.m_state, sv);
 		CayleyVertexLabelling<U> labelling = new CayleyVertexLabelling<U>();
 		labelling.put(start_vertex.getId(), start_labelling);
 		traversalStep(graph, graph.getInitialVertex().getId(), s_maxDepth, start_labelling, new_vertices, labelling);
 		CayleyGraph<T,U> new_graph = new CayleyGraph<T,U>();
-		for (StateVertex<T> vertex : new_vertices)
+		for (Set<StateVertex<T>> vertex_set : new_vertices.values())
 		{
-			new_graph.add(vertex);
+			for (StateVertex<T> vertex : vertex_set)
+			{
+				new_graph.add(vertex);
+			}
 		}
 		new_graph.setInitialVertexId(start_vertex.getId());
 		new_graph.setLabelling(labelling);
 		return new_graph;
 	}
-	
-	void traversalStep(CayleyGraph<T,U> in_graph, int id_source, int distance, MathSet<U> collated_labels, Set<StateVertex<T>> new_vertices, CayleyVertexLabelling<U> labelling)
+
+	void traversalStep(CayleyGraph<T,U> in_graph, int id_source, int distance, MathSet<U> collated_labels, Map<Integer,Set<StateVertex<T>>> new_vertices, CayleyVertexLabelling<U> labelling)
 	{
 		Vertex<T> in_graph_source = in_graph.getVertex(id_source);
 		StateVertex<T> out_graph_source = getVertex(new_vertices, labelling, collated_labels, id_source);
@@ -87,10 +95,21 @@ public class PrefixCategoryClosure<T extends Event,U>
 			if (out_graph_dest == null)
 			{
 				out_graph_dest = new StateVertex<T>(in_graph_dest_id);
-				new_vertices.add(out_graph_dest);
-				if (new_vertices.size() % 1000 == 0)
+				Set<StateVertex<T>> sv;
+				if (!new_vertices.containsKey(out_graph_dest.m_state))
 				{
-					System.err.print(new_vertices.size() + " ");
+					sv = new HashSet<StateVertex<T>>();
+				}
+				else
+				{
+					sv = new_vertices.get(out_graph_dest.m_state);
+				}
+				sv.add(out_graph_dest);
+				new_vertices.put(out_graph_dest.m_state, sv);
+				int total_size = totalSize(new_vertices);
+				if (total_size % 1000 == 0)
+				{
+					System.err.print(total_size + " ");
 				}
 				new_target = true;
 			}
@@ -105,26 +124,38 @@ public class PrefixCategoryClosure<T extends Event,U>
 		}
 	}
 	
+	protected int totalSize(Map<Integer,Set<StateVertex<T>>> new_vertices)
+	{
+		int x = 0;
+		for (Set<StateVertex<T>> vset : new_vertices.values())
+		{
+			x += vset.size();
+		}
+		return x;
+	}
+
 	/**
 	 * Gets a vertex based on its labelling
 	 * @return
 	 */
-	protected StateVertex<T> getVertex(Set<StateVertex<T>> vertices, CayleyVertexLabelling<U> labelling, MathSet<U> labels, int id)
+	protected StateVertex<T> getVertex(Map<Integer,Set<StateVertex<T>>> vertices, CayleyVertexLabelling<U> labelling, MathSet<U> labels, int id)
 	{
-		for (StateVertex<T> vertex : vertices)
+		if (!vertices.containsKey(id))
 		{
-			if (vertex.m_state == id)
+			return null;
+		}
+		Set<StateVertex<T>> vertex_set = vertices.get(id);
+		for (StateVertex<T> vertex : vertex_set)
+		{
+			MathSet<U> vertex_labelling = labelling.get(vertex.getId());
+			if (vertex_labelling.equals(labels))
 			{
-				MathSet<U> vertex_labelling = labelling.get(vertex.getId());
-				if (vertex_labelling.equals(labels))
-				{
-					return vertex;
-				}
+				return vertex;
 			}
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Special type of vertex that includes a state ID in addition to the
 	 * information carried by a normal vertex
@@ -132,25 +163,25 @@ public class PrefixCategoryClosure<T extends Event,U>
 	class StateVertex<X extends Event> extends Vertex<X>
 	{
 		int m_state;
-		
+
 		public StateVertex(int state)
 		{
 			super();
 			m_state = state;
 		}
-		
+
 		public StateVertex(int state, Vertex<X> vertex)
 		{
 			super(vertex);
 			m_state = state;
 		}
-		
+
 		@Override
 		public int hashCode()
 		{
 			return super.hashCode() + m_state;
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public boolean equals(Object o)
 		{
