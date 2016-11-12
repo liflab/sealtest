@@ -20,15 +20,15 @@ digraph G {
  6 -> 3 [label="copy,unedit"];
  6 -> 4 [label="paste,cut"];
  # Transitions to trash sink
- 0 -> 8 [label="unselect,unedit,cut,copy,paste"];
- 1 -> 8 [label="select,unedit,cut,copy,paste"];
- 2 -> 8 [label="select,edit,unselect,unedit,paste"];
- 3 -> 8 [label="select,unedit,cut,copy,paste"];
- 4 -> 8 [label="unselect,unedit,cut,copy,paste"];
- 5 -> 8 [label="select,edit,unselect,cut,copy"];
- 6 -> 8 [label="select,edit,unselect,cut,paste"];
- 7 -> 8 [label="select,edit,unselect,cut,copy,paste"];
- 8 -> 8 [label="select,edit,unselect,unedit,cut,copy,paste"];
+ 0 -> 8 [label="*"];
+ 1 -> 8 [label="*"];
+ 2 -> 8 [label="*"];
+ 3 -> 8 [label="*"];
+ 4 -> 8 [label="*"];
+ 5 -> 8 [label="*"];
+ 6 -> 8 [label="*"];
+ 7 -> 8 [label="*"];
+ 8 -> 8 [label="*"];
  0 [label="node0"];
  1 [label="node1"];
  2 [label="node2"];

@@ -36,8 +36,12 @@ public class MathList<T> extends ArrayList<T>
 	@Override
 	public int hashCode()
 	{
-		//return size();
-		return 0;
+		int code = 0;
+		for (T t : this)
+		{
+			code += t.hashCode();
+		}
+		return code;
 	}
 	
 	@Override
@@ -46,6 +50,10 @@ public class MathList<T> extends ArrayList<T>
 		if (o == null || !(o instanceof MathList))
 		{
 			return false;
+		}
+		if (o == this)
+		{
+			return true;
 		}
 		@SuppressWarnings("unchecked")
 		MathList<T> h = (MathList<T>) o;

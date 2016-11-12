@@ -17,6 +17,8 @@
  */
 package ca.uqac.lif.ecp.atomic;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -90,6 +92,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	public static Automaton parseDot(Scanner scanner)
 	{
 		Automaton g = new Automaton();
+		Map<String,AtomicEvent> event_pool = new HashMap<String,AtomicEvent>();
 		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();
 		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
@@ -132,9 +135,19 @@ public class Automaton extends AtomicCayleyGraph<String>
 					else
 					{
 						// Normal transition
-						AtomicEvent ae = new AtomicEvent(label);
+						AtomicEvent ae = null;
+						if (event_pool.containsKey(label))
+						{
+							// We reuse the instance of atomic event created for this label
+							ae = event_pool.get(label);
+						}
+						else
+						{
+							ae = new AtomicEvent(label);
+							event_pool.put(label, ae);
+							alphabet.add(ae);
+						}
 						e = new Edge<AtomicEvent>(i_from, ae, i_to);
-						alphabet.add(ae);
 					}
 					from.add(e);
 				}

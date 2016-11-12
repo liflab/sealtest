@@ -63,12 +63,21 @@ public class MathSet<T> extends HashSet<T>
 	@Override
 	public int hashCode()
 	{
-		return size();
+		int code = 0;
+		for (T t : this)
+		{
+			code += t.hashCode();
+		}
+		return code;
 	}
 	
 	@Override
 	public boolean equals(Object o)
 	{
+		if (o == this)
+		{
+			return true;
+		}
 		if (o == null || !(o instanceof MathSet))
 		{
 			return false;
