@@ -15,34 +15,26 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.lab;
+
+import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.parkbench.Experiment;
 
 /**
- * Trace generator using a Cayley Graph.
- * @author Sylvain Hallé
- *
- * @param <T>
- * @param <U>
+ * Applies to classes that can generate a Cayley graph
  */
-public abstract class CayleyGraphTraceGenerator<T extends Event,U> extends TraceGenerator<T>
+public interface CayleyGraphProvider<T extends Event,U>
 {
 	/**
-	 * The Cayley graph used to generate the traces
+	 * Generates an automaton
+	 * @return An automaton
 	 */
-	protected CayleyGraph<T,U> m_graph;
-	
-	public CayleyGraphTraceGenerator(CayleyGraph<T,U> graph)
-	{
-		super();
-		m_graph = graph;
-	}
+	public abstract CayleyGraph<T,U> getCayleyGraph();
 	
 	/**
-	 * Sets the graph used by this generator
-	 * @param graph The graph
+	 * Writes additional data into an experiment
+	 * @param e The experiment
 	 */
-	public void setGraph(CayleyGraph<T,U> graph)
-	{
-		m_graph = graph;
-	}
+	public void write(Experiment e);
 }

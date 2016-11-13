@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
+import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.ecp.graphs.Vertex;
@@ -37,6 +38,7 @@ import ca.uqac.lif.parkbench.table.ExperimentTable;
 import ca.uqac.lif.parkbench.table.NormalizeRows;
 import ca.uqac.lif.parkbench.table.Table;
 import ca.uqac.lif.parkbench.Laboratory;
+import ca.uqac.lif.structures.MathList;
 
 public class TestSuiteLab extends Laboratory
 {
@@ -88,10 +90,8 @@ public class TestSuiteLab extends Laboratory
 						for (int t = 1; t <= 3; t++)
 						{
 							addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
-							addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
+							//addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
 						}
-						//addPathCountExperiment(uris, max_length, length_group);
-						//addStateDistributionExperiment(uris, max_length, limit_group);
 					}
 				}
 			}
@@ -106,73 +106,22 @@ public class TestSuiteLab extends Laboratory
 		add(action_t_way_group);
 	}
 	
-	protected void addPathCountExperiment(String filename, int max_length, Group group)
-	{
-		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
-		Scanner scanner = new Scanner(is);
-		PathCountExperiment exp = new PathCountExperimentMatrix(scanner, max_length);
-		scanner.close();
-		Automaton g = exp.getAutomaton();
-		String[] vertices = new String[g.getVertexCount()];
-		int i = 0;
-		for (Vertex<AtomicEvent> v : g.getVertices())
-		{
-			vertices[i++] = Integer.toString(v.getId());
-		}
-		ExperimentTable table = new ExperimentTable();
-		table.setSeriesNames(vertices).useForX("length").useForY(null).setTitle("Number of paths for each final state in the property " + exp.readString("property"));
-		add(exp, table);
-		add(table);
-		group.add(exp);
-		Table norm_tab = new NormalizeRows(table);
-		add(norm_tab);
-		Scatterplot plot = new Scatterplot(norm_tab);
-		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
-		plot.withLines();
-		plot.withPoints(false);
-		/*BarPlot plot = new BarPlot(norm_tab);
-		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
-		plot.rowStacked();*/
-		add(plot);
-	}
-	
-	protected void addStateDistributionExperiment(String filename, int iterations, Group group)
-	{
-		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
-		Scanner scanner = new Scanner(is);
-		StateDistributionExperiment exp = new StateDistributionExperiment(scanner, iterations);
-		scanner.close();
-		Automaton g = exp.getAutomaton();
-		String[] vertices = new String[g.getVertexCount()];
-		int i = 0;
-		for (Vertex<AtomicEvent> v : g.getVertices())
-		{
-			vertices[i++] = Integer.toString(v.getId());
-		}
-		ExperimentTable table = new ExperimentTable();
-		table.useForX("state").useForY("fraction").setTitle("Proportion of paths ending in each state in the property '" + exp.readString("property") +"'");
-		add(exp, table);
-		add(table);
-		group.add(exp);
-		BarPlot plot = new BarPlot(table);
-		plot.labelX("Length").labelY("% of traces").setTitle("Proportion of paths for each final state in the property " + exp.readString("property"));
-		plot.rowStacked();
-		add(plot);
-	}
-	
 	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
-		CayleyStateShallowHistoryExperiment exp = new CayleyStateShallowHistoryExperiment();
-		exp.setStrength(strength);
-		CayleyAutomatonExperiment.fillExperiment(exp, scanner);
+		AutomatonProvider ap = new AutomatonParser(scanner);
+		TriagingFunctionProvider<AtomicEvent,MathList<Integer>> fp = new StateHistoryProvider(ap, strength);
+		CayleyGraphProvider<AtomicEvent,MathList<Integer>> gp = new TriagingFunctionCayleyGraphProvider<AtomicEvent,MathList<Integer>>(fp);
+		CayleyTraceGeneratorProvider<AtomicEvent,MathList<Integer>> ctgp = new CayleyClassCoverageGenerator<AtomicEvent,MathList<Integer>>(gp);
+		TestSuiteProvider<AtomicEvent> tp = new CayleyTestSuiteGenerator<AtomicEvent,MathList<Integer>>(ctgp);
+		TestSuiteGenerationExperiment exp = new TestSuiteGenerationExperiment(tp);
 		scanner.close();
 		add(exp);
 		group.add(exp);
 	}
 	
-	protected void addCayleyActionHistoryExperiment(String filename, int strength, Group group)
+	/*protected void addCayleyActionHistoryExperiment(String filename, int strength, Group group)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
@@ -182,5 +131,5 @@ public class TestSuiteLab extends Laboratory
 		scanner.close();
 		add(exp);
 		group.add(exp);
-	}
+	}*/
 }
