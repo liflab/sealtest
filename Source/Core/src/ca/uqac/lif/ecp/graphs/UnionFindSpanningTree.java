@@ -57,6 +57,7 @@ public class UnionFindSpanningTree<T extends Event,U> extends SpanningTree<T,U>
 				}
 			}
 		}
+		tree.setInitialVertexId(m_graph.getInitialVertex().getId());
 		return tree;
 	}
 

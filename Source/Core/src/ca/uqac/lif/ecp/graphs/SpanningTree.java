@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -23,7 +23,7 @@ import ca.uqac.lif.ecp.Event;
 /**
  * Solves the spanning tree problem. Different descendents of this abstract
  * class will solve the problem using different algorithms. 
- * @author Sylvain Hall�
+ * @author Sylvain Hallé
  *
  * @param <T> The type of the events that are the labels of the edges
  * @param <U> The type of categories of the underlying triaging function
