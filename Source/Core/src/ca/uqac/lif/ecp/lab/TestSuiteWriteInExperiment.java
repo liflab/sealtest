@@ -41,6 +41,8 @@ public class TestSuiteWriteInExperiment extends TestSuiteGenerationExperiment im
 		describe(CombinatorialTriagingFunctionProvider.FUNCTION, CombinatorialTriagingFunctionProvider.FUNCTION_DESCRIPTION);
 		describe(CombinatorialTriagingFunctionProvider.STRENGTH, CombinatorialTriagingFunctionProvider.STRENGTH_DESCRIPTION);
 		describe(AutomatonProvider.PROPERTY_NAME, AutomatonProvider.PROPERTY_DESCRIPTION);
+		addKeyToHide(FROM);
+		addKeyToHide(BIBSOURCE);
 	}
 	
 	@Override

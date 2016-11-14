@@ -37,6 +37,7 @@ public class CayleyClassCoverageGenerator<T extends Event,U> implements CayleyTr
 	public void write(Experiment e)
 	{
 		m_provider.write(e);
+		e.write(TestSuiteGenerationExperiment.METHOD, "Cayley Graph ST");
 	}
 	
 	@Override
