@@ -26,9 +26,10 @@ import ca.uqac.lif.parkbench.Experiment;
  */
 public abstract class TestSuiteGenerationExperiment extends Experiment
 {
-	public static final transient String SIZE = "size";
-	public static final transient String TOTAL_LENGTH = "total-length";
-	public static final transient String DURATION = "duration";
+	public static final transient String SIZE = "Size";
+	public static final transient String TOTAL_LENGTH = "Length";
+	public static final transient String DURATION = "Time";
+	public static final transient String METHOD = "Method";
 	
 	/**
 	 * The provider used to generate the test suite
@@ -42,6 +43,7 @@ public abstract class TestSuiteGenerationExperiment extends Experiment
 		describe(SIZE, "Number of sequences in the test suite");
 		describe(TOTAL_LENGTH, "Total length of all sequences in the test suite");
 		describe(DURATION, "Time (in seconds) to generate the test suite");
+		describe(METHOD, "Method used to generate the test sequence");
 	}
 	
 }

@@ -1,0 +1,43 @@
+From:       Ferrer et al. 2015
+BibSource:  DBLP:conf/icst/ChanderDSY11
+
+Property*		Method*	Function*	Strength*	Size	Length	Time
+-----------------------------------------------------------------------------------------   
+Keyboard		GTSG	State history	1		1	2	-
+Keyboard		ACOts	State history	1		1	2	-
+Keyboard		Greedy	State history	1		1	2	-
+Microwave		GTSG	State history	1		1	8	-
+Microwave		ACOts	State history	1		1	8	-
+Microwave		Greedy	State history	1		1	9	-
+Autoradio		GTSG	State history	1		1	13	-
+Autoradio		ACOts	State history	1		1	14	-
+Autoradio		Greedy	State history	1		1	13	-
+Citizen			GTSG	State history	1		1	39	-
+Citizen			ACOts	State history	1		1	36	-
+Citizen			Greedy	State history	1		1	47	-
+
+Coffee machine		GTSG	State history	1		1	9	-
+Coffee machine		ACOts	State history	1		1	9	-
+Coffee machine		Greedy	State history	1		1	9	-
+Communication		GTSG	State history	1		1	7	-
+Communication		ACOts	State history	1		1	7	-
+Communication		Greedy	State history	1		1	7	-
+Elevator		GTSG	State history	1		1	6	-
+Elevator		ACOts	State history	1		1	6	-
+Elevator		Greedy	State history	1		1	6	-
+Tetris			GTSG	State history	1		1	12	-
+Tetris			ACOts	State history	1		1	12	-
+Tetris			Greedy	State history	1		1	15	-
+
+Mealy Moore		GTSG	State history	1		1	5	-
+Mealy Moore		ACOts	State history	1		1	5	-
+Mealy Moore		Greedy	State history	1		1	5	-
+Fuel Control		GTSG	State history	1		1	5	-
+Fuel Control		ACOts	State history	1		1	5	-
+Fuel Control		Greedy	State history	1		1	5	-
+Transmission		GTSG	State history	1		1	4	-
+Transmission		ACOts	State history	1		1	4	-
+Transmission		Greedy	State history	1		1	4	-
+Aircraft		GTSG	State history	1		1	4	-
+Aircraft		ACOts	State history	1		1	4	-
+Aircraft		Greedy	State history	1		1	4	-

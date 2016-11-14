@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.Set;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.parkbench.CliParser;
@@ -29,6 +30,8 @@ import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
 import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.Group;
+import ca.uqac.lif.parkbench.WriteInExperimentBuilder;
+import ca.uqac.lif.parkbench.WriteInExperimentBuilder.ParseException;
 import ca.uqac.lif.parkbench.plot.BarPlot;
 import ca.uqac.lif.parkbench.plot.Scatterplot;
 import ca.uqac.lif.parkbench.table.ExperimentTable;
@@ -67,10 +70,10 @@ public class TestSuiteLab extends Laboratory
 		setTitle("Path Counting");
 
 		// Experiment groups
-		Group length_group = new Group("Distribution according to length");
-		Group limit_group = new Group("Limit of distribution");
-		Group state_t_way_group = new Group("State shallow history");
-		Group action_t_way_group = new Group("Action shallow history");
+		//Group length_group = new Group("Distribution according to length");
+		//Group limit_group = new Group("Limit of distribution");
+		Group state_t_way_group = newGroup("State history");
+		Group action_t_way_group = newGroup("Action history");
 
 		// Setup the live experiments
 		{
@@ -103,6 +106,7 @@ public class TestSuiteLab extends Laboratory
 		{
 			URL url = TestSuiteLab.class.getResource(s_dataPath + "related/");
 			File f = null;
+			WriteInExperimentBuilder<TestSuiteWriteInExperiment> builder = new WriteInExperimentBuilder<TestSuiteWriteInExperiment>();
 			try 
 			{
 				f = new File(url.toURI());
@@ -114,11 +118,14 @@ public class TestSuiteLab extends Laboratory
 						{
 							InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + "related/" + uris);
 							Scanner scanner = new Scanner(is);
-							WriteInExperiment wie = new WriteInExperiment(scanner);
-							add(wie);
-							if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
+							Set<TestSuiteWriteInExperiment> experiments = builder.buildExperiment(new TestSuiteWriteInExperiment(), scanner);
+							for (TestSuiteWriteInExperiment wie : experiments)
 							{
-								state_t_way_group.add(wie);
+								add(wie);
+								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
+								{
+									state_t_way_group.add(wie);
+								}								
 							}
 						}
 					}
@@ -128,12 +135,11 @@ public class TestSuiteLab extends Laboratory
 			{
 				e.printStackTrace();
 			}
+			catch (ParseException e) 
+			{
+				e.printStackTrace();
+			}
 		}
-
-		add(length_group);
-		add(limit_group);
-		add(state_t_way_group);
-		add(action_t_way_group);
 	}
 
 	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group)

@@ -25,7 +25,7 @@ import ca.uqac.lif.parkbench.Experiment;
  */
 public interface AutomatonProvider
 {
-	public static final String PROPERTY_NAME = "property-name";
+	public static final String PROPERTY_NAME = "Property";
 	
 	public static final String PROPERTY_DESCRIPTION = "The name of the property represented by the automaton";
 	

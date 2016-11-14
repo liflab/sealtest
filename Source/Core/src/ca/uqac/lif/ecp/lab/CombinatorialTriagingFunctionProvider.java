@@ -21,9 +21,9 @@ import ca.uqac.lif.parkbench.Experiment;
 
 public abstract class CombinatorialTriagingFunctionProvider<U> extends AutomatonTriagingFunctionProvider<U>
 {
-	public static final String STRENGTH = "strength";
+	public static final String STRENGTH = "Strength";
 	public static final String STRENGTH_DESCRIPTION = "The strength of the experiment";
-	public static final String FUNCTION = "function";
+	public static final String FUNCTION = "Function";
 	public static final String FUNCTION_DESCRIPTION = "The triaging function used";
 	
 	/**

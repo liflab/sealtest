@@ -17,9 +17,7 @@
  */
 package ca.uqac.lif.ecp.lab;
 
-import java.util.Scanner;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import ca.uqac.lif.parkbench.CloneableExperiment;
 
 /**
  * Experiment whose data is not computed, but rather fetched from
@@ -30,58 +28,32 @@ import java.util.regex.Pattern;
  * @author Sylvain Hallé
  *
  */
-public class WriteInExperiment extends TestSuiteGenerationExperiment 
+public class TestSuiteWriteInExperiment extends TestSuiteGenerationExperiment implements CloneableExperiment<TestSuiteWriteInExperiment>
 {
-	public static final transient String FROM = "from";
-	public static final transient String BIBSOURCE = "bibsource";
+	public static final transient String FROM = "From";
+	public static final transient String BIBSOURCE = "BibSource";
 	
-	public WriteInExperiment(Scanner scanner)
+	public TestSuiteWriteInExperiment()
 	{
+		super();
 		describe(FROM, "Research paper from which this result was taken");
 		describe(BIBSOURCE, "BibTeX reference of the research paper");
 		describe(CombinatorialTriagingFunctionProvider.FUNCTION, CombinatorialTriagingFunctionProvider.FUNCTION_DESCRIPTION);
 		describe(CombinatorialTriagingFunctionProvider.STRENGTH, CombinatorialTriagingFunctionProvider.STRENGTH_DESCRIPTION);
 		describe(AutomatonProvider.PROPERTY_NAME, AutomatonProvider.PROPERTY_DESCRIPTION);
-		Pattern from_pat = Pattern.compile("From:(.*)");
-		Pattern bib_pat = Pattern.compile("BibSource:(.*)");
-		Matcher mat;
-		while (scanner.hasNextLine())
-		{
-			String line = scanner.nextLine().trim();
-			if (line.isEmpty() || line.startsWith("#"))
-			{
-				continue;
-			}
-			mat = from_pat.matcher(line);
-			if (mat.find())
-			{
-				String s = mat.group(1).trim();
-				setInput("from", s);
-				continue;
-			}
-			mat = bib_pat.matcher(line);
-			if (mat.find())
-			{
-				String s = mat.group(1).trim();
-				setInput("bibsource", s);
-				continue;
-			}
-			String[] parts = line.split("\\t+");
-			setInput(AutomatonProvider.PROPERTY_NAME, parts[0].trim());
-			setInput(CombinatorialTriagingFunctionProvider.FUNCTION, parts[1].trim());
-			setInput(CombinatorialTriagingFunctionProvider.STRENGTH, Integer.parseInt(parts[2].trim()));
-			setInput(SIZE, Integer.parseInt(parts[3].trim()));
-			setInput(TOTAL_LENGTH, Integer.parseInt(parts[4].trim()));
-			setInput(DURATION, Float.parseFloat(parts[5].trim()));
-		}
 	}
-
-
+	
 	@Override
 	public final Status execute() 
 	{
 		// Nothing to do
 		return Status.DONE;
+	}
+
+	@Override
+	public final TestSuiteWriteInExperiment newExperiment() 
+	{
+		return new TestSuiteWriteInExperiment();
 	}
 
 }
