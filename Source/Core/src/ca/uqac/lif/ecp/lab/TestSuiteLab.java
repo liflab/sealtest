@@ -23,10 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
-import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
@@ -51,13 +48,13 @@ public class TestSuiteLab extends Laboratory
 	{
 		initialize(args, TestSuiteLab.class);
 	}
-	
+
 	@Override
 	public void setupCli(CliParser parser)
 	{
 		parser.addArgument(new Argument().withArgument("length").withLongName("max-length"));
 	}
-	
+
 	@Override
 	public void setupExperiments(ArgumentMap map)
 	{
@@ -68,44 +65,77 @@ public class TestSuiteLab extends Laboratory
 		}
 		// Give a name to the lab
 		setTitle("Path Counting");
-		
+
 		// Experiment groups
 		Group length_group = new Group("Distribution according to length");
 		Group limit_group = new Group("Limit of distribution");
 		Group state_t_way_group = new Group("State shallow history");
 		Group action_t_way_group = new Group("Action shallow history");
-		
-		// Setup the experiments
-		URL url = TestSuiteLab.class.getResource(s_dataPath);
-		File f = null;
-		try 
+
+		// Setup the live experiments
 		{
-			f = new File(url.toURI());
-			if (f != null)
+			URL url = TestSuiteLab.class.getResource(s_dataPath);
+			File f = null;
+			try 
 			{
-				for (String uris : f.list())
+				f = new File(url.toURI());
+				if (f != null)
 				{
-					if (uris.endsWith(".txt"))
+					for (String uris : f.list())
 					{
-						for (int t = 1; t <= 3; t++)
+						if (uris.endsWith(".txt"))
 						{
-							addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
-							//addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
+							for (int t = 1; t <= 3; t++)
+							{
+								addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
+								//addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
+							}
 						}
 					}
 				}
+			} 
+			catch (URISyntaxException e) 
+			{
+				e.printStackTrace();
 			}
-		} 
-		catch (URISyntaxException e) 
-		{
-			e.printStackTrace();
 		}
+		// Setup the write-in experiments
+		{
+			URL url = TestSuiteLab.class.getResource(s_dataPath + "related/");
+			File f = null;
+			try 
+			{
+				f = new File(url.toURI());
+				if (f != null)
+				{
+					for (String uris : f.list())
+					{
+						if (uris.endsWith(".csv"))
+						{
+							InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + "related/" + uris);
+							Scanner scanner = new Scanner(is);
+							WriteInExperiment wie = new WriteInExperiment(scanner);
+							add(wie);
+							if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
+							{
+								state_t_way_group.add(wie);
+							}
+						}
+					}
+				}
+			} 
+			catch (URISyntaxException e) 
+			{
+				e.printStackTrace();
+			}
+		}
+
 		add(length_group);
 		add(limit_group);
 		add(state_t_way_group);
 		add(action_t_way_group);
 	}
-	
+
 	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
@@ -115,12 +145,12 @@ public class TestSuiteLab extends Laboratory
 		CayleyGraphProvider<AtomicEvent,MathList<Integer>> gp = new TriagingFunctionCayleyGraphProvider<AtomicEvent,MathList<Integer>>(fp);
 		CayleyTraceGeneratorProvider<AtomicEvent,MathList<Integer>> ctgp = new CayleyClassCoverageGenerator<AtomicEvent,MathList<Integer>>(gp);
 		TestSuiteProvider<AtomicEvent> tp = new CayleyTestSuiteGenerator<AtomicEvent,MathList<Integer>>(ctgp);
-		TestSuiteGenerationExperiment exp = new TestSuiteGenerationExperiment(tp);
+		TestSuiteGenerationExperiment exp = new LiveGenerationExperiment(tp);
 		scanner.close();
 		add(exp);
 		group.add(exp);
 	}
-	
+
 	/*protected void addCayleyActionHistoryExperiment(String filename, int strength, Group group)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);

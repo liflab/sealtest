@@ -21,6 +21,11 @@ import ca.uqac.lif.parkbench.Experiment;
 
 public abstract class CombinatorialTriagingFunctionProvider<U> extends AutomatonTriagingFunctionProvider<U>
 {
+	public static final String STRENGTH = "strength";
+	public static final String STRENGTH_DESCRIPTION = "The strength of the experiment";
+	public static final String FUNCTION = "function";
+	public static final String FUNCTION_DESCRIPTION = "The triaging function used";
+	
 	/**
 	 * The strength of the experiment
 	 */
@@ -41,8 +46,8 @@ public abstract class CombinatorialTriagingFunctionProvider<U> extends Automaton
 	public void write(Experiment e) 
 	{
 		super.write(e);
-		e.describe("strength", "The strength of the experiment");
-		e.setInput("strength", m_strength);
-		e.describe("function", "The triaging function used");
+		e.describe(STRENGTH, STRENGTH_DESCRIPTION);
+		e.setInput(STRENGTH, m_strength);
+		e.describe(FUNCTION, FUNCTION_DESCRIPTION);
 	}
 }

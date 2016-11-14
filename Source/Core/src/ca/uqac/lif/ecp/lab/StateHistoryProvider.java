@@ -18,7 +18,7 @@ public class StateHistoryProvider extends CombinatorialTriagingFunctionProvider<
 	public void write(Experiment e) 
 	{
 		super.write(e);
-		e.setInput("function", "State history");
+		e.setInput(CombinatorialTriagingFunctionProvider.FUNCTION, "State history");
 	}
 
 	@Override

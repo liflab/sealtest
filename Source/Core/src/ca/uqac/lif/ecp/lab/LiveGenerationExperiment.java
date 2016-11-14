@@ -17,31 +17,47 @@
  */
 package ca.uqac.lif.ecp.lab;
 
-import ca.uqac.lif.parkbench.Experiment;
+import ca.uqac.lif.ecp.TestSuite;
 
 /**
- * Experiment that consists in generating a test suite
+ * Experiment that computes the test suite "live", i.e. its results are not
+ * pre-computed.
  * 
  * @author Sylvain Hallé
  */
-public abstract class TestSuiteGenerationExperiment extends Experiment
+public class LiveGenerationExperiment extends TestSuiteGenerationExperiment 
 {
-	public static final transient String SIZE = "size";
-	public static final transient String TOTAL_LENGTH = "total-length";
-	public static final transient String DURATION = "duration";
-	
 	/**
 	 * The provider used to generate the test suite
 	 */
 	protected transient TestSuiteProvider<?> m_provider;
 		
-	public TestSuiteGenerationExperiment()
+	public LiveGenerationExperiment(TestSuiteProvider<?> provider)
 	{
 		super();
-		setDescription("Experiment that consists in generating a test suite");
-		describe(SIZE, "Number of sequences in the test suite");
-		describe(TOTAL_LENGTH, "Total length of all sequences in the test suite");
-		describe(DURATION, "Time (in seconds) to generate the test suite");
+		m_provider = provider;
+		m_provider.write(this);
 	}
 	
+	LiveGenerationExperiment()
+	{
+		this(null);
+	}
+	
+	@Override
+	public Status execute() 
+	{
+		long time_start = System.currentTimeMillis();
+		TestSuite<?> suite = m_provider.getTestSuite();
+		long time_end = System.currentTimeMillis();
+		if (suite == null)
+		{
+			setErrorMessage("Could not generate a test suite");
+			return Status.FAILED;
+		}
+		write(SIZE, suite.size());
+		write(TOTAL_LENGTH, suite.getTotalLength());
+		write(DURATION, (time_end - time_start) / 1000f);
+		return Status.DONE;
+	}
 }

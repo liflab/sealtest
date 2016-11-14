@@ -1,5 +1,5 @@
 # -----------------------------------
-# Title: Copy-cut-paste
+# Title: Editor clipboard
 # From:  DBLP:conf/icst/ChanderDSY11
 # -----------------------------------
 
