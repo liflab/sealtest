@@ -17,16 +17,17 @@
  */
 package ca.uqac.lif.ecp.lab;
 
+import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.ecp.atomic.StateShallowHistory;
+import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
 import ca.uqac.lif.parkbench.Experiment;
 import ca.uqac.lif.structures.MathList;
 
-public class StateHistoryProvider extends CombinatorialTriagingFunctionProvider<MathList<Integer>>
+public class TransitionHistoryProvider extends CombinatorialTriagingFunctionProvider<MathList<Edge<AtomicEvent>>>
 {
-	StateHistoryProvider(AutomatonProvider provider, int strength)
+	TransitionHistoryProvider(AutomatonProvider provider, int strength)
 	{
 		super(provider, strength);
 	}
@@ -35,13 +36,13 @@ public class StateHistoryProvider extends CombinatorialTriagingFunctionProvider<
 	public void write(Experiment e) 
 	{
 		super.write(e);
-		e.setInput(CombinatorialTriagingFunctionProvider.FUNCTION, "State history");
+		e.setInput(CombinatorialTriagingFunctionProvider.FUNCTION, "Transition history");
 	}
 
 	@Override
-	protected TriagingFunction<AtomicEvent, MathList<Integer>> instantiateFunction(Automaton aut)
+	protected TriagingFunction<AtomicEvent,MathList<Edge<AtomicEvent>>> instantiateFunction(Automaton aut)
 	{
-		return new StateShallowHistory(aut, m_strength);
+		return new TransitionShallowHistory(aut, m_strength);
 	}
 
 }

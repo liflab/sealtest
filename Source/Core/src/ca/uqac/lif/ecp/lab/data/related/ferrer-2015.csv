@@ -1,43 +1,91 @@
 From:       Ferrer et al. 2015
 BibSource:  DBLP:conf/icst/ChanderDSY11
 
-Property*		Method*	Function*	Strength*	Size	Length	Time
+Property*		Method*	Function*		Strength*	Size	Length	Time
 -----------------------------------------------------------------------------------------   
-Keyboard		GTSG	State history	1		1	2	-
-Keyboard		ACOts	State history	1		1	2	-
-Keyboard		Greedy	State history	1		1	2	-
-Microwave		GTSG	State history	1		1	8	-
-Microwave		ACOts	State history	1		1	8	-
-Microwave		Greedy	State history	1		1	9	-
-Autoradio		GTSG	State history	1		1	13	-
-Autoradio		ACOts	State history	1		1	14	-
-Autoradio		Greedy	State history	1		1	13	-
-Citizen			GTSG	State history	1		1	39	-
-Citizen			ACOts	State history	1		1	36	-
-Citizen			Greedy	State history	1		1	47	-
 
-Coffee machine		GTSG	State history	1		1	9	-
-Coffee machine		ACOts	State history	1		1	9	-
-Coffee machine		Greedy	State history	1		1	9	-
-Communication		GTSG	State history	1		1	7	-
-Communication		ACOts	State history	1		1	7	-
-Communication		Greedy	State history	1		1	7	-
-Elevator		GTSG	State history	1		1	6	-
-Elevator		ACOts	State history	1		1	6	-
-Elevator		Greedy	State history	1		1	6	-
-Tetris			GTSG	State history	1		1	12	-
-Tetris			ACOts	State history	1		1	12	-
-Tetris			Greedy	State history	1		1	15	-
+# *******************
+# CLASS COVERAGE
+# *******************
 
-Mealy Moore		GTSG	State history	1		1	5	-
-Mealy Moore		ACOts	State history	1		1	5	-
-Mealy Moore		Greedy	State history	1		1	5	-
-Fuel Control		GTSG	State history	1		1	5	-
-Fuel Control		ACOts	State history	1		1	5	-
-Fuel Control		Greedy	State history	1		1	5	-
-Transmission		GTSG	State history	1		1	4	-
-Transmission		ACOts	State history	1		1	4	-
-Transmission		Greedy	State history	1		1	4	-
-Aircraft		GTSG	State history	1		1	4	-
-Aircraft		ACOts	State history	1		1	4	-
-Aircraft		Greedy	State history	1		1	4	-
+Keyboard		GTSG	State history		1		1	2	-
+Keyboard		ACOts	State history		1		1	2	-
+Keyboard		Greedy	State history		1		1	2	-
+Microwave		GTSG	State history		1		1	8	-
+Microwave		ACOts	State history		1		1	8	-
+Microwave		Greedy	State history		1		1	9	-
+Autoradio		GTSG	State history		1		1	13	-
+Autoradio		ACOts	State history		1		1	14	-
+Autoradio		Greedy	State history		1		1	13	-
+Citizen			GTSG	State history		1		1	39	-
+Citizen			ACOts	State history		1		1	36	-
+Citizen			Greedy	State history		1		1	47	-
+
+Coffee machine		GTSG	State history		1		1	9	-
+Coffee machine		ACOts	State history		1		1	9	-
+Coffee machine		Greedy	State history		1		1	9	-
+Communication		GTSG	State history		1		1	7	-
+Communication		ACOts	State history		1		1	7	-
+Communication		Greedy	State history		1		1	7	-
+Elevator		GTSG	State history		1		1	6	-
+Elevator		ACOts	State history		1		1	6	-
+Elevator		Greedy	State history		1		1	6	-
+Tetris			GTSG	State history		1		1	12	-
+Tetris			ACOts	State history		1		1	12	-
+Tetris			Greedy	State history		1		1	15	-
+
+Mealy Moore		GTSG	State history		1		1	5	-
+Mealy Moore		ACOts	State history		1		1	5	-
+Mealy Moore		Greedy	State history		1		1	5	-
+Fuel Control		GTSG	State history		1		1	5	-
+Fuel Control		ACOts	State history		1		1	5	-
+Fuel Control		Greedy	State history		1		1	5	-
+Transmission		GTSG	State history		1		1	4	-
+Transmission		ACOts	State history		1		1	4	-
+Transmission		Greedy	State history		1		1	4	-
+Aircraft		GTSG	State history		1		1	4	-
+Aircraft		ACOts	State history		1		1	4	-
+Aircraft		Greedy	State history		1		1	4	-
+
+# *******************
+# TRANSITION COVERAGE
+# *******************
+
+Keyboard		GTSG	Transition history	1		1	5	-
+Keyboard		ACOts	Transition history	1		1	5	-
+Keyboard		Greedy	Transition history	1		1	5	-
+Microwave		GTSG	Transition history	1		1	17	-
+Microwave		ACOts	Transition history	1		1	17	-
+Microwave		Greedy	Transition history	1		1	17	-
+Autoradio		GTSG	Transition history	1		1	36	-
+Autoradio		ACOts	Transition history	1		1	36	-
+Autoradio		Greedy	Transition history	1		1	36	-
+Citizen			GTSG	Transition history	1		1	75	-
+Citizen			ACOts	Transition history	1		1	64	-
+Citizen			Greedy	Transition history	1		1	51	-
+
+Coffee machine		GTSG	Transition history	1		1	19	-
+Coffee machine		ACOts	Transition history	1		1	19	-
+Coffee machine		Greedy	Transition history	1		1	18	-
+Communication		GTSG	Transition history	1		1	16	-
+Communication		ACOts	Transition history	1		1	16	-
+Communication		Greedy	Transition history	1		1	17	-
+Elevator		GTSG	Transition history	1		1	9	-
+Elevator		ACOts	Transition history	1		1	9	-
+Elevator		Greedy	Transition history	1		1	9	-
+Tetris			GTSG	Transition history	1		1	31	-
+Tetris			ACOts	Transition history	1		1	31	-
+Tetris			Greedy	Transition history	1		1	31	-
+
+Mealy Moore		GTSG	Transition history	1		1	24	-
+Mealy Moore		ACOts	Transition history	1		1	24	-
+Mealy Moore		Greedy	Transition history	1		1	24	-
+Fuel Control		GTSG	Transition history	1		1	11	-
+Fuel Control		ACOts	Transition history	1		1	11	-
+Fuel Control		Greedy	Transition history	1		1	12	-
+Transmission		GTSG	Transition history	1		1	9	-
+Transmission		ACOts	Transition history	1		1	9	-
+Transmission		Greedy	Transition history	1		1	9	-
+Aircraft		GTSG	Transition history	1		1	7	-
+Aircraft		ACOts	Transition history	1		1	7	-
+Aircraft		Greedy	Transition history	1		1	7	-

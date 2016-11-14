@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.Scanner;
 import java.util.Set;
 
+import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
@@ -67,13 +68,11 @@ public class TestSuiteLab extends Laboratory
 			max_length = Integer.parseInt(map.getOptionValue("max-length"));
 		}
 		// Give a name to the lab
-		setTitle("Path Counting");
+		setTitle("Test sequence generation");
 
 		// Experiment groups
-		//Group length_group = new Group("Distribution according to length");
-		//Group limit_group = new Group("Limit of distribution");
 		Group state_t_way_group = newGroup("State history");
-		Group action_t_way_group = newGroup("Action history");
+		Group transition_t_way_group = newGroup("Transition history");
 
 		// Setup the live experiments
 		{
@@ -91,7 +90,7 @@ public class TestSuiteLab extends Laboratory
 							for (int t = 1; t <= 3; t++)
 							{
 								addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
-								//addCayleyActionHistoryExperiment(uris, t, action_t_way_group);
+								addCayleyTransitionHistoryExperiment(uris, t, transition_t_way_group);
 							}
 						}
 					}
@@ -125,7 +124,11 @@ public class TestSuiteLab extends Laboratory
 								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
 								{
 									state_t_way_group.add(wie);
-								}								
+								}	
+								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("Transition history") == 0)
+								{
+									transition_t_way_group.add(wie);
+								}
 							}
 						}
 					}
@@ -156,16 +159,19 @@ public class TestSuiteLab extends Laboratory
 		add(exp);
 		group.add(exp);
 	}
-
-	/*protected void addCayleyActionHistoryExperiment(String filename, int strength, Group group)
+	
+	protected void addCayleyTransitionHistoryExperiment(String filename, int strength, Group group)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
-		CayleyActionShallowHistoryExperiment exp = new CayleyActionShallowHistoryExperiment();
-		exp.setStrength(strength);
-		CayleyAutomatonExperiment.fillExperiment(exp, scanner);
+		AutomatonProvider ap = new AutomatonParser(scanner);
+		TriagingFunctionProvider<AtomicEvent,MathList<Edge<AtomicEvent>>> fp = new TransitionHistoryProvider(ap, strength);
+		CayleyGraphProvider<AtomicEvent,MathList<Edge<AtomicEvent>>> gp = new TriagingFunctionCayleyGraphProvider<AtomicEvent,MathList<Edge<AtomicEvent>>>(fp);
+		CayleyTraceGeneratorProvider<AtomicEvent,MathList<Edge<AtomicEvent>>> ctgp = new CayleyClassCoverageGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>>(gp);
+		TestSuiteProvider<AtomicEvent> tp = new CayleyTestSuiteGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>>(ctgp);
+		TestSuiteGenerationExperiment exp = new LiveGenerationExperiment(tp);
 		scanner.close();
 		add(exp);
 		group.add(exp);
-	}*/
+	}
 }
