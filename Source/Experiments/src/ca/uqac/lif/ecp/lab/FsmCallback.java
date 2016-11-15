@@ -48,16 +48,19 @@ public class FsmCallback extends CustomPageCallback
 	public StringBuilder createFsmList()
 	{
 		StringBuilder out = new StringBuilder();
-		out.append("<ul>\n");
+		out.append("<table>\n");
 		List<String> listing = FileHelper.listAllFiles(this.getClass().getResource(TestSuiteLab.s_fsmPath), ".*\\.txt");
 		for (String filename : listing)
 		{
 			InputStream is = FileHelper.internalFileToStream(this.getClass(), TestSuiteLab.s_fsmPath + filename);
 			Scanner scanner = new Scanner(is);
 			AutomatonParser ap = new AutomatonParser(scanner);
-			out.append("<li><a href=\"/data/fsm/get?name=").append(filename).append("\">").append(ap.getTitle()).append("</a></li>\n");
+			out.append("<tr>");
+			out.append("<td><a href=\"/data/fsm/get?name=").append(filename).append("\">").append(ap.getTitle()).append("</a></td>\n");
+			out.append("<td>[<a href=\"/data/fsm/image?name=").append(filename).append("\">image</a>]</td>\n");
+			out.append("</tr>\n");
 		}
-		out.append("</ul>");
+		out.append("</table>");
 		return out;
 	}
 

@@ -179,5 +179,6 @@ public class TestSuiteLab extends Laboratory
 	{
 		callbacks.add(new FsmCallback(this, null));
 		callbacks.add(new GetAutomatonCallback(this, null));
+		callbacks.add(new ShowAutomatonCallback(this, null));
 	}
 }
