@@ -74,7 +74,7 @@ public class TestSuiteLab extends Laboratory
 
 	@Override
 	public void setupExperiments(ArgumentMap map, List<ParkBenchCallback> callbacks)
-	{
+	{	
 		int max_t = 3;
 		if (map.hasOption("max-length"))
 		{
@@ -82,8 +82,11 @@ public class TestSuiteLab extends Laboratory
 		}
 		// Give a name to the lab
 		setTitle("Test sequence generation");
+		
+		// Register custom pages for the server
+		registerCustomPages(callbacks);
 
-		// Experiment groups
+		// Create experiment groups and tables
 		Group state_t_way_group = newGroup("State history");
 		Group transition_t_way_group = newGroup("Transition history");
 		ExperimentMultidimensionalTable mt_state_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
@@ -170,5 +173,11 @@ public class TestSuiteLab extends Laboratory
 		add(exp);
 		table.add(exp);
 		group.add(exp);
+	}
+	
+	protected void registerCustomPages(List<ParkBenchCallback> callbacks)
+	{
+		callbacks.add(new FsmCallback(this, null));
+		callbacks.add(new GetAutomatonCallback(this, null));
 	}
 }

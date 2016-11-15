@@ -37,6 +37,15 @@ public class AutomatonParser implements AutomatonProvider
 	{
 		return m_automaton;
 	}
+	
+	/**
+	 * Gets the title of the parsed automaton
+	 * @return The title
+	 */
+	public String getTitle()
+	{
+		return m_title;
+	}
 
 	@Override
 	public void write(Experiment e) 
