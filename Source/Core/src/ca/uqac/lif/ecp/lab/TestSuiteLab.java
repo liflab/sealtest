@@ -33,11 +33,7 @@ import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.Group;
 import ca.uqac.lif.parkbench.WriteInExperimentBuilder;
 import ca.uqac.lif.parkbench.WriteInExperimentBuilder.ParseException;
-import ca.uqac.lif.parkbench.plot.BarPlot;
-import ca.uqac.lif.parkbench.plot.Scatterplot;
-import ca.uqac.lif.parkbench.table.ExperimentTable;
-import ca.uqac.lif.parkbench.table.NormalizeRows;
-import ca.uqac.lif.parkbench.table.Table;
+import ca.uqac.lif.parkbench.table.ExperimentMultidimensionalTable;
 import ca.uqac.lif.parkbench.Laboratory;
 import ca.uqac.lif.structures.MathList;
 
@@ -62,10 +58,10 @@ public class TestSuiteLab extends Laboratory
 	@Override
 	public void setupExperiments(ArgumentMap map)
 	{
-		int max_length = 9;
+		int max_t = 3;
 		if (map.hasOption("max-length"))
 		{
-			max_length = Integer.parseInt(map.getOptionValue("max-length"));
+			max_t = Integer.parseInt(map.getOptionValue("max-length"));
 		}
 		// Give a name to the lab
 		setTitle("Test sequence generation");
@@ -73,6 +69,16 @@ public class TestSuiteLab extends Laboratory
 		// Experiment groups
 		Group state_t_way_group = newGroup("State history");
 		Group transition_t_way_group = newGroup("Transition history");
+		ExperimentMultidimensionalTable mt_state_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
+		mt_state_coverage.setTitle("State coverage");
+		ExperimentMultidimensionalTable mt_transition_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
+		mt_transition_coverage.setTitle("Transition coverage");
+		add(mt_state_coverage);
+		add(mt_transition_coverage);
+		//ExperimentTable state_coverage_table = new ExperimentTable("State coverage");
+		//ExperimentTable transition_coverage_table = new ExperimentTable("Transition coverage");
+		//add(state_coverage_table);
+		//add(transition_coverage_table);
 
 		// Setup the live experiments
 		{
@@ -87,10 +93,10 @@ public class TestSuiteLab extends Laboratory
 					{
 						if (uris.endsWith(".txt"))
 						{
-							for (int t = 1; t <= 3; t++)
+							for (int t = 1; t <= max_t; t++)
 							{
-								addCayleyStateHistoryExperiment(uris, t, state_t_way_group);
-								addCayleyTransitionHistoryExperiment(uris, t, transition_t_way_group);
+								addCayleyStateHistoryExperiment(uris, t, state_t_way_group, mt_state_coverage);
+								addCayleyTransitionHistoryExperiment(uris, t, transition_t_way_group, mt_transition_coverage);
 							}
 						}
 					}
@@ -124,10 +130,12 @@ public class TestSuiteLab extends Laboratory
 								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
 								{
 									state_t_way_group.add(wie);
+									mt_state_coverage.add(wie);
 								}	
 								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("Transition history") == 0)
 								{
 									transition_t_way_group.add(wie);
+									mt_transition_coverage.add(wie);
 								}
 							}
 						}
@@ -145,7 +153,7 @@ public class TestSuiteLab extends Laboratory
 		}
 	}
 
-	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group)
+	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group, ExperimentMultidimensionalTable table)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
@@ -157,10 +165,11 @@ public class TestSuiteLab extends Laboratory
 		TestSuiteGenerationExperiment exp = new LiveGenerationExperiment(tp);
 		scanner.close();
 		add(exp);
+		table.add(exp);
 		group.add(exp);
 	}
 	
-	protected void addCayleyTransitionHistoryExperiment(String filename, int strength, Group group)
+	protected void addCayleyTransitionHistoryExperiment(String filename, int strength, Group group, ExperimentMultidimensionalTable table)
 	{
 		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
 		Scanner scanner = new Scanner(is);
@@ -172,6 +181,7 @@ public class TestSuiteLab extends Laboratory
 		TestSuiteGenerationExperiment exp = new LiveGenerationExperiment(tp);
 		scanner.close();
 		add(exp);
+		table.add(exp);
 		group.add(exp);
 	}
 }
