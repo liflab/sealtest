@@ -95,8 +95,8 @@ public class Automaton extends AtomicCayleyGraph<String>
 		Map<String,AtomicEvent> event_pool = new HashMap<String,AtomicEvent>();
 		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();
-		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=\"(.*?)\"\\];");
-		Pattern pat_vertex = Pattern.compile("(\\d+?) \\[label=\"(.*?)\"\\];");
+		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=[\"<](.*?)[\">]\\];{0,1}");
+		Pattern pat_vertex = Pattern.compile("(\\d+?) \\[label=[\"<](.*?)[\">]\\];{0,1}");
 		while(scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
