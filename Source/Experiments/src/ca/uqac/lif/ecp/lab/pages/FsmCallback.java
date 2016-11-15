@@ -15,13 +15,15 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.lab;
+package ca.uqac.lif.ecp.lab.pages;
 
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import ca.uqac.lif.ecp.lab.AutomatonParser;
+import ca.uqac.lif.ecp.lab.TestSuiteLab;
 import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.LabAssistant;
 import ca.uqac.lif.parkbench.Laboratory;
@@ -39,7 +41,7 @@ public class FsmCallback extends CustomPageCallback
 	{
 		String out = page.replaceAll("\\{%TITLE%\\}", "FSM properties");
 		out = out.replaceAll("\\{%FAVICON%\\}", getFavicon(IconType.GRAPH));
-		String page_contents = FileHelper.internalFileToString(this.getClass(), "pages/fsm-list.html");
+		String page_contents = FileHelper.internalFileToString(this.getClass(), "fsm-list.html");
 		page_contents = page_contents.replaceAll("\\{%FSM_LIST%\\}", createFsmList().toString());
 		out = out.replaceAll("\\{%CONTENT%\\}", page_contents.toString());
 		return out;
@@ -49,10 +51,10 @@ public class FsmCallback extends CustomPageCallback
 	{
 		StringBuilder out = new StringBuilder();
 		out.append("<table>\n");
-		List<String> listing = FileHelper.listAllFiles(this.getClass().getResource(TestSuiteLab.s_fsmPath), ".*\\.txt");
+		List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(TestSuiteLab.s_fsmPath), ".*\\.txt");
 		for (String filename : listing)
 		{
-			InputStream is = FileHelper.internalFileToStream(this.getClass(), TestSuiteLab.s_fsmPath + filename);
+			InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, TestSuiteLab.s_fsmPath + filename);
 			Scanner scanner = new Scanner(is);
 			AutomatonParser ap = new AutomatonParser(scanner);
 			out.append("<tr>");

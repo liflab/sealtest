@@ -24,6 +24,9 @@ import java.util.Set;
 
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.lab.pages.FsmCallback;
+import ca.uqac.lif.ecp.lab.pages.GetAutomatonCallback;
+import ca.uqac.lif.ecp.lab.pages.ShowAutomatonCallback;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
@@ -46,17 +49,17 @@ public class TestSuiteLab extends Laboratory
 	/**
 	 * The path where data will be fetched from
 	 */
-	protected static transient final String s_dataPath = "data/";
+	public static transient final String s_dataPath = "data/";
 
 	/**
 	 * The path where write-in experiments will be fetched from
 	 */
-	protected static transient final String s_writeInPath = s_dataPath + "related/";
+	public static transient final String s_writeInPath = s_dataPath + "related/";
 
 	/**
 	 * The path where FSMs will be read from
 	 */
-	protected static transient final String s_fsmPath = s_dataPath + "fsm/";
+	public static transient final String s_fsmPath = s_dataPath + "fsm/";
 
 	/**
 	 * @param args
@@ -80,8 +83,9 @@ public class TestSuiteLab extends Laboratory
 		{
 			max_t = Integer.parseInt(map.getOptionValue("max-length"));
 		}
-		// Give a name to the lab
+		// Give a name and a description to the lab
 		setTitle("Test sequence generation");
+		setDescription(FileHelper.internalFileToString(this.getClass(), "pages/description.html"));
 		
 		// Register custom pages for the server
 		registerCustomPages(callbacks);
