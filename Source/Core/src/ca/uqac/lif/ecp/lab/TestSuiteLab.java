@@ -17,10 +17,8 @@
  */
 package ca.uqac.lif.ecp.lab;
 
-import java.io.File;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -33,13 +31,32 @@ import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.Group;
 import ca.uqac.lif.parkbench.WriteInExperimentBuilder;
 import ca.uqac.lif.parkbench.WriteInExperimentBuilder.ParseException;
+import ca.uqac.lif.parkbench.server.ParkBenchCallback;
 import ca.uqac.lif.parkbench.table.ExperimentMultidimensionalTable;
 import ca.uqac.lif.parkbench.Laboratory;
 import ca.uqac.lif.structures.MathList;
 
+/**
+ * Main class setting up the laboratory
+ * 
+ * @author Sylvain Hallé
+ */
 public class TestSuiteLab extends Laboratory
 {
+	/**
+	 * The path where data will be fetched from
+	 */
 	protected static transient final String s_dataPath = "data/";
+
+	/**
+	 * The path where write-in experiments will be fetched from
+	 */
+	protected static transient final String s_writeInPath = s_dataPath + "related/";
+
+	/**
+	 * The path where FSMs will be read from
+	 */
+	protected static transient final String s_fsmPath = s_dataPath + "fsm/";
 
 	/**
 	 * @param args
@@ -56,7 +73,7 @@ public class TestSuiteLab extends Laboratory
 	}
 
 	@Override
-	public void setupExperiments(ArgumentMap map)
+	public void setupExperiments(ArgumentMap map, List<ParkBenchCallback> callbacks)
 	{
 		int max_t = 3;
 		if (map.hasOption("max-length"))
@@ -75,87 +92,57 @@ public class TestSuiteLab extends Laboratory
 		mt_transition_coverage.setTitle("Transition coverage");
 		add(mt_state_coverage);
 		add(mt_transition_coverage);
-		//ExperimentTable state_coverage_table = new ExperimentTable("State coverage");
-		//ExperimentTable transition_coverage_table = new ExperimentTable("Transition coverage");
-		//add(state_coverage_table);
-		//add(transition_coverage_table);
 
 		// Setup the live experiments
 		{
-			URL url = TestSuiteLab.class.getResource(s_dataPath);
-			File f = null;
-			try 
+			List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(s_fsmPath), ".*\\.txt");
+			for (String uris : listing)
 			{
-				f = new File(url.toURI());
-				if (f != null)
+				for (int t = 1; t <= max_t; t++)
 				{
-					for (String uris : f.list())
-					{
-						if (uris.endsWith(".txt"))
-						{
-							for (int t = 1; t <= max_t; t++)
-							{
-								addCayleyStateHistoryExperiment(uris, t, state_t_way_group, mt_state_coverage);
-								addCayleyTransitionHistoryExperiment(uris, t, transition_t_way_group, mt_transition_coverage);
-							}
-						}
-					}
+					addCayleyStateHistoryExperiment(uris, t, state_t_way_group, mt_state_coverage);
+					addCayleyTransitionHistoryExperiment(uris, t, transition_t_way_group, mt_transition_coverage);
 				}
-			} 
-			catch (URISyntaxException e) 
-			{
-				e.printStackTrace();
 			}
 		}
 		// Setup the write-in experiments
 		{
-			URL url = TestSuiteLab.class.getResource(s_dataPath + "related/");
-			File f = null;
+			List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(s_writeInPath), ".*\\.csv");
 			WriteInExperimentBuilder<TestSuiteWriteInExperiment> builder = new WriteInExperimentBuilder<TestSuiteWriteInExperiment>();
-			try 
+			for (String uris : listing)
 			{
-				f = new File(url.toURI());
-				if (f != null)
+				InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_writeInPath + uris);
+				Scanner scanner = new Scanner(is);
+				Set<TestSuiteWriteInExperiment> experiments;
+				try 
 				{
-					for (String uris : f.list())
+					experiments = builder.buildExperiment(new TestSuiteWriteInExperiment(), scanner);
+					for (TestSuiteWriteInExperiment wie : experiments)
 					{
-						if (uris.endsWith(".csv"))
+						add(wie);
+						if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
 						{
-							InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + "related/" + uris);
-							Scanner scanner = new Scanner(is);
-							Set<TestSuiteWriteInExperiment> experiments = builder.buildExperiment(new TestSuiteWriteInExperiment(), scanner);
-							for (TestSuiteWriteInExperiment wie : experiments)
-							{
-								add(wie);
-								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("State history") == 0)
-								{
-									state_t_way_group.add(wie);
-									mt_state_coverage.add(wie);
-								}	
-								if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("Transition history") == 0)
-								{
-									transition_t_way_group.add(wie);
-									mt_transition_coverage.add(wie);
-								}
-							}
+							state_t_way_group.add(wie);
+							mt_state_coverage.add(wie);
+						}	
+						if (wie.readString(CombinatorialTriagingFunctionProvider.FUNCTION).compareTo("Transition history") == 0)
+						{
+							transition_t_way_group.add(wie);
+							mt_transition_coverage.add(wie);
 						}
 					}
+				} 
+				catch (ParseException e) 
+				{
+					e.printStackTrace();
 				}
-			} 
-			catch (URISyntaxException e) 
-			{
-				e.printStackTrace();
-			}
-			catch (ParseException e) 
-			{
-				e.printStackTrace();
 			}
 		}
 	}
 
 	protected void addCayleyStateHistoryExperiment(String filename, int strength, Group group, ExperimentMultidimensionalTable table)
 	{
-		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_fsmPath + filename);
 		Scanner scanner = new Scanner(is);
 		AutomatonProvider ap = new AutomatonParser(scanner);
 		TriagingFunctionProvider<AtomicEvent,MathList<Integer>> fp = new StateHistoryProvider(ap, strength);
@@ -168,10 +155,10 @@ public class TestSuiteLab extends Laboratory
 		table.add(exp);
 		group.add(exp);
 	}
-	
+
 	protected void addCayleyTransitionHistoryExperiment(String filename, int strength, Group group, ExperimentMultidimensionalTable table)
 	{
-		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_dataPath + filename);
+		InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_fsmPath + filename);
 		Scanner scanner = new Scanner(is);
 		AutomatonProvider ap = new AutomatonParser(scanner);
 		TriagingFunctionProvider<AtomicEvent,MathList<Edge<AtomicEvent>>> fp = new TransitionHistoryProvider(ap, strength);
