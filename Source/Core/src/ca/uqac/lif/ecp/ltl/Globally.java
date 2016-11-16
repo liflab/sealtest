@@ -44,4 +44,19 @@ public class Globally<T extends Event> extends UnaryTemporalOperator<T>
 		super.copyInto(g, with_tree);
 		return g;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof Globally<?>))
+		{
+			return false;
+		}
+		if (o == this)
+		{
+			return true;
+		}
+		return super.chidrenEquals((Globally<T>) o);
+	}
 }

@@ -25,13 +25,26 @@ public abstract class HologramVisitor<T extends Event>
 		visit(op, cnt);
 	}
 	
+	public final void visit(T event)
+	{
+		int cnt = m_idCounter;
+		m_idStack.push(m_idCounter);
+		m_idCounter++;
+		visit(event, cnt);		
+	}
+	
 	public final void backtrack()
 	{
-		int c = m_idStack.pop();
-		backtrack(c);
+		m_idStack.pop();
+		if (!m_idStack.isEmpty())
+		{
+			backtrack(m_idStack.peek());
+		}
 	}
 	
 	public abstract void visit(Operator<T> op, int count);
+	
+	public abstract void visit(T event, int count);
 	
 	public void backtrack(int count)
 	{

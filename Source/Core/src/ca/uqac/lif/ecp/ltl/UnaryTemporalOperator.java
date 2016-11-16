@@ -68,4 +68,22 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		list.addAll(m_instantiatedTrees);
 		return list;
 	}
+	
+	boolean chidrenEquals(UnaryTemporalOperator<T> o)
+	{
+		if (m_instantiatedTrees.size() != o.m_instantiatedTrees.size())
+		{
+			return false;
+		}
+		for (int i = 0; i < m_instantiatedTrees.size(); i++)
+		{
+			Operator<T> op1 = m_instantiatedTrees.get(i);
+			Operator<T> op2 = o.m_instantiatedTrees.get(i);
+			if (!op1.equals(op2))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 }

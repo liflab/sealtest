@@ -17,10 +17,10 @@ public class Atom<T extends Event> extends Operator<T>
 	protected final T m_event;
 	
 	/**
-	 * Whether we are seeing the first event
+	 * The event we've seen when we evaluated the atom
 	 */
-	protected boolean m_firstEvent = true;
-	
+	protected T m_eventSeen = null;
+		
 	public Atom(T e)
 	{
 		super();
@@ -30,9 +30,9 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		if (m_firstEvent)
+		if (m_eventSeen == null)
 		{
-			m_firstEvent = false;
+			m_eventSeen = event;
 			if (event.equals(m_event))
 			{
 				m_value = Value.TRUE;
@@ -76,7 +76,7 @@ public class Atom<T extends Event> extends Operator<T>
 		Atom<T> a = new Atom<T>(m_event);
 		if (with_tree == true)
 		{
-			a.m_firstEvent = m_firstEvent;
+			a.m_eventSeen = m_eventSeen;
 		}
 		return a;
 	}
@@ -85,6 +85,8 @@ public class Atom<T extends Event> extends Operator<T>
 	public void acceptPrefix(HologramVisitor<T> visitor)
 	{
 		visitor.visit(this);
+		visitor.visit(m_eventSeen);
+		visitor.backtrack();
 		visitor.backtrack();
 	}
 	

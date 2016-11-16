@@ -30,6 +30,7 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 		}
 		if (m_numEvents == 1)
 		{
+			m_numEvents++;
 			Operator<T> new_operand = m_operand.copy(false);
 			m_instantiatedTrees.add(new_operand);
 		}
@@ -50,4 +51,20 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 		}
 		return g;
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof Next<?>))
+		{
+			return false;
+		}
+		if (o == this)
+		{
+			return true;
+		}
+		return super.chidrenEquals((Next<T>) o);
+	}
+
 }
