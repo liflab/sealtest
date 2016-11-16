@@ -1,8 +1,11 @@
 package ca.uqac.lif.ecp.ltl;
 
+import static org.junit.Assert.*;
+
 import org.junit.Test;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.ltl.Operator.Value;
 
 public class OperatorTest
 {
@@ -10,12 +13,43 @@ public class OperatorTest
 	@Test
 	public void test1()
 	{
-		// G (p & X q)
+		AtomicEvent p = new AtomicEvent("p");
+		AtomicEvent q = new AtomicEvent("q");
+		AtomicEvent r = new AtomicEvent("r");
+		Value v;
+		Operator<AtomicEvent> o = getFormula1();
+		o.evaluate(p);
+		v = o.getValue();
+		assertEquals(Value.INCONCLUSIVE, v);
+		o.evaluate(r);
+		v = o.getValue();
+		assertEquals(Value.INCONCLUSIVE, v);
+		o.evaluate(p);
+		
+		
+		Operator<AtomicEvent> tree = o.copy(true);
+		String dot = render(tree);
+		v = o.getValue();
+		assertEquals(v, Value.FALSE);
+		//System.out.println(o);
+	}
+	
+	// G (p | X q)
+	public static Operator<AtomicEvent> getFormula1()
+	{
 		Operator<AtomicEvent> o = new Globally<AtomicEvent>(
-				new And<AtomicEvent>(
+				new Or<AtomicEvent>(
 						new Atom<AtomicEvent>(new AtomicEvent("p")),
 						new Next<AtomicEvent>(new Atom<AtomicEvent>(new AtomicEvent("q")))
 				));
-		System.out.println(o);
+		return o;
+	}
+	
+	public static String render(Operator<AtomicEvent> tree)
+	{
+		GraphvizHologramRenderer<AtomicEvent> renderer = new GraphvizHologramRenderer<AtomicEvent>();
+		tree.acceptPrefix(renderer);
+		String dot = renderer.toDot();
+		return dot;
 	}
 }

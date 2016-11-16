@@ -1,6 +1,9 @@
 package ca.uqac.lif.ecp.ltl;
 
+import java.util.List;
+
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.structures.MathList;
 
 public abstract class UnaryOperator<T extends Event> extends Operator<T> 
 {
@@ -31,5 +34,33 @@ public abstract class UnaryOperator<T extends Event> extends Operator<T>
 	public String toString()
 	{
 		return m_symbol + " (" + m_operand + ")";
+	}
+	
+	@Override
+	public void acceptPrefix(HologramVisitor<T> visitor)
+	{
+		visitor.visit(this);
+		m_operand.acceptPrefix(visitor);
+		visitor.backtrack();
+	}
+	
+	@Override
+	public String getRootSymbol()
+	{
+		return m_symbol;
+	}
+	
+	@Override
+	public int size(boolean with_tree)
+	{
+		return 1 + m_operand.size(with_tree);
+	}
+	
+	@Override
+	public List<Operator<T>> getTreeChildren()
+	{
+		MathList<Operator<T>> list = new MathList<Operator<T>>();
+		list.add(m_operand);
+		return list;
 	}
 }

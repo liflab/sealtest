@@ -4,6 +4,11 @@ import ca.uqac.lif.ecp.Event;
 
 public class Next<T extends Event> extends UnaryTemporalOperator<T> 
 {	
+	/**
+	 * Whether we are seeing the first event
+	 */
+	protected int m_numEvents = 0;
+	
 	Next()
 	{
 		super("X");
@@ -17,24 +22,21 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		Operator<T> new_operand = m_operand.copy(false);
-		m_instantiatedTrees.add(new_operand);
-		boolean false_seen = false;
-		for (Operator<T> op : m_instantiatedTrees)
+		if (m_numEvents == 0)
 		{
-			op.evaluate(event);
-			Value v = op.getValue();
-			if (v == Value.FALSE)
-			{
-				false_seen = true;
-			}
-		}
-		if (false_seen)
-		{
-			m_value = Value.FALSE;
+			m_numEvents++;
+			m_value = Value.INCONCLUSIVE;
 			return;
 		}
-		m_value = Value.INCONCLUSIVE;
+		if (m_numEvents == 1)
+		{
+			Operator<T> new_operand = m_operand.copy(false);
+			m_instantiatedTrees.add(new_operand);
+		}
+		Operator<T> op = m_instantiatedTrees.get(0);
+		op.evaluate(event);
+		Value v = op.getValue();
+		m_value = v;
 	}
 
 	@Override
@@ -42,6 +44,10 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 	{
 		Next<T> g = new Next<T>();
 		super.copyInto(g, with_tree);
+		if (with_tree)
+		{
+			g.m_numEvents = m_numEvents;
+		}
 		return g;
 	}
 }

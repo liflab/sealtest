@@ -17,6 +17,8 @@
  */
 package ca.uqac.lif.ecp.ltl;
 
+import java.util.List;
+
 import ca.uqac.lif.ecp.Event;
 
 /**
@@ -61,5 +63,11 @@ public abstract class Operator<T extends Event>
 		}
 	}
 	
+	public abstract int size(boolean with_tree);
 	
+	public abstract String getRootSymbol();
+	
+	public abstract void acceptPrefix(HologramVisitor<T> visitor);
+	
+	public abstract List<Operator<T>> getTreeChildren();
 }

@@ -1,6 +1,9 @@
 package ca.uqac.lif.ecp.ltl;
 
+import java.util.List;
+
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.structures.MathList;
 
 /**
  * Ground term that asserts that the current event is equal
@@ -13,6 +16,11 @@ public class Atom<T extends Event> extends Operator<T>
 {
 	protected final T m_event;
 	
+	/**
+	 * Whether we are seeing the first event
+	 */
+	protected boolean m_firstEvent = true;
+	
 	public Atom(T e)
 	{
 		super();
@@ -22,12 +30,16 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		if (event.equals(m_event))
+		if (m_firstEvent)
 		{
-			m_value = Value.TRUE;
-			return;
+			m_firstEvent = false;
+			if (event.equals(m_event))
+			{
+				m_value = Value.TRUE;
+				return;
+			}
+			m_value = Value.FALSE;
 		}
-		m_value = Value.FALSE;
 	}
 	
 	@Override
@@ -61,7 +73,36 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public Atom<T> copy(boolean with_tree)
 	{
-		return new Atom<T>(m_event);
+		Atom<T> a = new Atom<T>(m_event);
+		if (with_tree == true)
+		{
+			a.m_firstEvent = m_firstEvent;
+		}
+		return a;
 	}
 
+	@Override
+	public void acceptPrefix(HologramVisitor<T> visitor)
+	{
+		visitor.visit(this);
+		visitor.backtrack();
+	}
+	
+	@Override
+	public String getRootSymbol()
+	{
+		return m_event.toString();
+	}
+
+	@Override
+	public int size(boolean with_tree) 
+	{
+		return 1;
+	}
+
+	@Override
+	public List<Operator<T>> getTreeChildren() 
+	{
+		return new MathList<Operator<T>>();
+	}
 }

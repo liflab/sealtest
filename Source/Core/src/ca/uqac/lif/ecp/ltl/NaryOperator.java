@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.structures.MathList;
 
 public abstract class NaryOperator<T extends Event> extends Operator<T>
 {
@@ -82,5 +83,41 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 			out.append("(").append(m_operands.get(i)).append(")");
 		}
 		return out.toString();
+	}
+	
+	@Override
+	public void acceptPrefix(HologramVisitor<T> visitor)
+	{
+		visitor.visit(this);
+		for (Operator<T> op : m_operands)
+		{
+			op.acceptPrefix(visitor);
+		}
+		visitor.backtrack();
+	}
+	
+	@Override
+	public String getRootSymbol()
+	{
+		return m_symbol;
+	}
+	
+	@Override
+	public int size(boolean with_tree)
+	{
+		int size = 1;
+		for (Operator<T> op : m_operands)
+		{
+			size += op.size(with_tree);
+		}
+		return size;
+	}
+	
+	@Override
+	public List<Operator<T>> getTreeChildren()
+	{
+		MathList<Operator<T>> list = new MathList<Operator<T>>();
+		list.addAll(m_operands);
+		return list;
 	}
 }
