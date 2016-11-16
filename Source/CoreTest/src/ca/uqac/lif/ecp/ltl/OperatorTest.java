@@ -28,11 +28,13 @@ public class OperatorTest
 		
 		
 		Operator<AtomicEvent> tree = o.copy(true);
-		for (Operator<AtomicEvent> c : tree.getTreeChildren())
+		/*for (Operator<AtomicEvent> c : tree.getTreeChildren())
 		{
 			c.delete();
 			break;
-		}
+		}*/
+		PolarityDeletion<AtomicEvent> trans = new PolarityDeletion<AtomicEvent>();
+		tree = trans.transform(tree);
 		String dot = render(tree);
 		v = o.getValue();
 		assertEquals(v, Value.FALSE);

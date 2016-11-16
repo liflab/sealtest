@@ -12,16 +12,11 @@ import ca.uqac.lif.structures.MathList;
  *
  * @param <T> The event type
  */
-public class Atom<T extends Event> extends Operator<T>
+public class EventLeaf<T extends Event> extends Operator<T>
 {
 	protected final T m_event;
-	
-	/**
-	 * The event we've seen when we evaluated the atom
-	 */
-	protected EventLeaf<T> m_eventSeen = null;
-		
-	public Atom(T e)
+			
+	public EventLeaf(T e)
 	{
 		super();
 		m_event = e;
@@ -30,16 +25,6 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		if (m_eventSeen == null)
-		{
-			m_eventSeen = new EventLeaf<T>(event);
-			if (event.equals(m_event))
-			{
-				m_value = Value.TRUE;
-				return;
-			}
-			m_value = Value.FALSE;
-		}
 	}
 	
 	@Override
@@ -57,7 +42,7 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == null || !(o instanceof Atom<?>))
+		if (o == null || !(o instanceof EventLeaf<?>))
 		{
 			return false;
 		}
@@ -66,18 +51,14 @@ public class Atom<T extends Event> extends Operator<T>
 			return true;
 		}
 		@SuppressWarnings("unchecked")
-		Atom<T> a = (Atom<T>) o;
+		EventLeaf<T> a = (EventLeaf<T>) o;
 		return a.m_event.equals(m_event);
 	}
 	
 	@Override
-	public Atom<T> copy(boolean with_tree)
+	public EventLeaf<T> copy(boolean with_tree)
 	{
-		Atom<T> a = new Atom<T>(m_event);
-		if (with_tree == true)
-		{
-			a.m_eventSeen = m_eventSeen;
-		}
+		EventLeaf<T> a = new EventLeaf<T>(m_event);
 		return a;
 	}
 
@@ -85,7 +66,6 @@ public class Atom<T extends Event> extends Operator<T>
 	public void acceptPrefix(HologramVisitor<T> visitor)
 	{
 		visitor.visit(this);
-		m_eventSeen.acceptPrefix(visitor);
 		visitor.backtrack();
 	}
 	
@@ -104,21 +84,12 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public List<Operator<T>> getTreeChildren() 
 	{
-		MathList<Operator<T>> list = new MathList<Operator<T>>();
-		if (m_eventSeen != null)
-		{
-			list.add(m_eventSeen);
-		}
-		return list;
+		return new MathList<Operator<T>>();
 	}
 	
 	@Override
 	public void delete()
 	{
 		m_deleted = true;
-		if (m_eventSeen != null)
-		{
-			m_eventSeen.delete();			
-		}
 	}
 }

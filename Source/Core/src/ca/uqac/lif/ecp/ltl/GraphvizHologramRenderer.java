@@ -12,16 +12,14 @@ public class GraphvizHologramRenderer<T extends Event> extends HologramVisitor<T
 	@Override
 	public void visit(Operator<T> op, int count) 
 	{
-		String color = getColor(op);
-		String style = getStyle(op);
 		if (m_parent == -1)
 		{
 			m_buffer.append("digraph G {\n node[shape=\"rectangle\",style=\"filled\"];\n");
 		}
-		m_buffer.append(" ").append(count).append(" [label=\"").append(op.getRootSymbol()).append("\",style=\"").append(style).append("\",fillcolor=\"").append(color).append("\"];\n");
+		m_buffer.append(" ").append(count).append(" [label=\"").append(op.getRootSymbol()).append("\",").append(getVertexStyle(op)).append("];\n");
 		if (m_parent != -1)
 		{
-			m_buffer.append(" ").append(m_parent).append(" -> ").append(count).append(";\n");
+			m_buffer.append(" ").append(m_parent).append(" -> ").append(count).append(" [").append(getEdgeStyle(op)).append("];\n");
 		}
 		m_parent = count;
 	}
@@ -51,39 +49,44 @@ public class GraphvizHologramRenderer<T extends Event> extends HologramVisitor<T
 		return m_buffer.toString() + "}";
 	}
 	
-	protected static String getColor(Operator<?> op)
+	protected static String getVertexStyle(Operator<?> op)
 	{
 		Value v = op.getValue();
+		String shape = "";
+		if (op instanceof EventLeaf)
+		{
+			shape = "shape=\"oval\",";
+		}
 		if (v == Value.TRUE)
 		{
 			if (op.isDeleted())
 			{
-				return "darkseagreen1";
+				return shape + "style=\"dashed,filled\",color=\"grey\",fillcolor=\"darkseagreen1\"";
 			}
-			return "chartreuse";
+			return shape + "style=\"filled\",fillcolor=\"chartreuse\"";
 		}
 		if (v == Value.FALSE)
 		{
 			if (op.isDeleted())
 			{
-				return "orange";
+				return shape + "style=\"dashed,filled\",color=\"grey\",fillcolor=\"lightpink\"";
 			}
-			return "firebrick1";
+			return shape + "style=\"filled\",fillcolor=\"firebrick1\"";
 		}
 		if (op.isDeleted())
 		{
-			return "ivory2";
+			return shape + "style=\"dashed,filled\",color=\"grey\",fillcolor=\"ivory2\"";
 		}
-		return "white";
+		return shape + "style=\"filled\",fillcolor=\"white\"";
 	}
-	
-	protected static String getStyle(Operator<?> op)
+		
+	protected static String getEdgeStyle(Operator<?> op)
 	{
 		if (op.isDeleted())
 		{
-			return "dashed,filled";
+			return "style=\"dashed\",color=\"grey\"";
 		}
-		return "filled";
-	}
+		return "style=\"solid\"";
+	}	
 
 }
