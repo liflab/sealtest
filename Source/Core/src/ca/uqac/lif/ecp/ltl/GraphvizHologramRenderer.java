@@ -13,11 +13,12 @@ public class GraphvizHologramRenderer<T extends Event> extends HologramVisitor<T
 	public void visit(Operator<T> op, int count) 
 	{
 		String color = getColor(op);
+		String style = getStyle(op);
 		if (m_parent == -1)
 		{
 			m_buffer.append("digraph G {\n node[shape=\"rectangle\",style=\"filled\"];\n");
 		}
-		m_buffer.append(" ").append(count).append(" [label=\"").append(op.getRootSymbol()).append("\",fillcolor=\"").append(color).append("\"];\n");
+		m_buffer.append(" ").append(count).append(" [label=\"").append(op.getRootSymbol()).append("\",style=\"").append(style).append("\",fillcolor=\"").append(color).append("\"];\n");
 		if (m_parent != -1)
 		{
 			m_buffer.append(" ").append(m_parent).append(" -> ").append(count).append(";\n");
@@ -55,13 +56,34 @@ public class GraphvizHologramRenderer<T extends Event> extends HologramVisitor<T
 		Value v = op.getValue();
 		if (v == Value.TRUE)
 		{
+			if (op.isDeleted())
+			{
+				return "darkseagreen1";
+			}
 			return "chartreuse";
 		}
 		if (v == Value.FALSE)
 		{
+			if (op.isDeleted())
+			{
+				return "orange";
+			}
 			return "firebrick1";
 		}
+		if (op.isDeleted())
+		{
+			return "ivory2";
+		}
 		return "white";
+	}
+	
+	protected static String getStyle(Operator<?> op)
+	{
+		if (op.isDeleted())
+		{
+			return "dashed,filled";
+		}
+		return "filled";
 	}
 
 }

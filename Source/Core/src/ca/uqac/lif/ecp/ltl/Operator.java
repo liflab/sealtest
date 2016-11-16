@@ -39,6 +39,11 @@ public abstract class Operator<T extends Event>
 	protected Value m_value = Value.INCONCLUSIVE;
 	
 	/**
+	 * Whether this node is deleted from a hologram
+	 */
+	protected boolean m_deleted = false;
+	
+	/**
 	 * Evaluates the operator on the new event
 	 * @param event The event
 	 */
@@ -60,8 +65,23 @@ public abstract class Operator<T extends Event>
 		if (with_tree)
 		{
 			o.m_value = m_value;
+			o.m_deleted = m_deleted;
 		}
 	}
+	
+	/**
+	 * Determines if a node is deleted
+	 * @return true if the node is deleted
+	 */
+	public final boolean isDeleted()
+	{
+		return m_deleted;
+	}
+	
+	/**
+	 * Marks a node as deleted
+	 */
+	public abstract void delete();
 	
 	public abstract int size(boolean with_tree);
 	

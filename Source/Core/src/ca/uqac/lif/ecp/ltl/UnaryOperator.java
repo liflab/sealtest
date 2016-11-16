@@ -63,4 +63,11 @@ public abstract class UnaryOperator<T extends Event> extends Operator<T>
 		list.add(m_operand);
 		return list;
 	}
+	
+	@Override
+	public void delete()
+	{
+		m_deleted = true;
+		m_operand.delete();
+	}
 }

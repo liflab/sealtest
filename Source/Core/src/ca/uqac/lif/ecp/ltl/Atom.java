@@ -107,4 +107,10 @@ public class Atom<T extends Event> extends Operator<T>
 	{
 		return new MathList<Operator<T>>();
 	}
+	
+	@Override
+	public void delete()
+	{
+		m_deleted = true;
+	}
 }

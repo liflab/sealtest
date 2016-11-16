@@ -71,19 +71,55 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 	
 	boolean chidrenEquals(UnaryTemporalOperator<T> o)
 	{
-		if (m_instantiatedTrees.size() != o.m_instantiatedTrees.size())
-		{
-			return false;
-		}
-		for (int i = 0; i < m_instantiatedTrees.size(); i++)
+		int i = 0, j = 0;
+		while (i < m_instantiatedTrees.size() && j < o.m_instantiatedTrees.size())
 		{
 			Operator<T> op1 = m_instantiatedTrees.get(i);
-			Operator<T> op2 = o.m_instantiatedTrees.get(i);
+			Operator<T> op2 = o.m_instantiatedTrees.get(j);
+			if (op1.isDeleted())
+			{
+				i++;
+				continue;
+			}
+			if (op2.isDeleted())
+			{
+				j++;
+				continue;
+			}
 			if (!op1.equals(op2))
+			{
+				return false;
+			}
+			i++;
+			j++;
+		}
+		for (int n = i; n < m_instantiatedTrees.size(); n++)
+		{
+			Operator<T> op = m_instantiatedTrees.get(n);
+			if (!op.isDeleted())
+			{
+				return false;
+			}
+		}
+		for (int n = i; n < o.m_instantiatedTrees.size(); n++)
+		{
+			Operator<T> op = o.m_instantiatedTrees.get(n);
+			if (!op.isDeleted())
 			{
 				return false;
 			}
 		}
 		return true;
+	}
+	
+	@Override
+	public void delete()
+	{
+		m_deleted = true;
+		m_operand.delete();
+		for (Operator<T> op : m_instantiatedTrees)
+		{
+			op.delete();
+		}
 	}
 }

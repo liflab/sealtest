@@ -9,16 +9,16 @@ import ca.uqac.lif.structures.MathList;
 public abstract class NaryOperator<T extends Event> extends Operator<T>
 {
 	protected List<Operator<T>> m_operands;
-	
+
 	protected final String m_symbol;
-	
+
 	public NaryOperator(String symbol)
 	{
 		super();
 		m_symbol = symbol;
 		m_operands = new ArrayList<Operator<T>>();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public NaryOperator(String symbol, Object ... ops)
 	{
@@ -33,7 +33,7 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 			}
 		}
 	}
-	
+
 	protected int hashCode(int start_value)
 	{
 		for (Operator<T> op : m_operands)
@@ -42,25 +42,50 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		}
 		return start_value;
 	}
-	
+
 	protected boolean childrenEquals(NaryOperator<T> o)
 	{
-		if (o.m_operands.size() != m_operands.size())
-		{
-			return false;
-		}
-		for (int i = 0; i < m_operands.size(); i++)
+		int i = 0, j = 0;
+		while (i < m_operands.size() && j < o.m_operands.size())
 		{
 			Operator<T> op1 = m_operands.get(i);
-			Operator<T> op2 = o.m_operands.get(i);
+			Operator<T> op2 = o.m_operands.get(j);
+			if (op1.isDeleted())
+			{
+				i++;
+				continue;
+			}
+			if (op2.isDeleted())
+			{
+				j++;
+				continue;
+			}
 			if (!op1.equals(op2))
+			{
+				return false;
+			}
+			i++;
+			j++;
+		}
+		for (int n = i; n < m_operands.size(); n++)
+		{
+			Operator<T> op = m_operands.get(n);
+			if (!op.isDeleted())
+			{
+				return false;
+			}
+		}
+		for (int n = i; n < o.m_operands.size(); n++)
+		{
+			Operator<T> op = o.m_operands.get(n);
+			if (!op.isDeleted())
 			{
 				return false;
 			}
 		}
 		return true;
 	}
-	
+
 	protected void copyInto(NaryOperator<T> o, boolean with_tree)
 	{
 		super.copyInto(o, with_tree);
@@ -69,7 +94,7 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 			o.m_operands.add(op.copy(with_tree));
 		}
 	}
-	
+
 	@Override
 	public String toString()
 	{
@@ -84,7 +109,7 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		}
 		return out.toString();
 	}
-	
+
 	@Override
 	public void acceptPrefix(HologramVisitor<T> visitor)
 	{
@@ -95,29 +120,42 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		}
 		visitor.backtrack();
 	}
-	
+
 	@Override
 	public String getRootSymbol()
 	{
 		return m_symbol;
 	}
-	
+
 	@Override
 	public int size(boolean with_tree)
 	{
 		int size = 1;
 		for (Operator<T> op : m_operands)
 		{
-			size += op.size(with_tree);
+			if (!op.isDeleted())
+			{
+				size += op.size(with_tree);
+			}
 		}
 		return size;
 	}
-	
+
 	@Override
 	public List<Operator<T>> getTreeChildren()
 	{
 		MathList<Operator<T>> list = new MathList<Operator<T>>();
 		list.addAll(m_operands);
 		return list;
+	}
+	
+	@Override
+	public void delete()
+	{
+		m_deleted = true;
+		for (Operator<T> op : m_operands)
+		{
+			op.delete();
+		}
 	}
 }

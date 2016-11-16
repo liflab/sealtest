@@ -28,6 +28,11 @@ public class OperatorTest
 		
 		
 		Operator<AtomicEvent> tree = o.copy(true);
+		for (Operator<AtomicEvent> c : tree.getTreeChildren())
+		{
+			c.delete();
+			break;
+		}
 		String dot = render(tree);
 		v = o.getValue();
 		assertEquals(v, Value.FALSE);
