@@ -62,6 +62,15 @@ public class Atom<T extends Event> extends Operator<T>
 		}
 	}
 	
+	/**
+	 * Gets the event that this atom asserts
+	 * @return The event
+	 */
+	public T getEvent()
+	{
+		return m_event;
+	}
+	
 	@Override
 	public String toString()
 	{

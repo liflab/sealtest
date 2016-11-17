@@ -17,7 +17,8 @@
 a | b			a,b,a		FFD
 a | b			c,b,a		FFD
 G (a -> (X b))		c,a,c		FFD
+G (a -> (X b))		c,a,c		PD
 G (a -> (X b))		c,a,c		LD
 G (a -> (X b))		c,a,c		DF2
 G (a -> (X b))		c,a,c		RC2
-G (a -> (X b))		a,b,c,a,b	FFD+RC3
+G (a -> (X b))		a,b,c,a,b	FFD + RC3

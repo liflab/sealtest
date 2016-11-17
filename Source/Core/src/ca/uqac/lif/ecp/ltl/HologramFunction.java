@@ -63,6 +63,15 @@ public class HologramFunction<T extends Event> extends TriagingFunction<T, Opera
 		Operator<T> hologram = m_transformation.transform(tree);
 		return new MathSet<Operator<T>>(hologram);
 	}
+	
+	/**
+	 * Gets the formula on which this function operates
+	 * @return The formula
+	 */
+	public Operator<T> getFormula()
+	{
+		return m_formula;
+	}
 
 	@Override
 	public MathSet<Operator<T>> getStartClass() 

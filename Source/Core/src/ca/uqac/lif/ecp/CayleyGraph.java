@@ -45,6 +45,11 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	CayleyVertexLabelling<U> m_labelling;
 	
 	/**
+	 * The formatter used to display the category labels
+	 */
+	LabelFormatter<U> m_labelFormatter = new LabelFormatter<U>();
+	
+	/**
 	 * Creates an empty graph
 	 */
 	public CayleyGraph()
@@ -61,6 +66,11 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	{
 		super(graph);
 		m_labelling = graph.m_labelling;
+	}
+	
+	public void setLabelFormatter(LabelFormatter<U> formatter)
+	{
+		m_labelFormatter = formatter;
 	}
 		
 	/**
@@ -341,7 +351,8 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			MathSet<U> labelling_out = getLabelling().get(id);
 			if (labelling_out != null)
 			{
-				vertex_string.append(id).append(" [label=\"").append(getLabelling().get(id)).append("\"];").append(crlf);
+				MathSet<U> label = getLabelling().get(id);
+				vertex_string.append(id).append(" [label=\"").append(m_labelFormatter.format(label)).append("\"];").append(crlf);
 			}
 			for (Edge<T> e : v.getEdges())
 			{
@@ -351,6 +362,19 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 		out.append(vertex_string);
 		out.append("}");
 		return out.toString();
+	}
+	
+	public static class LabelFormatter<X>
+	{
+		public LabelFormatter()
+		{
+			super();
+		}
+		
+		public String format(MathSet<X> category)
+		{
+			return category.toString();
+		}
 	}
 	
 	public static class IsomorphismException extends Exception
