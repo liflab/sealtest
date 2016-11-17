@@ -44,12 +44,6 @@ public abstract class Operator<T extends Event>
 	protected boolean m_deleted = false;
 	
 	/**
-	 * Evaluates the operator on the new event
-	 * @param event The event
-	 */
-	public abstract void evaluate(T event);
-	
-	/**
 	 * Gets the current truth value of the operator
 	 * @return The current truth value of the operator
 	 */
@@ -58,8 +52,21 @@ public abstract class Operator<T extends Event>
 		return m_value;
 	}
 	
-	public abstract Operator<T> copy(boolean with_tree);
+	/**
+	 * Creates a deep copy of this operator
+	 * @return The copy
+	 */
+	public final Operator<T> copy()
+	{
+		return copy(false);
+	}
 	
+	/**
+	 * Copies the internal content of this operator into a new instance
+	 * @param o The new instance
+	 * @param with_tree Set to <code>true</code> to also copy data related
+	 *   to the operator's evaluation tree
+	 */
 	protected void copyInto(Operator<T> o, boolean with_tree)
 	{
 		if (with_tree)
@@ -79,15 +86,64 @@ public abstract class Operator<T extends Event>
 	}
 	
 	/**
+	 * Gets the size of this formula
+	 * @return The size
+	 */
+	public final int size()
+	{
+		return size(false);
+	}
+	
+	/**
+	 * Creates a deep copy of this operator
+	 * @param with_tree If set to <code>true</code>, will also copy the
+	 *   evaluation tree
+	 * @return The copy
+	 */
+	public abstract Operator<T> copy(boolean with_tree);
+	
+	/**
+	 * Evaluates the operator on the new event
+	 * @param event The event
+	 */
+	public abstract void evaluate(T event);
+	
+	/**
 	 * Marks a node as deleted
 	 */
 	public abstract void delete();
 	
+	/**
+	 * Gets the size of this formula
+	 * @param with_tree If set to <code>true</code>, will compute
+	 *  the size of the evaluation tree of this formula instead
+	 * @return The size
+	 */
 	public abstract int size(boolean with_tree);
 	
+	/**
+	 * Gets the symbol of the operator for the root of the evaluation tree
+	 * @return The symbol
+	 */
 	public abstract String getRootSymbol();
 	
+	/**
+	 * Accepts a hologram visitor into the evaluation tree for this
+	 * operator
+	 * @param visitor The visitor
+	 */
 	public abstract void acceptPrefix(HologramVisitor<T> visitor);
 	
+	/**
+	 * Gets the ordered list of the children in the evaluation tree for this
+	 * operator
+	 * @return The children
+	 */
 	public abstract List<Operator<T>> getTreeChildren();
+	
+	/**
+	 * Adds an operand to this operator
+	 * @param op The operand
+	 */
+	public abstract void addOperand(Operator<T> op);
 }

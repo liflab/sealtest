@@ -18,18 +18,28 @@
 package ca.uqac.lif.ecp.ltl;
 
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.util.EmptyException;
 
 /**
- * Hologram transformation that does nothing
- * 
+ * Builds an expression from some source
  * @author Sylvain Hallé
  *
  * @param <T> The event type
  */
-public class IdentityHologramTransformation<T extends Event> extends HologramTransformation<T>
+public abstract class OperatorBuilder<T extends Event>
 {
-	public Operator<T> transform(Operator<T> tree)
+	public abstract Operator<T> build() throws BuildException;
+	
+	public static class BuildException extends EmptyException
 	{
-		return tree;
+		/**
+		 * Dummy UID
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public BuildException(String message)
+		{
+			super(message);
+		}
 	}
 }

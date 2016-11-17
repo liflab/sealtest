@@ -1,3 +1,20 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp.ltl;
 
 import java.util.ArrayList;
@@ -6,6 +23,12 @@ import java.util.List;
 import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.structures.MathList;
 
+/**
+ * Basic functionalities associated to a <i>n</i>-ary logical operator
+ * @author Sylvain Hallé
+ *
+ * @param <T> The event type
+ */
 public abstract class NaryOperator<T extends Event> extends Operator<T>
 {
 	protected List<Operator<T>> m_operands;
@@ -33,7 +56,19 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 			}
 		}
 	}
+	
+	@Override
+	public void addOperand(Operator<T> op)
+	{
+		m_operands.add(op);
+	}
 
+	/**
+	 * Computes the hash code of this n-ary operator, starting from
+	 * an initial value 
+	 * @param start_value The initial value
+	 * @return The hash code
+	 */
 	protected int hashCode(int start_value)
 	{
 		for (Operator<T> op : m_operands)
@@ -43,6 +78,14 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		return start_value;
 	}
 
+	/**
+	 * Checks whether the children of this operator are equal to that of
+	 * another n-ary operator. This check takes into account the fact that 
+	 * children that are marked as deleted in either operator should be 
+	 * skipped.
+	 * @param o The other operator
+	 * @return true if their children are equal, false otherwise
+	 */
 	protected boolean childrenEquals(NaryOperator<T> o)
 	{
 		int i = 0, j = 0;
@@ -86,6 +129,12 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		return true;
 	}
 
+	/**
+	 * Copies the internal content of this operator into a new instance
+	 * @param o The new instance
+	 * @param with_tree Set to <code>true</code> to also copy data related
+	 *   to the operator's evaluation tree
+	 */
 	protected void copyInto(NaryOperator<T> o, boolean with_tree)
 	{
 		super.copyInto(o, with_tree);

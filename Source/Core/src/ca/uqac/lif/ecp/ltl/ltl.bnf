@@ -1,0 +1,15 @@
+# --------------------------------------
+# BNF grammar for Linear Temporal Logic
+# This grammar leaves the <atom> non-terminal undefined on purpose:
+# it is up to each specific parser to define what it means
+# --------------------------------------
+
+<S>           := <binary-op> | <unary-op> | <atom> ;
+<binary-op>   := <and> | <or> ;
+<unary-op>    := <not> | <globally> | <eventually> | <next> ;
+<and>         := <atom> & <atom> | <atom> & ( <S> ) | ( <S> ) & <atom> | ( <S> ) & ( <S> ) ;
+<or>          := <atom> & <atom> | <atom> & ( <S> ) | ( <S> ) & <atom> | ( <S> ) & ( <S> ) ;
+<globally>    := G <atom> | G ( <S> ) ;
+<eventually>  := F <atom> | F ( <S> ) ;
+<next>        := X <atom> | X ( <S> ) ;
+<not>         := ! <atom> | ! ( <S> ) ;
