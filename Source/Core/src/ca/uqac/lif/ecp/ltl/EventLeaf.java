@@ -80,7 +80,14 @@ public class EventLeaf<T extends Event> extends Operator<T>
 	}
 
 	@Override
-	public void acceptPrefix(HologramVisitor<T> visitor)
+	public void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree)
+	{
+		visitor.visit(this);
+		visitor.backtrack();
+	}
+	
+	@Override
+	public void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree)
 	{
 		visitor.visit(this);
 		visitor.backtrack();

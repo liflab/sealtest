@@ -160,13 +160,24 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 	}
 
 	@Override
-	public void acceptPrefix(HologramVisitor<T> visitor)
+	public void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree)
 	{
 		visitor.visit(this);
 		for (Operator<T> op : m_operands)
 		{
-			op.acceptPrefix(visitor);
+			op.acceptPrefix(visitor, in_tree);
 		}
+		visitor.backtrack();
+	}
+	
+	@Override
+	public void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree)
+	{
+		for (Operator<T> op : m_operands)
+		{
+			op.acceptPostfix(visitor, in_tree);
+		}
+		visitor.visit(this);
 		visitor.backtrack();
 	}
 
@@ -188,6 +199,15 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 			}
 		}
 		return size;
+	}
+	
+	/**
+	 * Gets the number of children in the expression
+	 * @return The number of children
+	 */
+	public int childrenCount()
+	{
+		return m_operands.size();
 	}
 
 	@Override

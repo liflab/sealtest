@@ -22,6 +22,15 @@ import java.util.List;
 import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.ltl.Operator.Value;
 
+/**
+ * Hologram transformation that deletes all children of a node up to
+ * the first node that determines its truth value. This supposes that
+ * tree children are ordered.
+ * 
+ * @author Sylvain Hallé
+ *
+ * @param <T> The event type
+ */
 public class FailFastDeletion<T extends Event> extends HologramTransformation<T> 
 {
 
@@ -82,5 +91,11 @@ public class FailFastDeletion<T extends Event> extends HologramTransformation<T>
 				}
 			}
 		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Fail-fast deletion";
 	}
 }

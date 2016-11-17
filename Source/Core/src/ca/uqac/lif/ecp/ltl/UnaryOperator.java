@@ -82,10 +82,18 @@ public abstract class UnaryOperator<T extends Event> extends Operator<T>
 	}
 	
 	@Override
-	public void acceptPrefix(HologramVisitor<T> visitor)
+	public void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree)
 	{
 		visitor.visit(this);
-		m_operand.acceptPrefix(visitor);
+		m_operand.acceptPrefix(visitor, in_tree);
+		visitor.backtrack();
+	}
+	
+	@Override
+	public void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree)
+	{
+		m_operand.acceptPostfix(visitor, in_tree);
+		visitor.visit(this);
 		visitor.backtrack();
 	}
 	

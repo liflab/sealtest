@@ -61,7 +61,7 @@ public class OperatorTest
 	public static String render(Operator<AtomicEvent> tree)
 	{
 		GraphvizHologramRenderer<AtomicEvent> renderer = new GraphvizHologramRenderer<AtomicEvent>();
-		tree.acceptPrefix(renderer);
+		tree.acceptPrefix(renderer, true);
 		String dot = renderer.toDot();
 		return dot;
 	}

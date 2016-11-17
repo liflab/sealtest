@@ -140,6 +140,15 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 				o.addOperand(right);
 				m_stack.push(o);
 			}
+			else if (token_name.compareTo("<implies>") == 0)
+			{
+				Implies<T> o = new Implies<T>();
+				Operator<T> right = m_stack.pop();
+				Operator<T> left = m_stack.pop();
+				o.addOperand(left);
+				o.addOperand(right);
+				m_stack.push(o);
+			}
 			else if (token_name.compareTo("<globally>") == 0)
 			{
 				Globally<T> o = new Globally<T>();
@@ -275,7 +284,10 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 		public String getRootSymbol() {	return null; }
 
 		@Override
-		public void acceptPrefix(HologramVisitor<U> visitor) {	}
+		public void acceptPrefix(HologramVisitor<U> visitor, boolean in_tree) {	}
+		
+		@Override
+		public void acceptPostfix(HologramVisitor<U> visitor, boolean in_tree) { }
 
 		@Override
 		public List<Operator<U>> getTreeChildren() { return null; }

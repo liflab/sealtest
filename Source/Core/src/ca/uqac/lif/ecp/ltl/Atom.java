@@ -102,10 +102,24 @@ public class Atom<T extends Event> extends Operator<T>
 	}
 
 	@Override
-	public void acceptPrefix(HologramVisitor<T> visitor)
+	public void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree)
 	{
 		visitor.visit(this);
-		m_eventSeen.acceptPrefix(visitor);
+		if (in_tree)
+		{
+			m_eventSeen.acceptPrefix(visitor, in_tree);
+		}
+		visitor.backtrack();
+	}
+	
+	@Override
+	public void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree)
+	{
+		if (in_tree)
+		{
+			m_eventSeen.acceptPostfix(visitor, in_tree);
+		}
+		visitor.visit(this);
 		visitor.backtrack();
 	}
 	

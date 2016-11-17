@@ -26,19 +26,19 @@ import ca.uqac.lif.structures.MathList;
 public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperator<T> 
 {
 	protected List<Operator<T>> m_instantiatedTrees;
-	
+
 	public UnaryTemporalOperator(String symbol)
 	{
 		super(symbol);
 		m_instantiatedTrees = new LinkedList<Operator<T>>();
 	}
-	
+
 	public UnaryTemporalOperator(String symbol, Operator<T> operand)
 	{
 		super(symbol, operand);
 		m_instantiatedTrees = new LinkedList<Operator<T>>();
 	}
-	
+
 	/**
 	 * Copies the internal content of this operator into a new instance
 	 * @param o The new instance
@@ -54,18 +54,43 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 			o.m_instantiatedTrees.addAll(m_instantiatedTrees);
 		}
 	}
-	
+
 	@Override
-	public void acceptPrefix(HologramVisitor<T> visitor)
+	public void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree)
 	{
 		visitor.visit(this);
-		for (Operator<T> op : m_instantiatedTrees)
+		if (in_tree)
 		{
-			op.acceptPrefix(visitor);
+			for (Operator<T> op : m_instantiatedTrees)
+			{
+				op.acceptPrefix(visitor, in_tree);
+			}
+		}
+		else
+		{
+			m_operand.acceptPrefix(visitor, in_tree);
 		}
 		visitor.backtrack();
 	}
 	
+	@Override
+	public void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree)
+	{
+		if (in_tree)
+		{
+			for (Operator<T> op : m_instantiatedTrees)
+			{
+				op.acceptPostfix(visitor, in_tree);
+			}
+		}
+		else
+		{
+			m_operand.acceptPostfix(visitor, in_tree);
+		}
+		visitor.visit(this);
+		visitor.backtrack();
+	}
+
 	@Override
 	public int size(boolean with_tree)
 	{
@@ -83,7 +108,7 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		}
 		return size;
 	}
-	
+
 	@Override
 	public List<Operator<T>> getTreeChildren()
 	{
@@ -91,7 +116,7 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		list.addAll(m_instantiatedTrees);
 		return list;
 	}
-	
+
 	/**
 	 * Checks whether the children of the <em>evaluation tree</em> of
 	 * this operator are equal to that of
@@ -143,7 +168,7 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void delete()
 	{

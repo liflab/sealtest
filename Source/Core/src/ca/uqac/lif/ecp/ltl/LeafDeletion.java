@@ -17,29 +17,47 @@
  */
 package ca.uqac.lif.ecp.ltl;
 
+import java.util.List;
+
 import ca.uqac.lif.ecp.Event;
 
 /**
- * Hologram transformation that deletes all the children of a node that
- * do not determine its truth value. This is a refinement over
- * {@link FailFastDeletion}.
- * 
+ * Hologram transformation that removes all the leaves of the evaluation
+ * tree.
  * @author Sylvain Hallé
  *
  * @param <T> The event type
  */
-public class PolarityDeletion<T extends Event> extends FailFastDeletion<T> 
+public class LeafDeletion<T extends Event> extends HologramTransformation<T> 
 {
 	@Override
 	public Operator<T> transform(Operator<T> tree) 
 	{
-		transformRecursive(tree, false);
+		transformRecursive(tree);
 		return tree;
+	}
+	
+	protected void transformRecursive(Operator<T> node)
+	{
+		if (node.isDeleted())
+		{
+			return;
+		}
+		List<Operator<T>> children = node.getTreeChildren();
+		for (Operator<T> child : children)
+		{
+			// Recursively apply the transformation to children
+			transformRecursive(child);
+		}
+		if (node instanceof EventLeaf)
+		{
+			node.delete();
+		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Polarity deletion";
+		return "Leaf deletion";
 	}
 }

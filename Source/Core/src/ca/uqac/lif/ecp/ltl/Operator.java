@@ -128,11 +128,40 @@ public abstract class Operator<T extends Event>
 	public abstract String getRootSymbol();
 	
 	/**
+	 * Accepts a hologram visitor into the operator
+	 * @param visitor The visitor
+	 */
+	public final void acceptPrefix(HologramVisitor<T> visitor)
+	{
+		acceptPrefix(visitor, false);
+	}
+	
+	/**
+	 * Accepts a hologram visitor into the operator
+	 * @param visitor The visitor
+	 */
+	public final void acceptPostfix(HologramVisitor<T> visitor)
+	{
+		acceptPostfix(visitor, false);
+	}
+	
+	/**
 	 * Accepts a hologram visitor into the evaluation tree for this
 	 * operator
 	 * @param visitor The visitor
+	 * @param in_tree Whether to visit the evaluation tree (true) or
+	 *   the formula (false)
 	 */
-	public abstract void acceptPrefix(HologramVisitor<T> visitor);
+	public abstract void acceptPrefix(HologramVisitor<T> visitor, boolean in_tree);
+	
+	/**
+	 * Accepts a hologram visitor into the evaluation tree for this
+	 * operator
+	 * @param visitor The visitor
+	 * @param in_tree Whether to visit the evaluation tree (true) or
+	 *   the formula (false)
+	 */
+	public abstract void acceptPostfix(HologramVisitor<T> visitor, boolean in_tree);
 	
 	/**
 	 * Gets the ordered list of the children in the evaluation tree for this

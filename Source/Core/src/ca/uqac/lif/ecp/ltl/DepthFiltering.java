@@ -21,30 +21,48 @@ import java.util.List;
 
 import ca.uqac.lif.ecp.Event;
 
-public class LeafRemoval<T extends Event> extends HologramTransformation<T> 
+public class DepthFiltering<T extends Event> extends HologramTransformation<T> 
 {
-	@Override
-	public Operator<T> transform(Operator<T> tree) 
+	/**
+	 * The depth at which to cut the tree
+	 */
+	protected transient int m_depth = 1; 
+	
+	public DepthFiltering(int depth)
 	{
-		transformRecursive(tree);
+		super();
+		m_depth = depth;
+	}
+
+	@Override
+	public Operator<T> transform(Operator<T> tree)
+	{
+		transformRecursive(tree, 0);
 		return tree;
 	}
 	
-	protected void transformRecursive(Operator<T> node)
+	protected void transformRecursive(Operator<T> node, int depth)
 	{
 		if (node.isDeleted())
 		{
+			return;
+		}
+		if (depth >= m_depth)
+		{
+			node.delete();
 			return;
 		}
 		List<Operator<T>> children = node.getTreeChildren();
 		for (Operator<T> child : children)
 		{
 			// Recursively apply the transformation to children
-			transformRecursive(child);
+			transformRecursive(child, depth + 1);
 		}
-		if (node instanceof EventLeaf)
-		{
-			node.delete();
-		}
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Filtering of depth " + m_depth;
 	}
 }
