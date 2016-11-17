@@ -105,26 +105,20 @@ public class HologramTransformationTest
 			t_case.m_query = parts[0].trim();
 			t_case.m_trace = parts[1].trim();
 			String transformation = parts[2].trim();
-			if (transformation.compareTo("FFD") == 0)
+			if (transformation.contains("+"))
 			{
-				t_case.m_transformation = new FailFastDeletion<AtomicEvent>();
-			}
-			else if (transformation.compareTo("LD") == 0)
-			{
-				t_case.m_transformation = new LeafDeletion<AtomicEvent>();
-			}
-			else if (transformation.compareTo("PD") == 0)
-			{
-				t_case.m_transformation = new PolarityDeletion<AtomicEvent>();
-			}
-			else if (transformation.startsWith("DF"))
-			{
-				int depth = Integer.parseInt(transformation.substring(2).trim());
-				t_case.m_transformation = new DepthFiltering<AtomicEvent>(depth);
+				HologramComposition<AtomicEvent> comp = new HologramComposition<AtomicEvent>();
+				String t_parts[] = transformation.split("\\+");
+				for (String t_part : t_parts)
+				{
+					HologramTransformation<AtomicEvent> trans = getTransformation(t_part.trim());
+					comp.add(trans);
+				}
+				t_case.m_transformation = comp;
 			}
 			else
 			{
-				t_case.m_transformation = new IdentityHologramTransformation<AtomicEvent>();
+				t_case.m_transformation = getTransformation(transformation);
 			}
 			queries.add(t_case);
 		}
@@ -132,6 +126,33 @@ public class HologramTransformationTest
 		HologramTransformationTestCase[] out = new HologramTransformationTestCase[queries.size()];
 		queries.toArray(out);
 		return out;
+	}
+	
+	protected static HologramTransformation<AtomicEvent> getTransformation(String transformation)
+	{
+		if (transformation.compareTo("FFD") == 0)
+		{
+			return new FailFastDeletion<AtomicEvent>();
+		}
+		else if (transformation.compareTo("LD") == 0)
+		{
+			return new LeafDeletion<AtomicEvent>();
+		}
+		else if (transformation.compareTo("PD") == 0)
+		{
+			return new PolarityDeletion<AtomicEvent>();
+		}
+		else if (transformation.startsWith("DF"))
+		{
+			int n = Integer.parseInt(transformation.substring(2).trim());
+			return new DepthFiltering<AtomicEvent>(n);
+		}
+		else if (transformation.startsWith("RC"))
+		{
+			int n = Integer.parseInt(transformation.substring(2).trim());
+			return new RootChildDeletion<AtomicEvent>(n);
+		}
+		return new IdentityHologramTransformation<AtomicEvent>();		
 	}
 	
 	@Parameters(name = "{index}: query {0}")

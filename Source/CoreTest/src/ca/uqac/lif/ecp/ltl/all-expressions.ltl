@@ -1,11 +1,15 @@
 # ------------------------------------------
 # Queries used in the unit tests
 #
-# ID  : identity transformation
-# FFD : fail-fast deletion
-# PD  : polarity deletion
-# LD  : leaf deletion
-# DFx : filtering of depth x
+# Available transformations
+#
+#   ID  : identity transformation
+#   FFD : fail-fast deletion
+#   PD  : polarity deletion
+#   LD  : leaf deletion
+#   DFx : filtering of depth x
+#   RCx : keep only x first children of root
+#   +   : composition of two transformations
 # ------------------------------------------
 
 # Formula		Trace		Hologram transformation
@@ -15,3 +19,5 @@ a | b			c,b,a		FFD
 G (a -> (X b))		c,a,c		FFD
 G (a -> (X b))		c,a,c		LD
 G (a -> (X b))		c,a,c		DF2
+G (a -> (X b))		c,a,c		RC2
+G (a -> (X b))		a,b,c,a,b	FFD+RC3

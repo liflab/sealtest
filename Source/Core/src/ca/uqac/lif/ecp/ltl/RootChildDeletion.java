@@ -23,21 +23,39 @@ import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.ltl.Operator.Value;
 
 /**
- * Hologram transformation that deletes all children of a node up to
- * the first node that determines its truth value. This supposes that
- * tree children are ordered.
+ * Hologram transformation that deletes all children of the root node
+ * past a specific count.
  * 
  * @author Sylvain Hallé
  *
  * @param <T> The event type
  */
-public class FailFastDeletion<T extends Event> extends HologramTransformation<T> 
+public class RootChildDeletion<T extends Event> extends HologramTransformation<T> 
 {
+	/**
+	 * The maximum number of children that the root node can have
+	 */
+	protected int m_maxChildren = 1;
+	
+	public RootChildDeletion(int max_children)
+	{
+		super();
+		m_maxChildren = max_children;
+	}
 
 	@Override
 	public Operator<T> transform(Operator<T> tree) 
 	{
-		transformRecursive(tree, true);
+		List<Operator<T>> children = tree.getTreeChildren();
+		int n = 0;
+		for (Operator<T> child : children)
+		{
+			n++;
+			if (n > m_maxChildren)
+			{
+				child.delete();
+			}
+		}
 		return tree;
 	}
 	
@@ -91,30 +109,11 @@ public class FailFastDeletion<T extends Event> extends HologramTransformation<T>
 				}
 			}
 		}
-		// The case of -> requires special attention
-		// Note that there is no difference between fail-fast and polarity
-		// for this special case
-		if (node instanceof Implies && node.getValue() == Value.TRUE)
-		{
-			Operator<T> left = children.get(0);
-			Operator<T> right = children.get(1);
-			if (left.getValue() == Value.FALSE)
-			{
-				right.delete();
-			}
-			else if (right.getValue() == Value.TRUE)
-			{
-				// left is true, but since right is true,
-				// the implication would be true no matter what
-				// value left has
-				left.delete();
-			}
-		}
 	}
 	
 	@Override
 	public String toString()
 	{
-		return "Fail-fast deletion";
+		return "Keep only " + m_maxChildren + " first children";
 	}
 }

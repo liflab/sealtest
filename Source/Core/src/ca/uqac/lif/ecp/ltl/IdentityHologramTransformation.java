@@ -32,4 +32,10 @@ public class IdentityHologramTransformation<T extends Event> extends HologramTra
 	{
 		return tree;
 	}
+	
+	@Override
+	public String toString()
+	{
+		return "Identity";
+	}
 }
