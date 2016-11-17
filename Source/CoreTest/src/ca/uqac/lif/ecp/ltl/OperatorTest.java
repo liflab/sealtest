@@ -2,6 +2,11 @@ package ca.uqac.lif.ecp.ltl;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.junit.Test;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
@@ -36,6 +41,7 @@ public class OperatorTest
 		PolarityDeletion<AtomicEvent> trans = new PolarityDeletion<AtomicEvent>();
 		tree = trans.transform(tree);
 		String dot = render(tree);
+		writeToFile("thetree.dot", dot);
 		v = o.getValue();
 		assertEquals(v, Value.FALSE);
 		//System.out.println(o);
@@ -59,4 +65,23 @@ public class OperatorTest
 		String dot = renderer.toDot();
 		return dot;
 	}
+	
+	public static void writeToFile(String filename, String contents)
+	{
+		try 
+		{
+			FileOutputStream fos = new FileOutputStream(new File(filename));
+			fos.write(contents.getBytes());
+			fos.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			e.printStackTrace();
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
+		}
+	}
+
 }
