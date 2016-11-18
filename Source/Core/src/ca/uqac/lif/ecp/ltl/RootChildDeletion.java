@@ -119,6 +119,6 @@ public class RootChildDeletion<T extends Event> extends HologramTransformation<T
 	@Override
 	public String toString()
 	{
-		return "Keep only " + m_maxChildren + " first children";
+		return "Keep only the first " + m_maxChildren + " children";
 	}
 }

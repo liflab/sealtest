@@ -34,8 +34,11 @@ public class Globally<T extends Event> extends UnaryTemporalOperator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		Operator<T> new_operand = m_operand.copy(false);
-		m_instantiatedTrees.add(new_operand);
+		if (event != null)
+		{
+			Operator<T> new_operand = m_operand.copy(false);
+			m_instantiatedTrees.add(new_operand);
+		}
 		boolean false_seen = false;
 		for (Operator<T> op : m_instantiatedTrees)
 		{

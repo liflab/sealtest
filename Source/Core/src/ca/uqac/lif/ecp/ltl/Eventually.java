@@ -25,7 +25,7 @@ public class Eventually<T extends Event> extends UnaryTemporalOperator<T>
 	{
 		super("F");
 	}
-	
+
 	public Eventually(Operator<T> operand)
 	{
 		super("F", operand);
@@ -34,8 +34,11 @@ public class Eventually<T extends Event> extends UnaryTemporalOperator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		Operator<T> new_operand = m_operand.copy(false);
-		m_instantiatedTrees.add(new_operand);
+		if (event != null)
+		{
+			Operator<T> new_operand = m_operand.copy(false);
+			m_instantiatedTrees.add(new_operand);
+		}
 		boolean true_seen = false;
 		for (Operator<T> op : m_instantiatedTrees)
 		{
@@ -66,13 +69,13 @@ public class Eventually<T extends Event> extends UnaryTemporalOperator<T>
 		super.copyInto(g, with_tree);
 		return g;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return hashCode(2500);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object o)

@@ -25,12 +25,12 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 	 * Whether we are seeing the first event
 	 */
 	protected int m_numEvents = 0;
-	
+
 	Next()
 	{
 		super("X");
 	}
-	
+
 	public Next(Operator<T> operand)
 	{
 		super("X", operand);
@@ -39,17 +39,24 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 	@Override
 	public void evaluate(T event) 
 	{
-		if (m_numEvents == 0)
+		if (event != null)
 		{
-			m_numEvents++;
-			m_value = Value.INCONCLUSIVE;
-			return;
+			if (m_numEvents == 0)
+			{
+				m_numEvents++;
+				m_value = Value.INCONCLUSIVE;
+				return;
+			}
+			if (m_numEvents == 1)
+			{
+				m_numEvents++;
+				Operator<T> new_operand = m_operand.copy(false);
+				m_instantiatedTrees.add(new_operand);
+			}
 		}
-		if (m_numEvents == 1)
+		if (m_instantiatedTrees.isEmpty())
 		{
-			m_numEvents++;
-			Operator<T> new_operand = m_operand.copy(false);
-			m_instantiatedTrees.add(new_operand);
+			return;
 		}
 		Operator<T> op = m_instantiatedTrees.get(0);
 		if (op.isDeleted())
@@ -73,13 +80,13 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 		}
 		return g;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
 		return hashCode(3500);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object o)

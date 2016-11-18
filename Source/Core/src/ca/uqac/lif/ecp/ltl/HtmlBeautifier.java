@@ -32,6 +32,10 @@ public class HtmlBeautifier<T extends Event> extends HologramVisitor<T>
 			return "";
 		}
 		String s = m_parts.peek();
+		if (s.length() <= 1)
+		{
+			return s;
+		}
 		return s.substring(1, s.length() - 1);
 	}
 	

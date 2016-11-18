@@ -37,20 +37,19 @@ public class AtomicLtlCayleyGraphFactoryTest
 	 */
 	protected static final String s_graphFolder = "./";
 	
-	/*@Test
+	@Test
 	public void test1() throws BuildException
 	{
-		String expression = "a";
+		String expression = "F a";
 		AtomicParserBuilder builder = new AtomicParserBuilder(expression);
 		Operator<AtomicEvent> op = builder.build();
-		HologramTransformation<AtomicEvent> ht = new IdentityHologramTransformation<AtomicEvent>();
+		HologramTransformation<AtomicEvent> ht = new RootChildDeletion<AtomicEvent>(1);
 		HologramFunction<AtomicEvent> hf = new HologramFunction<AtomicEvent>(op, ht);
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		graph.setLabelFormatter(formatter);
-		System.out.println(graph);
-	}*/
+		getGraphDot(graph, "<TABLE BORDER=\"0\"><TR><TD>" + s_beautifier.beautify(op) + "</TD></TR><TR><TD>" + ht.toString() + "</TD></TR></TABLE>", s_graphFolder);
+	}
 	
 	@Test
 	public void test2() throws BuildException
@@ -142,7 +141,7 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		//getGraphDot(graph, ht.toString(), s_graphFolder);
+		getGraphDot(graph, "<TABLE BORDER=\"0\"><TR><TD>" + s_beautifier.beautify(op) + "</TD></TR><TR><TD>" + ht.toString() + "</TD></TR></TABLE>", s_graphFolder);
 		assertEquals(17, graph.getVertexCount());
 	}
 	
@@ -152,13 +151,28 @@ public class AtomicLtlCayleyGraphFactoryTest
 		String expression = "G (a & (! b))";
 		AtomicParserBuilder builder = new AtomicParserBuilder(expression);
 		Operator<AtomicEvent> op = builder.build();
-		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new FailFastDeletion<AtomicEvent>(), new RootChildDeletion<AtomicEvent>(1));
+		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new FailFastDeletion<AtomicEvent>(), new RootChildDeletion<AtomicEvent>(3));
 		HologramFunction<AtomicEvent> hf = new HologramFunction<AtomicEvent>(op, ht);
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		//getGraphDot(graph, s_graphFolder);
+		//getGraphDot(graph, "<TABLE BORDER=\"0\"><TR><TD>" + s_beautifier.beautify(op) + "</TD></TR><TR><TD>" + ht.toString() + "</TD></TR></TABLE>", s_graphFolder);
 		assertEquals(4, graph.getVertexCount());
+	}
+	
+	@Test
+	public void test7() throws BuildException
+	{
+		String expression = "G (a -> (X (b | c)))";
+		AtomicParserBuilder builder = new AtomicParserBuilder(expression);
+		Operator<AtomicEvent> op = builder.build();
+		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new RootChildDeletion<AtomicEvent>(4), new LeafDeletion<AtomicEvent>(), new PolarityDeletion<AtomicEvent>());
+		HologramFunction<AtomicEvent> hf = new HologramFunction<AtomicEvent>(op, ht);
+		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
+		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
+		assertNotNull(graph);
+		getGraphDot(graph, "<TABLE BORDER=\"0\"><TR><TD>" + s_beautifier.beautify(op) + "</TD></TR><TR><TD>" + ht.toString() + "</TD></TR></TABLE>", s_graphFolder);
+		assertEquals(17, graph.getVertexCount());
 	}
 	
 	protected void getGraphDot(CayleyGraph<AtomicEvent,Operator<AtomicEvent>> g, String title, String path)
