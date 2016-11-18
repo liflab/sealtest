@@ -109,6 +109,16 @@ public abstract class Operator<T extends Event>
 	public abstract void evaluate(T event);
 	
 	/**
+	 * Refreshes the evaluation of a formula, without sending any new event.
+	 * This is useful to make sure the truth labelling of a hologram is
+	 * correct after performing some deletions.
+	 */
+	public final void evaluate()
+	{
+		evaluate(null);
+	}
+	
+	/**
 	 * Marks a node as deleted
 	 */
 	public abstract void delete();

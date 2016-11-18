@@ -50,6 +50,10 @@ public class Atom<T extends Event> extends Operator<T>
 	@Override
 	public void evaluate(T event) 
 	{
+		if (event == null)
+		{
+			return;
+		}
 		if (m_eventSeen == null)
 		{
 			m_eventSeen = new EventLeaf<T>(event);
@@ -107,9 +111,9 @@ public class Atom<T extends Event> extends Operator<T>
 	public Atom<T> copy(boolean with_tree)
 	{
 		Atom<T> a = new Atom<T>(m_event);
+		super.copyInto(a, with_tree);
 		if (with_tree == true)
 		{
-			a.m_deleted = m_deleted;
 			if (m_eventSeen != null)
 			{
 				a.m_eventSeen = m_eventSeen.copy(with_tree);

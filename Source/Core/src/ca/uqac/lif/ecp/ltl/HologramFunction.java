@@ -71,6 +71,7 @@ public class HologramFunction<T extends Event> extends TriagingFunction<T, Opera
 		}
 		Operator<T> tree = m_formula.copy(true);
 		Operator<T> hologram = m_transformation.transform(tree);
+		//hologram.evaluate(); // Refresh truth value. Currently turned off since causes null pointers
 		return new MathSet<Operator<T>>(hologram);
 	}
 
