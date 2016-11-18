@@ -39,6 +39,11 @@ public class Globally<T extends Event> extends UnaryTemporalOperator<T>
 		boolean false_seen = false;
 		for (Operator<T> op : m_instantiatedTrees)
 		{
+			if (op.isDeleted())
+			{
+				// Ignore deleted nodes
+				continue;
+			}
 			op.evaluate(event);
 			Value v = op.getValue();
 			if (v == Value.FALSE)

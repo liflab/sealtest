@@ -17,6 +17,7 @@
  */
 package ca.uqac.lif.ecp.ltl;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -207,5 +208,20 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 	{
 		super.clear();
 		m_instantiatedTrees.clear();
+	}
+	
+	@Override
+	public void clean()
+	{
+		Iterator<Operator<T>> it = m_instantiatedTrees.iterator();
+		while (it.hasNext())
+		{
+			Operator<T> o = it.next();
+			if (o.isDeleted())
+			{
+				it.remove();
+			}
+			o.clean();
+		}
 	}
 }

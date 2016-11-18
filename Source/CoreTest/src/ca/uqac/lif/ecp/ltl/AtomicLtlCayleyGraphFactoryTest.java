@@ -1,3 +1,20 @@
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package ca.uqac.lif.ecp.ltl;
 
 import static org.junit.Assert.*;
@@ -11,6 +28,12 @@ import ca.uqac.lif.ecp.ltl.OperatorBuilder.BuildException;
 public class AtomicLtlCayleyGraphFactoryTest
 {
 	protected static final HologramFormatter<AtomicEvent> formatter = new HologramFormatter<AtomicEvent>();
+	
+	/**
+	 * The folder where the graph and its holograms will be written
+	 * for viewing by an external program
+	 */
+	protected static final String s_graphFolder = "/home/sylvain/graph/";
 	
 	/*@Test
 	public void test1() throws BuildException
@@ -85,9 +108,8 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		assertEquals(3, graph.getVertexCount());
-		//graph.setLabelFormatter(formatter);
-		//System.out.println(graph);
+		// graph.setLabelFormatter(formatter); System.out.println(graph);
+		assertEquals(7, graph.getVertexCount());
 	}
 	
 	@Test
@@ -101,9 +123,8 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		assertEquals(15, graph.getVertexCount());
-		//graph.setLabelFormatter(formatter);
-		//System.out.println(graph);
+		getGraphDot(graph, s_graphFolder);
+		assertEquals(17, graph.getVertexCount());
 	}
 	
 	@Test
@@ -117,23 +138,32 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		//assertEquals(15, graph.getVertexCount());
-		graph.setLabelFormatter(formatter); System.out.println(graph);
+		//getGraphDot(graph, s_graphFolder);
+		assertEquals(17, graph.getVertexCount());
 	}
 	
 	@Test
-	public void test5c() throws BuildException
+	public void test6() throws BuildException
 	{
-		//String expression = "G (a -> (X b))";
-		String expression = "G (a | (! b))";
+		String expression = "G (a & (! b))";
 		AtomicParserBuilder builder = new AtomicParserBuilder(expression);
 		Operator<AtomicEvent> op = builder.build();
-		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new FailFastDeletion<AtomicEvent>(), new RootChildDeletion<AtomicEvent>(2));
+		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new FailFastDeletion<AtomicEvent>(), new RootChildDeletion<AtomicEvent>(1));
 		HologramFunction<AtomicEvent> hf = new HologramFunction<AtomicEvent>(op, ht);
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		//assertEquals(15, graph.getVertexCount());
-		graph.setLabelFormatter(formatter); System.out.println(graph);
+		//getGraphDot(graph, s_graphFolder);
+		assertEquals(4, graph.getVertexCount());
+	}
+	
+	protected void getGraphDot(CayleyGraph<AtomicEvent,Operator<AtomicEvent>> g, String path)
+	{
+		LtlCayleyGraphRenderer<AtomicEvent> renderer = new LtlCayleyGraphRenderer<AtomicEvent>(g);
+		if (path != null)
+		{
+			renderer.generateHolograms(path);
+		}
+		renderer.writeDot(path + "graph.dot");
 	}
 }

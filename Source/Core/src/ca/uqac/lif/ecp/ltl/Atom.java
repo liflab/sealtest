@@ -188,4 +188,13 @@ public class Atom<T extends Event> extends Operator<T>
 		super.clear();
 		m_eventSeen = null;
 	}
+	
+	@Override
+	public void clean()
+	{
+		if (m_eventSeen != null && m_eventSeen.isDeleted())
+		{
+			m_eventSeen = null;
+		}
+	}
 }

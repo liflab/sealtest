@@ -50,6 +50,11 @@ public class RootChildDeletion<T extends Event> extends HologramTransformation<T
 		int n = 0;
 		for (Operator<T> child : children)
 		{
+			if (child.isDeleted())
+			{
+				// Ignore deleted nodes
+				continue;
+			}
 			n++;
 			if (n > m_maxChildren)
 			{

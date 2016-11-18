@@ -296,6 +296,9 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 		public void addOperand(Operator<U> op) { }
 		
 		@Override
+		public void clean() { }
+		
+		@Override
 		public String toString()
 		{
 			return m_node.toString();

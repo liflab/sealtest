@@ -126,4 +126,10 @@ public class EventLeaf<T extends Event> extends Operator<T>
 	{
 		// Nothing to do
 	}
+	
+	@Override
+	public void clean()
+	{
+		// Nothing to do
+	}
 }

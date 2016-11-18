@@ -52,6 +52,11 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 			m_instantiatedTrees.add(new_operand);
 		}
 		Operator<T> op = m_instantiatedTrees.get(0);
+		if (op.isDeleted())
+		{
+			// Ignore deleted nodes
+			return;
+		}
 		op.evaluate(event);
 		Value v = op.getValue();
 		m_value = v;

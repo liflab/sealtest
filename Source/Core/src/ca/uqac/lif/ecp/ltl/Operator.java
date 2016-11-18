@@ -183,4 +183,9 @@ public abstract class Operator<T extends Event>
 	{
 		m_value = Value.INCONCLUSIVE;
 	}
+	
+	/**
+	 * Cleans the deleted nodes of the evaluation tree
+	 */
+	public abstract void clean();
 }

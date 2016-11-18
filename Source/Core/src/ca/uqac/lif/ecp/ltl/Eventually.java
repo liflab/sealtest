@@ -39,6 +39,11 @@ public class Eventually<T extends Event> extends UnaryTemporalOperator<T>
 		boolean true_seen = false;
 		for (Operator<T> op : m_instantiatedTrees)
 		{
+			if (op.isDeleted())
+			{
+				// Ignore deleted nodes
+				continue;
+			}
 			op.evaluate(event);
 			Value v = op.getValue();
 			if (v == Value.TRUE)

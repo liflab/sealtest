@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.ltl;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ca.uqac.lif.ecp.Event;
@@ -242,6 +243,21 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		for (Operator<T> op : m_operands)
 		{
 			op.clear();
+		}
+	}
+	
+	@Override
+	public void clean()
+	{
+		Iterator<Operator<T>> it = m_operands.iterator();
+		while (it.hasNext())
+		{
+			Operator<T> o = it.next();
+			if (o.isDeleted())
+			{
+				it.remove();
+			}
+			o.clean();
 		}
 	}
 }

@@ -344,7 +344,7 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 		StringBuilder out = new StringBuilder();
 		String crlf = System.getProperty("line.separator");
 		StringBuilder vertex_string = new StringBuilder();
-		out.append("digraph G {").append(crlf);
+		out.append("digraph {").append(crlf).append(" node [shape=\"rectangle\"];").append(crlf);
 		for (Vertex<T> v : getVertices())
 		{
 			int id = v.getId();
@@ -352,11 +352,11 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			if (labelling_out != null)
 			{
 				MathSet<U> label = getLabelling().get(id);
-				vertex_string.append(id).append(" [label=<").append(m_labelFormatter.format(label)).append(">];").append(crlf);
+				vertex_string.append(" ").append(id).append(" [label=<").append(m_labelFormatter.format(label)).append(">];").append(crlf);
 			}
 			for (Edge<T> e : v.getEdges())
 			{
-				out.append(e.getSource()).append(" -> ").append(e.getDestination()).append(" [label=<").append(e.getLabel()).append(">];").append(crlf);
+				out.append(" ").append(e.getSource()).append(" -> ").append(e.getDestination()).append(" [label=<").append(e.getLabel()).append(">];").append(crlf);
 			}
 		}
 		out.append(vertex_string);
