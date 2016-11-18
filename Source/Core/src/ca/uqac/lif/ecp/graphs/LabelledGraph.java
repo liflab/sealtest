@@ -67,6 +67,7 @@ public class LabelledGraph<T extends Event>
 		{
 			m_vertices.add(new Vertex<T>(v));
 		}
+		m_initialId = graph.m_initialId;
 	}
 	
 	/**
