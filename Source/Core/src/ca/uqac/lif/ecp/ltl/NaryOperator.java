@@ -126,7 +126,7 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 				return false;
 			}
 		}
-		for (int n = i; n < o.m_operands.size(); n++)
+		for (int n = j; n < o.m_operands.size(); n++)
 		{
 			Operator<T> op = o.m_operands.get(n);
 			if (!op.isDeleted())

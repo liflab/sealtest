@@ -181,7 +181,7 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 				return false;
 			}
 		}
-		for (int n = i; n < o.m_instantiatedTrees.size(); n++)
+		for (int n = j; n < o.m_instantiatedTrees.size(); n++)
 		{
 			Operator<T> op = o.m_instantiatedTrees.get(n);
 			if (!op.isDeleted())
