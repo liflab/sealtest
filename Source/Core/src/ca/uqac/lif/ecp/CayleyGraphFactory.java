@@ -82,6 +82,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 			current_trace = new Trace<T>(vep.trace);
 			current_trace.add(vep.event);
 			category = f.getClass(current_trace);
+			@SuppressWarnings("unused")
 			String category_string = graph.m_labelFormatter.format(category);
 			Vertex<T> target_vertex = graph.getFirstVertexWithLabelling(category);
 			if (target_vertex == null)

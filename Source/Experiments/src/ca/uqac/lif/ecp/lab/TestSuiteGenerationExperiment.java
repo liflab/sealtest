@@ -38,7 +38,13 @@ public abstract class TestSuiteGenerationExperiment extends Experiment
 		
 	public TestSuiteGenerationExperiment()
 	{
+		this(null);
+	}
+	
+	public TestSuiteGenerationExperiment(TestSuiteProvider<?> provider)
+	{
 		super();
+		m_provider = provider;
 		setDescription("Experiment that consists in generating a test suite");
 		describe(SIZE, "Number of sequences in the test suite");
 		describe(TOTAL_LENGTH, "Total length of all sequences in the test suite");

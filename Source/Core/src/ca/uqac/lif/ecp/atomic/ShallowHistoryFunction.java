@@ -22,7 +22,7 @@ import ca.uqac.lif.structures.MathList;
 
 public abstract class ShallowHistoryFunction<T> extends AutomatonFunction<MathList<T>> 
 {
-	protected FixedSizeWindow m_window;
+	protected FixedSizeWindow m_window = null;
 	
 	public ShallowHistoryFunction(Automaton a, int size)
 	{

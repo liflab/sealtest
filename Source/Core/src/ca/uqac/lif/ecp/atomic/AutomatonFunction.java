@@ -52,7 +52,7 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 	{
 		super();
 		m_automaton = a;
-		reset();
+		m_currentVertex = m_automaton.getInitialVertex();
 	}
 	
 	@Override

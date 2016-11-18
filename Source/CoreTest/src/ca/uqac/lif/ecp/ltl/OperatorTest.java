@@ -15,6 +15,7 @@ import ca.uqac.lif.ecp.ltl.Operator.Value;
 public class OperatorTest
 {
 
+	@SuppressWarnings("unused")
 	@Test
 	public void test1()
 	{

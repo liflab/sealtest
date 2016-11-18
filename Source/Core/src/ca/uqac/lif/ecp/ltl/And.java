@@ -72,7 +72,7 @@ public class And<T extends Event> extends NaryOperator<T>
 	@Override
 	public boolean equals(Object o)
 	{
-		if (o == null || !(o instanceof Or<?>))
+		if (o == null || !(o instanceof And<?>))
 		{
 			return false;
 		}

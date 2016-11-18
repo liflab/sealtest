@@ -84,7 +84,7 @@ public class ShowAutomatonCallback extends ParkBenchCallback
 	protected static boolean checkForDot()
 	{
 		CommandRunner cr = new CommandRunner(new String[]{"dot", "--help"});
-		cr.run();
+		cr.start();
 		int code = cr.getErrorCode();
 		return code == 0 || code == 1;
 	}

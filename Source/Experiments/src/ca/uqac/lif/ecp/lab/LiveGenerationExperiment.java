@@ -26,22 +26,12 @@ import ca.uqac.lif.ecp.TestSuite;
  * @author Sylvain Hallé
  */
 public class LiveGenerationExperiment extends TestSuiteGenerationExperiment 
-{
-	/**
-	 * The provider used to generate the test suite
-	 */
-	protected transient TestSuiteProvider<?> m_provider;
-		
+{		
 	public LiveGenerationExperiment(TestSuiteProvider<?> provider)
 	{
 		super();
 		m_provider = provider;
 		m_provider.write(this);
-	}
-	
-	LiveGenerationExperiment()
-	{
-		this(null);
 	}
 	
 	@Override

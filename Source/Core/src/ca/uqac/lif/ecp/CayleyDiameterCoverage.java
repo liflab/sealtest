@@ -77,7 +77,7 @@ public class CayleyDiameterCoverage<T extends Event,U extends Object> extends Ca
 		for (int length = max_length; length >= 0; length--)
 		{
 			Map<MathSet<U>,Integer> cardinalities = m_graph.getClassCardinality(length, m_cumulative);
-			float covered_traces = 0, total_traces = 0;
+			int covered_traces = 0, total_traces = 0;
 			for (MathSet<U> category : cardinalities.keySet())
 			{
 				int cardinality = cardinalities.get(category);
@@ -87,7 +87,7 @@ public class CayleyDiameterCoverage<T extends Event,U extends Object> extends Ca
 					covered_traces += cardinality;
 				}
 			}
-			System.out.printf("Covered/total %d: %d/%d\n", length, (int) covered_traces, (int) total_traces);
+			System.out.printf("Covered/total %d: %d/%d\n", length, covered_traces, total_traces);
 			if (covered_traces == total_traces)
 			{
 				return (float) length;
