@@ -124,7 +124,10 @@ public class Atom<T extends Event> extends Operator<T>
 		visitor.visit(this);
 		if (in_tree)
 		{
-			m_eventSeen.acceptPrefix(visitor, in_tree);
+			if (m_eventSeen != null)
+			{
+				m_eventSeen.acceptPrefix(visitor, in_tree);
+			}
 		}
 		visitor.backtrack();
 	}
