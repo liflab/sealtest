@@ -1,6 +1,18 @@
 # Since holograms are unbounded, make sure the last transformation
 # is RCn for some n >= 1
 
-#Property			Formula			Transformation
+# Available transformations
+#
+#   ID  : identity transformation
+#   FFD : fail-fast deletion
+#   PD  : polarity deletion
+#   LD  : leaf deletion
+#   DFx : filtering of depth x
+#   RCx : keep only x first children of root
+#   +   : composition of two transformations
+
+#Property			Formula					Transformation
 #---------------------------------------------------------------------------------------
-A follows B			G (a -> (X b))	FFD+RC2
+A follows B			G (a -> (X b))			FFD+RC2
+A follows B			G (a -> (X (b | c)))	LD+FFD+RC10
+A follows B			G (a -> (X (b | c)))	LD+PD+RC10
