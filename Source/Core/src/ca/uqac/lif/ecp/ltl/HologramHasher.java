@@ -16,7 +16,11 @@ public class HologramHasher<T extends Event> extends HologramVisitor<T>
 
 	int m_deletedDepth = 0;
 	
-	boolean m_showTruthValue = true;
+	/**
+	 * Whether to show the truth value using the HTML
+	 * <code>&lt;sup&gt;</code> markup
+	 */
+	boolean m_truthValueInSuperscript = true;
 
 	public HologramHasher()
 	{
@@ -44,7 +48,11 @@ public class HologramHasher<T extends Event> extends HologramVisitor<T>
 		{
 			m_buffer.append("\u2193"); // Down arrow
 			m_buffer.append(HtmlBeautifier.beautifySymbol(op, true));
-			if (m_showTruthValue)
+			if (m_truthValueInSuperscript)
+			{
+				m_buffer.append("<SUP>").append(HtmlBeautifier.beautifyValue(op.getValue(), true)).append("</SUP>");
+			}
+			else
 			{
 				m_buffer.append(HtmlBeautifier.beautifyValue(op.getValue(), true));
 			}

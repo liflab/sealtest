@@ -352,11 +352,11 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			if (labelling_out != null)
 			{
 				MathSet<U> label = getLabelling().get(id);
-				vertex_string.append(id).append(" [label=\"").append(m_labelFormatter.format(label)).append("\"];").append(crlf);
+				vertex_string.append(id).append(" [label=<").append(m_labelFormatter.format(label)).append(">];").append(crlf);
 			}
 			for (Edge<T> e : v.getEdges())
 			{
-				out.append(e.getSource()).append(" -> ").append(e.getDestination()).append(" [label=\"").append(e.getLabel()).append("\"];").append(crlf);
+				out.append(e.getSource()).append(" -> ").append(e.getDestination()).append(" [label=<").append(e.getLabel()).append(">];").append(crlf);
 			}
 		}
 		out.append(vertex_string);
