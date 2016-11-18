@@ -59,6 +59,12 @@ public class FailFastDeletion<T extends Event> extends HologramTransformation<T>
 		{
 			for (Operator<T> child : children)
 			{
+				if (first_seen)
+				{
+					// Once we've seen the first false child, delete everything
+					child.delete();
+					continue;
+				}
 				if (child.getValue() != Value.FALSE)
 				{
 					if (!fail_fast || first_seen)
@@ -78,6 +84,12 @@ public class FailFastDeletion<T extends Event> extends HologramTransformation<T>
 		{
 			for (Operator<T> child : children)
 			{
+				if (first_seen)
+				{
+					// Once we've seen the first false child, delete everything
+					child.delete();
+					continue;
+				}
 				if (child.getValue() != Value.TRUE)
 				{
 					if (!fail_fast || first_seen)
