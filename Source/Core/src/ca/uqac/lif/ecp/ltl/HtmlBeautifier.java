@@ -3,6 +3,7 @@ package ca.uqac.lif.ecp.ltl;
 import java.util.Stack;
 
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.ecp.ltl.Operator.Value;
 
 public class HtmlBeautifier<T extends Event> extends HologramVisitor<T>
 {
@@ -32,6 +33,73 @@ public class HtmlBeautifier<T extends Event> extends HologramVisitor<T>
 		}
 		String s = m_parts.peek();
 		return s.substring(1, s.length() - 1);
+	}
+	
+	public static String beautifyValue(Value v)
+	{
+		return beautifyValue(v, true);
+	}
+	
+	public static String beautifyValue(Value v, boolean unicode)
+	{
+		if (unicode == false)
+		{
+			if (v == Value.TRUE)
+			{
+				return "1";
+			}
+			if (v == Value.FALSE)
+			{
+				return "0";
+			}
+			return "?";
+		}
+		if (v == Value.TRUE)
+		{
+			return "\u22a4";
+		}
+		if (v == Value.FALSE)
+		{
+			return "\u22a5";
+		}
+		return "?";
+	}
+	
+	public static String beautifySymbol(Operator<?> op, boolean unicode)
+	{
+		if (unicode == false)
+		{
+			return beautifySymbol(op);
+		}
+		if (op instanceof And)
+		{
+			return "\u2227";
+		}
+		if (op instanceof Or)
+		{
+			return "\u2228";
+		}
+		if (op instanceof Not)
+		{
+			return "\u00ac";
+		}
+		if (op instanceof Implies)
+		{
+			return "\u2192";
+		}
+		if (op instanceof Globally)
+		{
+			return "G";
+		}
+		if (op instanceof Eventually)
+		{
+			return "F";
+		}
+		if (op instanceof Next)
+		{
+			return "X";
+		}
+		return op.getRootSymbol();
 	}
 	
 	/**

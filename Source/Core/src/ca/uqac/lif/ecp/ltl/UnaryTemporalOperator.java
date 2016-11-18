@@ -38,6 +38,24 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		super(symbol, operand);
 		m_instantiatedTrees = new LinkedList<Operator<T>>();
 	}
+	
+	/**
+	 * Computes the hash code of this n-ary operator, starting from
+	 * an initial value 
+	 * @param start_value The initial value
+	 * @return The hash code
+	 */
+	protected int hashCode(int start_value)
+	{
+		for (Operator<T> op : m_instantiatedTrees)
+		{
+			if (!op.isDeleted())
+			{
+				start_value += op.hashCode();
+			}
+		}
+		return start_value;
+	}
 
 	/**
 	 * Copies the internal content of this operator into a new instance
@@ -129,6 +147,10 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 	boolean chidrenEquals(UnaryTemporalOperator<T> o)
 	{
 		int i = 0, j = 0;
+		if (m_value != o.m_value)
+		{
+			return false;
+		}
 		while (i < m_instantiatedTrees.size() && j < o.m_instantiatedTrees.size())
 		{
 			Operator<T> op1 = m_instantiatedTrees.get(i);
@@ -178,5 +200,12 @@ public abstract class UnaryTemporalOperator<T extends Event> extends UnaryOperat
 		{
 			op.delete();
 		}
+	}
+	
+	@Override
+	public void clear()
+	{
+		super.clear();
+		m_instantiatedTrees.clear();
 	}
 }

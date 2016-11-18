@@ -69,6 +69,12 @@ public class Next<T extends Event> extends UnaryTemporalOperator<T>
 		return g;
 	}
 	
+	@Override
+	public int hashCode()
+	{
+		return hashCode(3500);
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object o)

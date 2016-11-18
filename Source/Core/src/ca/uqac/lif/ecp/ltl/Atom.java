@@ -96,7 +96,11 @@ public class Atom<T extends Event> extends Operator<T>
 		}
 		@SuppressWarnings("unchecked")
 		Atom<T> a = (Atom<T>) o;
-		return a.m_event.equals(m_event);
+		if (m_value != a.m_value)
+		{
+			return false;
+		}
+		return a.m_event.equals(m_event) && (m_eventSeen.isDeleted() || m_eventSeen.equals(a.m_eventSeen));
 	}
 	
 	@Override
@@ -105,7 +109,11 @@ public class Atom<T extends Event> extends Operator<T>
 		Atom<T> a = new Atom<T>(m_event);
 		if (with_tree == true)
 		{
-			a.m_eventSeen = m_eventSeen;
+			a.m_deleted = m_deleted;
+			if (m_eventSeen != null)
+			{
+				a.m_eventSeen = m_eventSeen.copy(with_tree);
+			}
 		}
 		return a;
 	}
@@ -169,5 +177,12 @@ public class Atom<T extends Event> extends Operator<T>
 	public void addOperand(Operator<T> op)
 	{
 		// Nothing to do
+	}
+	
+	@Override
+	public void clear()
+	{
+		super.clear();
+		m_eventSeen = null;
 	}
 }

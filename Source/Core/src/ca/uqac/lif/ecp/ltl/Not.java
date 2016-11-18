@@ -53,6 +53,10 @@ public class Not<T extends Event> extends UnaryOperator<T>
 	@Override
 	public int hashCode()
 	{
+		if (m_operand.isDeleted())
+		{
+			return 1;
+		}
 		return m_operand.hashCode() + 1;
 	}
 	
@@ -68,7 +72,12 @@ public class Not<T extends Event> extends UnaryOperator<T>
 		{
 			return true;
 		}
-		return ((Not<T>) o).m_operand.equals(m_operand);
+		Not<T> a = (Not<T>) o;
+		if (m_value != a.m_value)
+		{
+			return false;
+		}
+		return (m_operand.isDeleted() && a.m_operand.isDeleted()) || ((Not<T>) o).m_operand.equals(m_operand);
 	}
 	
 	@Override

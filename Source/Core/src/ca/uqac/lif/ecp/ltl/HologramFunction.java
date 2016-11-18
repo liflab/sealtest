@@ -19,6 +19,7 @@ package ca.uqac.lif.ecp.ltl;
 
 import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.structures.MathSet;
 
@@ -54,14 +55,30 @@ public class HologramFunction<T extends Event> extends TriagingFunction<T, Opera
 	{
 		this(formula, new IdentityHologramTransformation<T>());
 	}
+	
+	/**
+	 * Gets the equivalence class associated with a given trace
+	 * @param The trace to read
+	 * @return The equivalence class
+	 */
+	@Override
+	public MathSet<Operator<T>> getClass(Trace<T> trace)
+	{
+		m_formula.clear();
+		for (T event : trace)
+		{
+			m_formula.evaluate(event);
+		}
+		Operator<T> tree = m_formula.copy(true);
+		Operator<T> hologram = m_transformation.transform(tree);
+		return new MathSet<Operator<T>>(hologram);
+	}
 
 	@Override
 	public MathSet<Operator<T>> read(T event) 
 	{
-		m_formula.evaluate(event);
-		Operator<T> tree = m_formula.copy(true);
-		Operator<T> hologram = m_transformation.transform(tree);
-		return new MathSet<Operator<T>>(hologram);
+		// This method is not called by hologram functions
+		return null;
 	}
 	
 	/**
@@ -77,6 +94,12 @@ public class HologramFunction<T extends Event> extends TriagingFunction<T, Opera
 	public MathSet<Operator<T>> getStartClass() 
 	{
 		return new MathSet<Operator<T>>();
+	}
+	
+	@Override
+	public void reset()
+	{
+		m_formula.clear();
 	}
 
 	@Override

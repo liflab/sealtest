@@ -123,4 +123,11 @@ public abstract class UnaryOperator<T extends Event> extends Operator<T>
 		m_deleted = true;
 		m_operand.delete();
 	}
+	
+	@Override
+	public void clear()
+	{
+		super.clear();
+		m_operand.clear();
+	}
 }

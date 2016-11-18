@@ -51,7 +51,7 @@ public class AtomicLtlCayleyGraphFactory extends LtlCayleyGraphFactory<AtomicEve
 		AtomCollector ac = new AtomCollector();
 		op.acceptPostfix(ac);
 		m_possibleEvents = ac.getEvents();
-		return super.getGraph(f);
+		return super.getGraph(f, new HologramFormatter<AtomicEvent>());
 	}
 
 	@Override

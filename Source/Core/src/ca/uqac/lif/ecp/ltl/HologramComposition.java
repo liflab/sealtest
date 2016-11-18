@@ -38,7 +38,7 @@ public class HologramComposition<T extends Event> extends HologramTransformation
 		m_chain = new ArrayList<HologramTransformation<T>>();
 		for (Object c : compositions)
 		{
-			if (c instanceof HologramComposition)
+			if (c instanceof HologramTransformation)
 			{
 				@SuppressWarnings("unchecked")
 				HologramTransformation<T> comp = (HologramTransformation<T>) c;

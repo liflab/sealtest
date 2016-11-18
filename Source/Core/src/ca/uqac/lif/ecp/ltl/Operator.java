@@ -175,4 +175,12 @@ public abstract class Operator<T extends Event>
 	 * @param op The operand
 	 */
 	public abstract void addOperand(Operator<T> op);
+	
+	/**
+	 * Clears the state of this operator
+	 */
+	public void clear()
+	{
+		m_value = Value.INCONCLUSIVE;
+	}
 }

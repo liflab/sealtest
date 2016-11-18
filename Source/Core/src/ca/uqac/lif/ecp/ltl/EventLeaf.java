@@ -76,6 +76,10 @@ public class EventLeaf<T extends Event> extends Operator<T>
 	public EventLeaf<T> copy(boolean with_tree)
 	{
 		EventLeaf<T> a = new EventLeaf<T>(m_event);
+		if (with_tree)
+		{
+			a.m_deleted = m_deleted;
+		}
 		return a;
 	}
 

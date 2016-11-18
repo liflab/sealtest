@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Set;
 
+import ca.uqac.lif.ecp.CayleyGraph.LabelFormatter;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
 
@@ -47,7 +48,16 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 	
 	public CayleyGraph<T,U> getGraph(TriagingFunction<T,U> f)
 	{
-		CayleyGraph<T,U> graph = new CayleyGraph<T,U>(); 
+		return getGraph(f, null);
+	}
+	
+	public CayleyGraph<T,U> getGraph(TriagingFunction<T,U> f, LabelFormatter<U> formatter)
+	{
+		CayleyGraph<T,U> graph = new CayleyGraph<T,U>();
+		if (formatter != null)
+		{
+			graph.setLabelFormatter(formatter);
+		}
 		Queue<VertexEventTracePair> to_explore = new LinkedList<VertexEventTracePair>();
 		Queue<VertexEventTracePair> explored = new LinkedList<VertexEventTracePair>();
 		Vertex<T> current_vertex = new Vertex<T>();
@@ -72,6 +82,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 			current_trace = new Trace<T>(vep.trace);
 			current_trace.add(vep.event);
 			category = f.getClass(current_trace);
+			String category_string = graph.m_labelFormatter.format(category);
 			Vertex<T> target_vertex = graph.getFirstVertexWithLabelling(category);
 			if (target_vertex == null)
 			{

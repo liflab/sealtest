@@ -73,7 +73,10 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 	{
 		for (Operator<T> op : m_operands)
 		{
-			start_value += op.hashCode();
+			if (!op.isDeleted())
+			{
+				start_value += op.hashCode();
+			}
 		}
 		return start_value;
 	}
@@ -89,6 +92,10 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 	protected boolean childrenEquals(NaryOperator<T> o)
 	{
 		int i = 0, j = 0;
+		if (m_value != o.m_value)
+		{
+			return false;
+		}
 		while (i < m_operands.size() && j < o.m_operands.size())
 		{
 			Operator<T> op1 = m_operands.get(i);
@@ -225,6 +232,16 @@ public abstract class NaryOperator<T extends Event> extends Operator<T>
 		for (Operator<T> op : m_operands)
 		{
 			op.delete();
+		}
+	}
+	
+	@Override
+	public void clear()
+	{
+		super.clear();
+		for (Operator<T> op : m_operands)
+		{
+			op.clear();
 		}
 	}
 }
