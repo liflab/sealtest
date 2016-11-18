@@ -1,4 +1,4 @@
-package ca.uqac.lif.ecp.lab;
+package ca.uqac.lif.ecp.lab.fsm;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;

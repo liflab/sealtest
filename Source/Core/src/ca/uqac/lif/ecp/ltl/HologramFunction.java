@@ -94,7 +94,7 @@ public class HologramFunction<T extends Event> extends TriagingFunction<T, Opera
 	@Override
 	public MathSet<Operator<T>> getStartClass() 
 	{
-		return new MathSet<Operator<T>>();
+		return new MathSet<Operator<T>>(m_formula.copy(true));
 	}
 	
 	@Override

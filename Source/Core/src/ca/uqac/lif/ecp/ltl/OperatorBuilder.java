@@ -18,7 +18,6 @@
 package ca.uqac.lif.ecp.ltl;
 
 import ca.uqac.lif.ecp.Event;
-import ca.uqac.lif.util.EmptyException;
 
 /**
  * Builds an expression from some source
@@ -30,16 +29,24 @@ public abstract class OperatorBuilder<T extends Event>
 {
 	public abstract Operator<T> build() throws BuildException;
 	
-	public static class BuildException extends EmptyException
+	public static class BuildException extends Exception
 	{
 		/**
 		 * Dummy UID
 		 */
 		private static final long serialVersionUID = 1L;
+		
+		protected String m_message;
 
 		public BuildException(String message)
 		{
-			super(message);
+			super();
+			m_message = message;
+		}
+		
+		public String getMessage()
+		{
+			return m_message;
 		}
 	}
 }

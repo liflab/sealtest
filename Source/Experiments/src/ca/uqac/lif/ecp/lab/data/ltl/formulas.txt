@@ -1,0 +1,6 @@
+# Since holograms are unbounded, make sure the last transformation
+# is RCn for some n >= 1
+
+#Property			Formula			Transformation
+#---------------------------------------------------------------------------------------
+A follows B			G (a -> (X b))	FFD+RC2

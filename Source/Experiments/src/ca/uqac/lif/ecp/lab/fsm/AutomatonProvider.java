@@ -15,34 +15,29 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.lab;
+package ca.uqac.lif.ecp.lab.fsm;
 
-import ca.uqac.lif.ecp.Edge;
-import ca.uqac.lif.ecp.TriagingFunction;
-import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
 import ca.uqac.lif.parkbench.Experiment;
-import ca.uqac.lif.structures.MathList;
 
-public class TransitionHistoryProvider extends CombinatorialTriagingFunctionProvider<MathList<Edge<AtomicEvent>>>
+/**
+ * Applies to classes that can generate an automaton
+ */
+public interface AutomatonProvider
 {
-	TransitionHistoryProvider(AutomatonProvider provider, int strength)
-	{
-		super(provider, strength);
-	}
-
-	@Override
-	public void write(Experiment e) 
-	{
-		super.write(e);
-		e.setInput(CombinatorialTriagingFunctionProvider.FUNCTION, "Transition history");
-	}
-
-	@Override
-	protected TriagingFunction<AtomicEvent,MathList<Edge<AtomicEvent>>> instantiateFunction(Automaton aut)
-	{
-		return new TransitionShallowHistory(aut, m_strength);
-	}
-
+	public static final String PROPERTY_NAME = "Property";
+	
+	public static final String PROPERTY_DESCRIPTION = "The name of the property represented by the automaton";
+	
+	/**
+	 * Generates an automaton
+	 * @return An automaton
+	 */
+	public Automaton getAutomaton();
+	
+	/**
+	 * Writes additional data into an experiment
+	 * @param e The experiment
+	 */
+	public void write(Experiment e);
 }

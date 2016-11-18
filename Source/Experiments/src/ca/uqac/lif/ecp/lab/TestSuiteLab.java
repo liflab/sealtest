@@ -24,9 +24,22 @@ import java.util.Set;
 
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.lab.fsm.AutomatonParser;
+import ca.uqac.lif.ecp.lab.fsm.AutomatonProvider;
+import ca.uqac.lif.ecp.lab.fsm.CombinatorialTriagingFunctionProvider;
+import ca.uqac.lif.ecp.lab.fsm.StateHistoryProvider;
+import ca.uqac.lif.ecp.lab.fsm.TransitionHistoryProvider;
+import ca.uqac.lif.ecp.lab.ltl.HologramTransformationProvider;
+import ca.uqac.lif.ecp.lab.ltl.HologramTriagingFunctionProvider;
+import ca.uqac.lif.ecp.lab.ltl.OperatorProvider;
+import ca.uqac.lif.ecp.lab.ltl.StringOperatorProvider;
+import ca.uqac.lif.ecp.lab.ltl.StringTransformationProvider;
 import ca.uqac.lif.ecp.lab.pages.FsmCallback;
 import ca.uqac.lif.ecp.lab.pages.GetAutomatonCallback;
 import ca.uqac.lif.ecp.lab.pages.ShowAutomatonCallback;
+import ca.uqac.lif.ecp.ltl.AtomicLtlCayleyGraphFactory;
+import ca.uqac.lif.ecp.ltl.HologramFunction;
+import ca.uqac.lif.ecp.ltl.Operator;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
 import ca.uqac.lif.parkbench.CliParser.ArgumentMap;
@@ -60,6 +73,11 @@ public class TestSuiteLab extends Laboratory
 	 * The path where FSMs will be read from
 	 */
 	public static transient final String s_fsmPath = s_dataPath + "fsm/";
+	
+	/**
+	 * The path where LTL formulas will be read from
+	 */
+	public static transient final String s_ltlPath = s_dataPath + "ltl/";
 
 	/**
 	 * @param args
@@ -93,12 +111,17 @@ public class TestSuiteLab extends Laboratory
 		// Create experiment groups and tables
 		Group state_t_way_group = newGroup("State history");
 		Group transition_t_way_group = newGroup("Transition history");
+		Group ltl_group = newGroup("LTL holograms");
 		ExperimentMultidimensionalTable mt_state_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
 		mt_state_coverage.setTitle("State coverage");
 		ExperimentMultidimensionalTable mt_transition_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
 		mt_transition_coverage.setTitle("Transition coverage");
+		ExperimentMultidimensionalTable ltl_table = new ExperimentMultidimensionalTable(new String[]{"Formula", "Transformation", "Size", "Length"});
 		add(mt_state_coverage);
 		add(mt_transition_coverage);
+		add(ltl_table);
+		
+		/* AUTOMATA-BASED EXPERIMENTS */
 
 		// Setup the live experiments
 		{
@@ -144,6 +167,33 @@ public class TestSuiteLab extends Laboratory
 					e.printStackTrace();
 				}
 			}
+		}
+		
+		/* LTL-BASED EXPERIMENTS */
+		// Setup the live experiments
+		{
+			InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, s_ltlPath + "formulas.txt");
+			Scanner scanner = new Scanner(is);
+			while (scanner.hasNextLine())
+			{
+				String line = scanner.nextLine().trim();
+				if (line.isEmpty() || line.startsWith("#"))
+				{
+					continue;
+				}
+				String[] parts = line.split("\\t+");
+				OperatorProvider<AtomicEvent> op = new StringOperatorProvider(parts[1]);
+				HologramTransformationProvider<AtomicEvent> htp = new StringTransformationProvider(parts[2]);
+				HologramTriagingFunctionProvider<AtomicEvent> htfp = new HologramTriagingFunctionProvider<AtomicEvent>(op, htp);
+				CayleyGraphProvider<AtomicEvent,Operator<AtomicEvent>> gp = new FactoryCayleyGraphProvider<AtomicEvent,Operator<AtomicEvent>>(new AtomicLtlCayleyGraphFactory(), htfp);
+				CayleyTraceGeneratorProvider<AtomicEvent,Operator<AtomicEvent>> ctgp = new CayleyClassCoverageGenerator<AtomicEvent,Operator<AtomicEvent>>(gp);
+				TestSuiteProvider<AtomicEvent> tp = new CayleyTestSuiteGenerator<AtomicEvent,Operator<AtomicEvent>>(ctgp);
+				TestSuiteGenerationExperiment exp = new LiveGenerationExperiment(tp);
+				add(exp);
+				ltl_table.add(exp);
+				ltl_group.add(exp);
+			}
+			scanner.close();
 		}
 	}
 

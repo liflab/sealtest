@@ -15,11 +15,12 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.lab;
+package ca.uqac.lif.ecp.lab.fsm;
 
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
+import ca.uqac.lif.ecp.lab.TriagingFunctionProvider;
 import ca.uqac.lif.parkbench.Experiment;
 
 /**

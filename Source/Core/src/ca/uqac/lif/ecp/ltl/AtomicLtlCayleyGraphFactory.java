@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.graphs.Vertex;
 
@@ -37,10 +38,21 @@ public class AtomicLtlCayleyGraphFactory extends LtlCayleyGraphFactory<AtomicEve
 	 */
 	protected Set<AtomicEvent> m_possibleEvents;
 	
-	AtomicLtlCayleyGraphFactory()
+	public AtomicLtlCayleyGraphFactory()
 	{
 		super();
 		m_possibleEvents = null;
+	}
+	
+	@Override
+	public CayleyGraph<AtomicEvent,Operator<AtomicEvent>> getGraph(TriagingFunction<AtomicEvent,Operator<AtomicEvent>> f)
+	{
+		if (f instanceof HologramFunction)
+		{
+			return getGraph((HologramFunction<AtomicEvent>) f);
+		}
+		assert false;
+		return null;
 	}
 	
 	public CayleyGraph<AtomicEvent,Operator<AtomicEvent>> getGraph(HologramFunction<AtomicEvent> f)

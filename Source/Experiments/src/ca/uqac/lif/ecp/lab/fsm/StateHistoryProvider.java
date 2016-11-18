@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.lab;
+package ca.uqac.lif.ecp.lab.fsm;
 
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
@@ -26,7 +26,7 @@ import ca.uqac.lif.structures.MathList;
 
 public class StateHistoryProvider extends CombinatorialTriagingFunctionProvider<MathList<Integer>>
 {
-	StateHistoryProvider(AutomatonProvider provider, int strength)
+	public StateHistoryProvider(AutomatonProvider provider, int strength)
 	{
 		super(provider, strength);
 	}

@@ -17,6 +17,8 @@
  */
 package ca.uqac.lif.ecp.lab;
 
+import ca.uqac.lif.ecp.lab.fsm.AutomatonProvider;
+import ca.uqac.lif.ecp.lab.fsm.CombinatorialTriagingFunctionProvider;
 import ca.uqac.lif.parkbench.CloneableExperiment;
 
 /**

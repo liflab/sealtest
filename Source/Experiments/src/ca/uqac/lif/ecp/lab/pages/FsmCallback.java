@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import ca.uqac.lif.ecp.lab.AutomatonParser;
 import ca.uqac.lif.ecp.lab.TestSuiteLab;
+import ca.uqac.lif.ecp.lab.fsm.AutomatonParser;
 import ca.uqac.lif.parkbench.FileHelper;
 import ca.uqac.lif.parkbench.LabAssistant;
 import ca.uqac.lif.parkbench.Laboratory;
