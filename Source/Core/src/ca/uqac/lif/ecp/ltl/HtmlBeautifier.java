@@ -35,6 +35,18 @@ public class HtmlBeautifier<T extends Event> extends HologramVisitor<T>
 		return s.substring(1, s.length() - 1);
 	}
 	
+	/**
+	 * Beautifies an operator
+	 * @param op The operator
+	 * @return The beautified string
+	 */
+	public String beautify(Operator<T> op)
+	{
+		HtmlBeautifier<T> hb = new HtmlBeautifier<T>();
+		op.acceptPostfix(hb, false);
+		return hb.getString();
+	}
+	
 	public static String beautifyValue(Value v)
 	{
 		return beautifyValue(v, true);

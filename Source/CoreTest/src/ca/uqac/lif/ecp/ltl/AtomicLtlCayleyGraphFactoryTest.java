@@ -27,13 +27,15 @@ import ca.uqac.lif.ecp.ltl.OperatorBuilder.BuildException;
 
 public class AtomicLtlCayleyGraphFactoryTest
 {
-	protected static final HologramFormatter<AtomicEvent> formatter = new HologramFormatter<AtomicEvent>();
+	protected static final HologramFormatter<AtomicEvent> s_formatter = new HologramFormatter<AtomicEvent>();
+	
+	protected static final HtmlBeautifier<AtomicEvent> s_beautifier = new HtmlBeautifier<AtomicEvent>();
 	
 	/**
 	 * The folder where the graph and its holograms will be written
 	 * for viewing by an external program
 	 */
-	protected static final String s_graphFolder = "/home/sylvain/graph/";
+	protected static final String s_graphFolder = "./";
 	
 	/*@Test
 	public void test1() throws BuildException
@@ -61,7 +63,7 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		graph.setLabelFormatter(formatter);
+		graph.setLabelFormatter(s_formatter);
 		System.out.println(graph);
 	}
 	
@@ -123,7 +125,9 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		getGraphDot(graph, s_graphFolder);
+		HtmlBeautifier<AtomicEvent> hb = new HtmlBeautifier<AtomicEvent>();
+		op.acceptPostfix(hb, true);
+		getGraphDot(graph, "<TABLE BORDER=\"0\"><TR><TD>" + s_beautifier.beautify(op) + "</TD></TR><TR><TD>" + ht.toString() + "</TD></TR></TABLE>", s_graphFolder);
 		assertEquals(17, graph.getVertexCount());
 	}
 	
@@ -138,7 +142,7 @@ public class AtomicLtlCayleyGraphFactoryTest
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
 		assertNotNull(graph);
-		//getGraphDot(graph, s_graphFolder);
+		//getGraphDot(graph, ht.toString(), s_graphFolder);
 		assertEquals(17, graph.getVertexCount());
 	}
 	
@@ -157,9 +161,10 @@ public class AtomicLtlCayleyGraphFactoryTest
 		assertEquals(4, graph.getVertexCount());
 	}
 	
-	protected void getGraphDot(CayleyGraph<AtomicEvent,Operator<AtomicEvent>> g, String path)
+	protected void getGraphDot(CayleyGraph<AtomicEvent,Operator<AtomicEvent>> g, String title, String path)
 	{
 		LtlCayleyGraphRenderer<AtomicEvent> renderer = new LtlCayleyGraphRenderer<AtomicEvent>(g);
+		renderer.setTitle(title);
 		if (path != null)
 		{
 			renderer.generateHolograms(path);

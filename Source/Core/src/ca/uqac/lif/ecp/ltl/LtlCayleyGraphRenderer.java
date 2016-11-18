@@ -29,6 +29,12 @@ import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.ecp.ltl.Operator.Value;
 import ca.uqac.lif.structures.MathSet;
 
+/**
+ * Renders a Cayley graph created from an LTL triaging function
+ * @author Sylvain Hallé
+ * 
+ * @param <T> The event type
+ */
 public class LtlCayleyGraphRenderer<T extends Event> 
 {
 	/**
@@ -46,10 +52,24 @@ public class LtlCayleyGraphRenderer<T extends Event>
 	 */
 	protected String m_path = "./";
 	
+	/**
+	 * A title to give to the rendered graph
+	 */
+	protected String m_title = "";
+	
 	public LtlCayleyGraphRenderer(CayleyGraph<T,Operator<T>> graph)
 	{
 		super();
 		m_graph = graph;
+	}
+	
+	/**
+	 * Sets the graph's title
+	 * @param title The title
+	 */
+	public void setTitle(String title)
+	{
+		m_title = title;
 	}
 	
 	/**
@@ -84,6 +104,10 @@ public class LtlCayleyGraphRenderer<T extends Event>
 		StringBuilder edge_buffer = new StringBuilder();
 		HologramHasher<T> hasher = new HologramHasher<T>();
 		out.append("digraph {\n node[shape=\"rectangle\",style=\"filled\"];\n");
+		if (!m_title.isEmpty())
+		{
+			out.append(" label=<").append(m_title).append(">;\n");
+		}
 		CayleyVertexLabelling<Operator<T>> labelling = m_graph.getLabelling();
 		for (Vertex<T> v : m_graph.getVertices())
 		{
