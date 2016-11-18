@@ -16,3 +16,4 @@
 A follows B			G (a -> (X b))			FFD+RC2
 A follows B			G (a -> (X (b | c)))	LD+FFD+RC10
 A follows B			G (a -> (X (b | c)))	LD+PD+RC10
+A follows B			G (a -> (X (b | c)))	RC10+DF2+LD+PD

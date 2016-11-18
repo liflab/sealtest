@@ -166,7 +166,7 @@ public class AtomicLtlCayleyGraphFactoryTest
 		String expression = "G (a -> (X (b | c)))";
 		AtomicParserBuilder builder = new AtomicParserBuilder(expression);
 		Operator<AtomicEvent> op = builder.build();
-		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new RootChildDeletion<AtomicEvent>(4), new LeafDeletion<AtomicEvent>(), new PolarityDeletion<AtomicEvent>());
+		HologramTransformation<AtomicEvent> ht = new HologramComposition<AtomicEvent>(new RootChildDeletion<AtomicEvent>(10), new DepthFiltering<AtomicEvent>(2), new LeafDeletion<AtomicEvent>(), new PolarityDeletion<AtomicEvent>());
 		HologramFunction<AtomicEvent> hf = new HologramFunction<AtomicEvent>(op, ht);
 		AtomicLtlCayleyGraphFactory factory = new AtomicLtlCayleyGraphFactory();
 		CayleyGraph<AtomicEvent,Operator<AtomicEvent>> graph = factory.getGraph(hf);
