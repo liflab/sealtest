@@ -22,6 +22,8 @@ import java.util.Stack;
 
 import ca.uqac.lif.bullwinkle.BnfParser;
 import ca.uqac.lif.bullwinkle.BnfParser.InvalidGrammarException;
+import ca.uqac.lif.bullwinkle.BnfRule;
+import ca.uqac.lif.bullwinkle.BnfRule.InvalidRuleException;
 import ca.uqac.lif.bullwinkle.ParseNode;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 
@@ -49,9 +51,10 @@ public class AtomicParserBuilder extends ParserBuilder<AtomicEvent>
 		{
 			// We add the definition of atom to the grammar
 			// In this case, an atom is simply a string
-			parser.setGrammar("<atom> := ^\\w+;");
+			parser.addRule(BnfRule.parseRule("<atom> := ^\\w+"));
+			//parser.setGrammar("<atom> := ^\\w+;");
 		} 
-		catch (InvalidGrammarException e) 
+		catch (InvalidRuleException e) 
 		{
 			// Should not happen
 			e.printStackTrace();

@@ -37,7 +37,7 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 {
 	protected String m_expression;
 	
-	protected static final BnfParser m_parser = initializeParser();
+	protected final BnfParser m_parser = initializeParser();
 	
 	public ParserBuilder()
 	{
