@@ -38,7 +38,6 @@ import ca.uqac.lif.ecp.lab.pages.FsmCallback;
 import ca.uqac.lif.ecp.lab.pages.GetAutomatonCallback;
 import ca.uqac.lif.ecp.lab.pages.ShowAutomatonCallback;
 import ca.uqac.lif.ecp.ltl.AtomicLtlCayleyGraphFactory;
-import ca.uqac.lif.ecp.ltl.HologramFunction;
 import ca.uqac.lif.ecp.ltl.Operator;
 import ca.uqac.lif.parkbench.CliParser;
 import ca.uqac.lif.parkbench.CliParser.Argument;
@@ -116,7 +115,7 @@ public class TestSuiteLab extends Laboratory
 		mt_state_coverage.setTitle("State coverage");
 		ExperimentMultidimensionalTable mt_transition_coverage = new ExperimentMultidimensionalTable(new String[]{"Property", "Strength", "Method", "Size", "Length"});
 		mt_transition_coverage.setTitle("Transition coverage");
-		ExperimentMultidimensionalTable ltl_table = new ExperimentMultidimensionalTable(new String[]{"Formula", "Transformation", "Size", "Length"});
+		ExperimentMultidimensionalTable ltl_table = new ExperimentMultidimensionalTable(new String[]{"Formula", "Transformation", "Size", "Length", "Shortest", "Longest"});
 		add(mt_state_coverage);
 		add(mt_transition_coverage);
 		add(ltl_table);

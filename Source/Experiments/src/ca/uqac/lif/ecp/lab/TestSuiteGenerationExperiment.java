@@ -28,6 +28,8 @@ public abstract class TestSuiteGenerationExperiment extends Experiment
 {
 	public static final transient String SIZE = "Size";
 	public static final transient String TOTAL_LENGTH = "Length";
+	public static final transient String LONGEST = "Longest";
+	public static final transient String SHORTEST = "Shortest";
 	public static final transient String DURATION = "Time";
 	public static final transient String METHOD = "Method";
 	
@@ -48,6 +50,8 @@ public abstract class TestSuiteGenerationExperiment extends Experiment
 		setDescription("Experiment that consists in generating a test suite");
 		describe(SIZE, "Number of sequences in the test suite");
 		describe(TOTAL_LENGTH, "Total length of all sequences in the test suite");
+		describe(LONGEST, "Length of the longest sequence");
+		describe(SHORTEST, "Length of the shortest sequence");
 		describe(DURATION, "Time (in seconds) to generate the test suite");
 		describe(METHOD, "Method used to generate the test sequence");
 	}

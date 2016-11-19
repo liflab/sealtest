@@ -21,7 +21,6 @@ import java.util.Scanner;
 import java.util.Stack;
 
 import ca.uqac.lif.bullwinkle.BnfParser;
-import ca.uqac.lif.bullwinkle.BnfParser.InvalidGrammarException;
 import ca.uqac.lif.bullwinkle.BnfRule;
 import ca.uqac.lif.bullwinkle.BnfRule.InvalidRuleException;
 import ca.uqac.lif.bullwinkle.ParseNode;
