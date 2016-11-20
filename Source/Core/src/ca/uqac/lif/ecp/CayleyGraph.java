@@ -406,4 +406,56 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 			return m_message;
 		}
 	}
+	
+	/**
+	 * Produces a map telling what are the equivalence classes reachable
+	 * at each depth of the Cayley graph
+	 * @param max_depth The maximum depth of recursion
+	 */
+	public Map<Integer,Set<MathSet<U>>> getClassesByDepth(int max_depth)
+	{
+		Map<Integer,Set<MathSet<U>>> map = new HashMap<Integer,Set<MathSet<U>>>();
+		Set<MathSet<U>> visited = new HashSet<MathSet<U>>();
+		getClassesByDepth(map, visited, getInitialVertex(), 0, max_depth);
+		return map;
+	}
+	
+	/**
+	 * Produces a map telling what are the equivalence classes reachable
+	 * at each depth of the Cayley graph
+	 * @param map
+	 * @param node
+	 * @param cur_depth
+	 * @param max_depth
+	 */
+	protected void getClassesByDepth(Map<Integer,Set<MathSet<U>>> map, Set<MathSet<U>> visited, Vertex<T> node, int cur_depth, int max_depth)
+	{
+		if (cur_depth > max_depth)
+		{
+			// Maximum depth reached
+			return;
+		}
+		MathSet<U> label = m_labelling.get(node.getId());
+		if (!visited.contains(label))
+		{
+			// First time we see this
+			visited.add(label);
+			Set<MathSet<U>> cats = null;
+			if (!map.containsKey(cur_depth))
+			{
+				cats = new HashSet<MathSet<U>>();
+			}
+			else
+			{
+				cats = map.get(cur_depth);
+			}
+			cats.add(label);
+			map.put(cur_depth, cats);
+		}
+		for (Edge<T> edge : node.getEdges())
+		{
+			Vertex<T> new_node = getVertex(edge.getDestination());
+			getClassesByDepth(map, visited, new_node, cur_depth + 1, max_depth);
+		}
+	}
 }

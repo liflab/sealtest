@@ -30,6 +30,22 @@ import ca.uqac.lif.ecp.Event;
  */
 public class LeafDeletion<T extends Event> extends HologramTransformation<T> 
 {
+	/**
+	 * If set to true, will delete atoms in addition to leaves
+	 */
+	protected boolean m_deleteAtoms = false;
+	
+	public LeafDeletion()
+	{
+		super();
+	}
+	
+	protected LeafDeletion(boolean delete_atoms)
+	{
+		super();
+		m_deleteAtoms = delete_atoms;
+	}
+	
 	@Override
 	public Operator<T> transform(Operator<T> tree) 
 	{
@@ -43,15 +59,17 @@ public class LeafDeletion<T extends Event> extends HologramTransformation<T>
 		{
 			return;
 		}
+		if (node instanceof EventLeaf || (m_deleteAtoms && node instanceof Atom))
+		{
+			node.delete();
+			return;
+		}
+
 		List<Operator<T>> children = node.getTreeChildren();
 		for (Operator<T> child : children)
 		{
 			// Recursively apply the transformation to children
 			transformRecursive(child);
-		}
-		if (node instanceof EventLeaf)
-		{
-			node.delete();
 		}
 	}
 	

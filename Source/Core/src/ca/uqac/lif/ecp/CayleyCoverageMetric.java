@@ -17,6 +17,14 @@
  */
 package ca.uqac.lif.ecp;
 
+/**
+ * Coverage metric based on a Cayley graph
+ * @author Sylvain Hallé
+ *
+ * @param <T> The event type
+ * @param <U> The type of the categories in the Cayley graph
+ * @param <V> The return type of the coverage metric
+ */
 public abstract class CayleyCoverageMetric<T extends Event,U extends Object,V> extends CoverageMetric<T,V> 
 {
 	/**

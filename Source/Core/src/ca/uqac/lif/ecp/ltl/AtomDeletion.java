@@ -15,32 +15,20 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp;
+package ca.uqac.lif.ecp.ltl;
 
-import java.util.Set;
+import ca.uqac.lif.ecp.Event;
 
-/**
- * Function associating a test suite to a coverage value
- * @author Sylvain Hallé
- *
- * @param <T> The event type
- * @param <V> The return type of the coverage metric
- */
-public abstract class CoverageMetric<T extends Event,V> 
+public class AtomDeletion<T extends Event> extends LeafDeletion<T> 
 {
-	/**
-	 * Creates a new coverage metric instance
-	 * @param traces The set of traces we wish to measure coverage for
-	 */
-	public CoverageMetric()
+	public AtomDeletion()
 	{
-		super();
+		super(true);
 	}
 	
-	/**
-	 * Gets the coverage of the set of traces according to the metric
-	 * @param traces The set of traces we wish to measure coverage for
-	 * @return The coverage
-	 */
-	public abstract V getCoverage(Set<Trace<T>> traces);
+	@Override
+	public String toString()
+	{
+		return "Atom deletion";
+	}
 }
