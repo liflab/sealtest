@@ -51,7 +51,7 @@ public class FsmCallback extends CustomPageCallback
 	{
 		StringBuilder out = new StringBuilder();
 		out.append("<table>\n");
-		List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(TestSuiteLab.s_fsmPath), ".*\\.txt");
+		List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(TestSuiteLab.s_fsmPath), ".*\\.dot");
 		for (String filename : listing)
 		{
 			InputStream is = FileHelper.internalFileToStream(TestSuiteLab.class, TestSuiteLab.s_fsmPath + filename);

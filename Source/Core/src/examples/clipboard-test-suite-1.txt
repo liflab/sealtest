@@ -1,0 +1,8 @@
+# ---------------------------------------------------
+# A test suite made of atomic events
+# Each line represents a distinct trace
+# ---------------------------------------------------
+
+select,unselect
+select,edit,unedit,edit,cut,edit
+edit,unedit,select,paste

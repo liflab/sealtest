@@ -54,4 +54,15 @@ public class StateShallowHistory extends ShallowHistoryFunction<Integer>
 		out.add(new_list);
 		return out;
 	}
+	
+	@Override
+	public String toString()
+	{
+		String out = "State history of depth " + m_window.m_size;
+		if (!m_automaton.toString().isEmpty())
+		{
+			out += " on " + m_automaton.getTitle();
+		}
+		return out;
+	}
 }

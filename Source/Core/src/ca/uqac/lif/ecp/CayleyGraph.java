@@ -415,8 +415,9 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	public Map<Integer,Set<MathSet<U>>> getClassesByDepth(int max_depth)
 	{
 		Map<Integer,Set<MathSet<U>>> map = new HashMap<Integer,Set<MathSet<U>>>();
-		Set<MathSet<U>> visited = new HashSet<MathSet<U>>();
-		getClassesByDepth(map, visited, getInitialVertex(), 0, max_depth);
+		Map<MathSet<U>,Integer> visited = new HashMap<MathSet<U>,Integer>();
+		Set<Integer> visited_ids = new HashSet<Integer>();
+		getClassesByDepth(map, visited, visited_ids, getInitialVertex(), 0, max_depth);
 		return map;
 	}
 	
@@ -424,22 +425,53 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	 * Produces a map telling what are the equivalence classes reachable
 	 * at each depth of the Cayley graph
 	 * @param map
+	 * @param visited
+	 * @param visited_ids
 	 * @param node
 	 * @param cur_depth
 	 * @param max_depth
 	 */
-	protected void getClassesByDepth(Map<Integer,Set<MathSet<U>>> map, Set<MathSet<U>> visited, Vertex<T> node, int cur_depth, int max_depth)
+	protected void getClassesByDepth(Map<Integer,Set<MathSet<U>>> map, Map<MathSet<U>,Integer> visited, Set<Integer> visited_ids, Vertex<T> node, int cur_depth, int max_depth)
 	{
 		if (cur_depth > max_depth)
 		{
 			// Maximum depth reached
 			return;
 		}
+		int node_id = node.getId();
+		if (visited_ids.contains(node_id))
+		{
+			return;
+		}
 		MathSet<U> label = m_labelling.get(node.getId());
-		if (!visited.contains(label))
+		if (visited.containsKey(label))
+		{
+			visited_ids.add(node_id);
+			int v_depth = visited.get(label);
+			if (v_depth > cur_depth)
+			{
+				// Found a shorter route
+				visited.put(label, cur_depth);
+				Set<MathSet<U>> old_set = map.get(v_depth);
+				old_set.remove(label);
+				map.put(v_depth, old_set);
+				Set<MathSet<U>> cats = null;
+				if (!map.containsKey(cur_depth))
+				{
+					cats = new HashSet<MathSet<U>>();
+				}
+				else
+				{
+					cats = map.get(cur_depth);
+				}
+				cats.add(label);
+				map.put(cur_depth, cats);
+			}
+		}
+		else
 		{
 			// First time we see this
-			visited.add(label);
+			visited.put(label, cur_depth);
 			Set<MathSet<U>> cats = null;
 			if (!map.containsKey(cur_depth))
 			{
@@ -455,7 +487,7 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 		for (Edge<T> edge : node.getEdges())
 		{
 			Vertex<T> new_node = getVertex(edge.getDestination());
-			getClassesByDepth(map, visited, new_node, cur_depth + 1, max_depth);
+			getClassesByDepth(map, visited, visited_ids, new_node, cur_depth + 1, max_depth);
 		}
 	}
 }

@@ -1,0 +1,41 @@
+# -----------------------------------
+# Title: Editor clipboard
+# From:  DBLP:conf/icst/ChanderDSY11
+# -----------------------------------
+
+digraph G {
+ 0 -> 1 [label="select"];
+ 0 -> 7 [label="edit"];
+ 1 -> 0 [label="unselect"];
+ 7 -> 0 [label="unedit"];
+ 1 -> 2 [label="edit"];
+ 2 -> 1 [label="unedit"];
+ 2 -> 3 [label="copy"];
+ 2 -> 4 [label="cut"];
+ 3 -> 6 [label="edit"];
+ 3 -> 4 [label="unselect"];
+ 4 -> 3 [label="select"];
+ 4 -> 5 [label="edit"];
+ 5 -> 4 [label="paste,unedit"];
+ 6 -> 3 [label="copy,unedit"];
+ 6 -> 4 [label="paste,cut"];
+ # Transitions to trash sink
+ 0 -> 8 [label="*"];
+ 1 -> 8 [label="*"];
+ 2 -> 8 [label="*"];
+ 3 -> 8 [label="*"];
+ 4 -> 8 [label="*"];
+ 5 -> 8 [label="*"];
+ 6 -> 8 [label="*"];
+ 7 -> 8 [label="*"];
+ 8 -> 8 [label="*"];
+ 0 [label="node0"];
+ 1 [label="node1"];
+ 2 [label="node2"];
+ 3 [label="node3"];
+ 4 [label="node4"];
+ 5 [label="node5"];
+ 6 [label="node6"];
+ 7 [label="node7"];
+ 8 [label="invalid"];
+}

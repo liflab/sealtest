@@ -17,7 +17,14 @@
  */
 package ca.uqac.lif.ecp.atomic;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Set;
+
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.ecp.Trace;
 
 public class AtomicEvent extends Event 
 {
@@ -69,5 +76,44 @@ public class AtomicEvent extends Event
 			return false;
 		}
 		return m_label.compareTo(((AtomicEvent) o).m_label) == 0;
+	}
+	
+	/**
+	 * Creates a set of traces from an external source.
+	 * The source must be a set of text lines.
+	 * @param scanner The scanner to the text lines
+	 * @return The set of traces
+	 */
+	public static Set<Trace<AtomicEvent>> readTestSuite(Scanner scanner)
+	{
+		Set<Trace<AtomicEvent>> test_suite = new HashSet<Trace<AtomicEvent>>();
+		Map<String,AtomicEvent> event_pool = new HashMap<String,AtomicEvent>();
+		while (scanner.hasNextLine())
+		{
+			String line = scanner.nextLine().trim();
+			if (line.isEmpty() || line.startsWith("#"))
+			{
+				continue;
+			}
+			Trace<AtomicEvent> trace = new Trace<AtomicEvent>();
+			String[] parts = line.split(",");
+			for (String part : parts)
+			{
+				String name = part.trim();
+				if (event_pool.containsKey(name))
+				{
+					// Re-use from event pool
+					trace.add(event_pool.get(name));
+				}
+				else
+				{
+					AtomicEvent ae = new AtomicEvent(name);
+					event_pool.put(name, ae);
+					trace.add(ae);
+				}
+			}
+			test_suite.add(trace);
+		}
+		return test_suite;
 	}
 }

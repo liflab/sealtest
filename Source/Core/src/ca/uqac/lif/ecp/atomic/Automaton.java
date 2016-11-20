@@ -44,6 +44,11 @@ public class Automaton extends AtomicCayleyGraph<String>
 	 */
 	protected Alphabet<AtomicEvent> m_alphabet;
 	
+	/**
+	 * A title to give to the automaton
+	 */
+	protected String m_title = "";
+	
 	public Automaton()
 	{
 		super();
@@ -58,6 +63,24 @@ public class Automaton extends AtomicCayleyGraph<String>
 	public static Automaton parseDot(String s)
 	{
 		return parseDot(new Scanner(s));
+	}
+	
+	/**
+	 * Gives a title to the automaton
+	 * @param title The title
+	 */
+	public void setTitle(String title)
+	{
+		m_title = title;
+	}
+	
+	/**
+	 * Gets the title of this automaton
+	 * @return The title
+	 */
+	public String getTitle()
+	{
+		return m_title;
 	}
 	
 	/**
@@ -91,7 +114,19 @@ public class Automaton extends AtomicCayleyGraph<String>
 	 */
 	public static Automaton parseDot(Scanner scanner)
 	{
+		return parseDot(scanner, "");
+	}
+	
+	/**
+	 * Creates an automaton from a dot string
+	 * @param input A scanner to a dot string
+	 * @param title A title to give to the automaton
+	 * @return The graph
+	 */
+	public static Automaton parseDot(Scanner scanner, String title)
+	{
 		Automaton g = new Automaton();
+		g.setTitle(title);
 		Map<String,AtomicEvent> event_pool = new HashMap<String,AtomicEvent>();
 		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();

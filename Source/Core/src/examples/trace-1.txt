@@ -1,0 +1,7 @@
+# ---------------------------------------------------
+# A test suite made of atomic events
+# Each line represents a distinct trace
+# ---------------------------------------------------
+
+a,b,a
+b
