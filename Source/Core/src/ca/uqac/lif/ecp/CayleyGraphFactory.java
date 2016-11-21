@@ -53,6 +53,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 	
 	public CayleyGraph<T,U> getGraph(TriagingFunction<T,U> f, LabelFormatter<U> formatter)
 	{
+		int id_counter = 0;
 		CayleyGraph<T,U> graph = new CayleyGraph<T,U>();
 		if (formatter != null)
 		{
@@ -60,7 +61,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 		}
 		Queue<VertexEventTracePair> to_explore = new LinkedList<VertexEventTracePair>();
 		Queue<VertexEventTracePair> explored = new LinkedList<VertexEventTracePair>();
-		Vertex<T> current_vertex = new Vertex<T>();
+		Vertex<T> current_vertex = new Vertex<T>(id_counter++);
 		Trace<T> current_trace = new Trace<T>();
 		MathSet<U> category = f.getClass(current_trace);
 		graph.add(current_vertex);
@@ -87,7 +88,7 @@ public abstract class CayleyGraphFactory<T extends Event,U>
 			Vertex<T> target_vertex = graph.getFirstVertexWithLabelling(category);
 			if (target_vertex == null)
 			{
-				target_vertex = new Vertex<T>();
+				target_vertex = new Vertex<T>(id_counter++);
 				graph.add(target_vertex);
 				graph.m_labelling.put(target_vertex.getId(), category);
 			}

@@ -44,6 +44,8 @@ public class PrefixCategoryClosure<T extends Event,U>
 	 * The maximum recursion depth
 	 */
 	protected static final int s_maxDepth = 1000;
+	
+	protected static int s_idCounter = 0;
 
 	/**
 	 * Gets the prefix closure graph of the Cayley graph
@@ -54,7 +56,8 @@ public class PrefixCategoryClosure<T extends Event,U>
 	{
 		int start_id = graph.getInitialVertex().getId();
 		MathSet<U> start_labelling = graph.getLabelling().get(start_id);
-		StateVertex<T> start_vertex = new StateVertex<T>(start_id);
+		s_idCounter = 0;
+		StateVertex<T> start_vertex = new StateVertex<T>(s_idCounter++, start_id);
 		//Set<StateVertex<T>> new_vertices = new HashSet<StateVertex<T>>();
 		Map<Integer,Set<StateVertex<T>>> new_vertices = new HashMap<Integer,Set<StateVertex<T>>>();
 		Set<StateVertex<T>> sv = new HashSet<StateVertex<T>>();
@@ -94,7 +97,7 @@ public class PrefixCategoryClosure<T extends Event,U>
 			boolean new_target = false;
 			if (out_graph_dest == null)
 			{
-				out_graph_dest = new StateVertex<T>(in_graph_dest_id);
+				out_graph_dest = new StateVertex<T>(s_idCounter++, in_graph_dest_id);
 				Set<StateVertex<T>> sv;
 				if (!new_vertices.containsKey(out_graph_dest.m_state))
 				{
@@ -164,9 +167,9 @@ public class PrefixCategoryClosure<T extends Event,U>
 	{
 		int m_state;
 
-		public StateVertex(int state)
+		public StateVertex(int id, int state)
 		{
-			super();
+			super(id);
 			m_state = state;
 		}
 

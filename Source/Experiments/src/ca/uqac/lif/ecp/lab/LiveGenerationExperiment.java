@@ -31,7 +31,7 @@ public class LiveGenerationExperiment extends TestSuiteGenerationExperiment
 	/**
 	 * The number of times each experiment is repeated
 	 */
-	protected static final transient int s_numRepetitions = 3;
+	protected static final transient int s_numRepetitions = 1;
 	
 	public LiveGenerationExperiment(TestSuiteProvider<?> provider)
 	{

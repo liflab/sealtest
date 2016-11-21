@@ -138,6 +138,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 		Pattern pat_label = Pattern.compile("label=[\"<](.*?)[\">]");
 		Set<String> to_ignore = new HashSet<String>();
 		int initial_id = -1;
+		int id_counter = 0;
 		while(scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
@@ -151,14 +152,14 @@ public class Automaton extends AtomicCayleyGraph<String>
 				String s_from = mat.group(1).trim();
 				if (!vertices.containsKey(s_from))
 				{
-					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>(id_counter++);
 					vertices.put(s_from, v);
 				}
 				int i_from = vertices.get(s_from).getId();
 				String s_to = mat.group(2).trim();
 				if (!vertices.containsKey(s_to))
 				{
-					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>(id_counter++);
 					vertices.put(s_to, v);
 				}
 				int i_to = vertices.get(s_to).getId();
@@ -178,6 +179,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 						// this transition is invisible and will be deleted from
 						// the final graph
 						initial_id = i_to;
+						continue;
 					}
 					Edge<AtomicEvent> e;
 					if (label.compareTo(ElseEvent.label) == 0)
@@ -218,7 +220,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 				String vertex_string = mat.group(1).trim();
 				if (!vertices.containsKey(vertex_string))
 				{
-					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>(id_counter++);
 					vertices.put(vertex_string, v);
 				}
 				int vertex_id = vertices.get(vertex_string).getId();

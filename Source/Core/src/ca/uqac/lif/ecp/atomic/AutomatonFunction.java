@@ -65,6 +65,10 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 	public MathSet<U> read(AtomicEvent e)
 	{
 		Edge<AtomicEvent> edge = m_automaton.getTransition(m_currentVertex, e);
+		if (edge == null)
+		{
+			System.out.println("ERROR!");
+		}
 		m_currentVertex = m_automaton.getVertex(edge.getDestination());
 		assert m_currentVertex != null;
 		return processTransition(edge);

@@ -32,10 +32,6 @@ import ca.uqac.lif.ecp.Event;
  */
 public class Vertex<T extends Event>
 {
-	/**
-	 * Counter for vertex IDs
-	 */
-	protected static int s_idCount = 0;
 	
 	/**
 	 * The ID of this vertex
@@ -46,16 +42,6 @@ public class Vertex<T extends Event>
 	 * The set of edges in this graph
 	 */
 	protected Set<Edge<T>> m_outEdges;
-	
-	/**
-	 * Creates an empty vertex
-	 */
-	public Vertex()
-	{
-		super();
-		m_id = s_idCount++;
-		m_outEdges = new HashSet<Edge<T>>();
-	}
 	
 	/**
 	 * Creates a copy of a vertex
