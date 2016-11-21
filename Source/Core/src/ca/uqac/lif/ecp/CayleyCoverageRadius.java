@@ -29,28 +29,11 @@ import ca.uqac.lif.structures.MathSet;
 
 public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetric<T,U,RadiusMap> 
 {
-	/**
-	 * Up to what depth to compute the radius
-	 */
-	protected int m_depth;
-
 	public CayleyCoverageRadius(CayleyGraph<T, U> graph, TriagingFunction<T, U> function) 
 	{
 		super(graph, function);
-		setDepth(graph.getDepth());
 	}
 	
-	public CayleyCoverageRadius(CayleyGraph<T, U> graph, TriagingFunction<T, U> function, int depth) 
-	{
-		super(graph, function);
-		setDepth(depth);
-	}
-	
-	public void setDepth(int depth)
-	{
-		m_depth = depth;
-	}
-
 	public static class RadiusMap extends MathMap<Integer,Float>
 	{
 		/**
@@ -114,19 +97,25 @@ public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetri
 	public RadiusMap getCoverage(Set<Trace<T>> traces) 
 	{
 		RadiusMap map = new RadiusMap(m_function.toString());
-		Map<Integer,Set<MathSet<U>>> classes_by_depth = m_graph.getClassesByDepth(m_depth);
+		Map<Integer,Set<MathSet<U>>> classes_by_depth = m_graph.getClassesByDepth();
 		Set<MathSet<U>> covered_classes = getCoveredClasses(traces, true);
+		Set<Integer> depths = classes_by_depth.keySet();
+		int num_depths = depths.size();
 		int class_count = 0;
 		int total_count = 0;
-		for (int depth = 0; depth < m_depth; depth++)
+		for (int depth = 0, depth_count = 0; depth_count < num_depths; depth++)
 		{
-			Set<MathSet<U>> classes = classes_by_depth.get(depth);
-			total_count += classes.size();
-			for (MathSet<U> clazz : classes)
+			if (classes_by_depth.containsKey(depth))
 			{
-				if (covered_classes.contains(clazz))
+				depth_count++;
+				Set<MathSet<U>> classes = classes_by_depth.get(depth);
+				total_count += classes.size();
+				for (MathSet<U> clazz : classes)
 				{
-					class_count++;
+					if (covered_classes.contains(clazz))
+					{
+						class_count++;
+					}
 				}
 			}
 			map.put(depth, (float) class_count / total_count);

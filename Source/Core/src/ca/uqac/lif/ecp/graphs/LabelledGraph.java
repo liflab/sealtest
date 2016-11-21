@@ -47,6 +47,11 @@ public class LabelledGraph<T extends Event>
 	private int m_initialId;
 	
 	/**
+	 * The maximum number of recursion steps in a graph algorithm
+	 */
+	public static final transient int s_maxRecursionSteps = 1000;
+	
+	/**
 	 * Creates an empty graph
 	 */
 	public LabelledGraph()

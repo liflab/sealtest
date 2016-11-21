@@ -410,14 +410,13 @@ public class CayleyGraph<T extends Event,U extends Object> extends LabelledGraph
 	/**
 	 * Produces a map telling what are the equivalence classes reachable
 	 * at each depth of the Cayley graph
-	 * @param max_depth The maximum depth of recursion
 	 */
-	public Map<Integer,Set<MathSet<U>>> getClassesByDepth(int max_depth)
+	public Map<Integer,Set<MathSet<U>>> getClassesByDepth()
 	{
 		Map<Integer,Set<MathSet<U>>> map = new HashMap<Integer,Set<MathSet<U>>>();
 		Map<MathSet<U>,Integer> visited = new HashMap<MathSet<U>,Integer>();
 		Set<Integer> visited_ids = new HashSet<Integer>();
-		getClassesByDepth(map, visited, visited_ids, getInitialVertex(), 0, max_depth);
+		getClassesByDepth(map, visited, visited_ids, getInitialVertex(), 0, LabelledGraph.s_maxRecursionSteps);
 		return map;
 	}
 	
