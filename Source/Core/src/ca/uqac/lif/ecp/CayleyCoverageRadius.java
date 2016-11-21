@@ -29,11 +29,32 @@ import ca.uqac.lif.structures.MathSet;
 
 public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetric<T,U,RadiusMap> 
 {
+	/**
+	 * Whether the coverage is weighted by the cardinality of the
+	 * equivalence classes
+	 */
+	boolean m_weighted = false;
+	
 	public CayleyCoverageRadius(CayleyGraph<T, U> graph, TriagingFunction<T, U> function) 
 	{
 		super(graph, function);
 	}
 	
+	/**
+	 * Determines whether the coverage is weighted by the cardinality of the
+	 * equivalence classes
+	 * @param b Set to <code>true</code> to weight by cardinality
+	 */
+	public void setWeighted(boolean b)
+	{
+		m_weighted = b;
+	}
+	
+	/**
+	 * A map from trace length &#x2113; to a rational number between 0 and 1.
+	 * This number indicates how much coverage is achieved for equivalence
+	 * classes reachable by a trace of length &#x2113; or less.
+	 */
 	public static class RadiusMap extends MathMap<Integer,Float>
 	{
 		/**
@@ -46,15 +67,18 @@ public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetri
 		 */
 		protected String m_title;
 		
-		public RadiusMap()
+		protected final boolean m_weighted;
+		
+		public RadiusMap(boolean weighted)
 		{
-			this("");
+			this("", weighted);
 		}
 		
-		public RadiusMap(String title)
+		public RadiusMap(String title, boolean weighted)
 		{
 			super();
 			m_title = title;
+			m_weighted = weighted;
 		}
 		
 		/**
@@ -64,11 +88,17 @@ public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetri
 		public String toGnuplot()
 		{
 			StringBuilder out = new StringBuilder();
-			out.append("set title \"Coverage radius of ").append(m_title).append("\"\n");
+			String title = "Coverage radius of " + m_title;
+			if (m_weighted)
+			{
+				title = "Weighted coverage radius of " + m_title;
+			}
+			out.append("set title \"").append(title).append("\"\n");
 			out.append("set terminal png\n");
 			out.append("set datafile separator \",\"\n");
 			out.append("set yrange [0:1]\n");
 			out.append("set border 3\n");
+			out.append("unset key\n");
 			out.append("set xlabel \"Trace length\"\n");
 			out.append("set ylabel \"Class coverage\"\n");
 			out.append("plot '-' using 1:2 with lines\n\n");
@@ -96,7 +126,7 @@ public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetri
 	@Override
 	public RadiusMap getCoverage(Set<Trace<T>> traces) 
 	{
-		RadiusMap map = new RadiusMap(m_function.toString());
+		RadiusMap map = new RadiusMap(m_function.toString(), m_weighted);
 		Map<Integer,Set<MathSet<U>>> classes_by_depth = m_graph.getClassesByDepth();
 		Set<MathSet<U>> covered_classes = getCoveredClasses(traces, true);
 		Set<Integer> depths = classes_by_depth.keySet();
@@ -105,20 +135,47 @@ public class CayleyCoverageRadius<T extends Event,U> extends CayleyCoverageMetri
 		int total_count = 0;
 		for (int depth = 0, depth_count = 0; depth_count < num_depths; depth++)
 		{
+			Map<MathSet<U>,Integer> num_traces = null;
+			if (m_weighted)
+			{
+				// Don't compute that map unless we need it
+				num_traces = m_graph.getClassCardinality(depth + 1, false);
+			}
 			if (classes_by_depth.containsKey(depth))
 			{
 				depth_count++;
 				Set<MathSet<U>> classes = classes_by_depth.get(depth);
-				total_count += classes.size();
 				for (MathSet<U> clazz : classes)
 				{
+					if (m_weighted)
+					{
+						total_count += num_traces.get(clazz);
+					}
+					else
+					{
+						total_count += 1;
+					}
 					if (covered_classes.contains(clazz))
 					{
-						class_count++;
+						if (m_weighted)
+						{
+							class_count += num_traces.get(clazz);
+						}
+						else
+						{
+							class_count += 1;
+						}
 					}
 				}
 			}
-			map.put(depth, (float) class_count / total_count);
+			if (total_count > 0)
+			{
+				map.put(depth, (float) class_count / total_count);
+			}
+			else
+			{
+				map.put(depth, 0f);
+			}
 		}
 		return map;
 	}

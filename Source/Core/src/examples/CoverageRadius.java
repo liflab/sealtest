@@ -38,6 +38,7 @@ public class CoverageRadius
 		StateShallowHistory function = new StateShallowHistory(automaton, 2);
 		// Create a coverage radius
 		CayleyCoverageRadius<AtomicEvent,MathList<Integer>> ccr = new CayleyCoverageRadius<AtomicEvent,MathList<Integer>>(function.getCayleyGraph(), function);
+		ccr.setWeighted(true);
 		// Read a test suite from a file
 		Set<Trace<AtomicEvent>> test_suite = AtomicEvent.readTestSuite(new Scanner(CoverageRadius.class.getResourceAsStream("clipboard-test-suite-1.txt")));
 		// Get the radius map from this test suite
