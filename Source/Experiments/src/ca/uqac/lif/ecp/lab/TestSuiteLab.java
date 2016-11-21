@@ -124,7 +124,7 @@ public class TestSuiteLab extends Laboratory
 
 		// Setup the live experiments
 		{
-			List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(s_fsmPath), ".*\\.txt");
+			List<String> listing = FileHelper.listAllFiles(TestSuiteLab.class.getResource(s_fsmPath), ".*\\.dot");
 			for (String uris : listing)
 			{
 				for (int t = 1; t <= max_t; t++)

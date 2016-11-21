@@ -1,0 +1,20 @@
+# ----------------------------------- 
+#Title:   p R !r
+#From:  patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml 
+# alphabet : [x, p, r]
+# ----------------------------------- 
+ 
+ 
+digraph G {
+  rankdir=LR;
+  q0 [shape=doublecircle, margin=0];
+  q1 [shape=doublecircle, margin=0];
+  start0 [shape=none, style=invis];
+  start0 -> q1 [label="START"];
+  q1 -> q1  [label="\"x\""];
+  q0 -> q0  [label="\"*\""];
+  q1 -> q0  [label="\"p\""];
+  invalid -> invalid  [label="\"*\""];
+  q1 -> invalid  [label="\"r\""];
+  invalid [shape=circle, margin=0];
+}

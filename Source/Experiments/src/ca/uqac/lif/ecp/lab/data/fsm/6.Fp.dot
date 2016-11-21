@@ -1,0 +1,14 @@
+# ----------------------------------- 
+#Title:   Fp
+#From:  patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml 
+# alphabet : [x, p]
+# ----------------------------------- 
+ 
+ 
+digraph G {
+  rankdir=LR;
+  q0 [shape=doublecircle, margin=0];
+  start0 [shape=none, style=invis];
+  q0 -> q0  [label="\"*\""];
+  start0 -> q0 [label="START"];
+}

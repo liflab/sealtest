@@ -1,0 +1,25 @@
+# ----------------------------------- 
+#Title:   G(!q || ((!p || (!r U (!r && s))) W r))
+#From:  patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml 
+# alphabet : [p, r, q, s, x]
+# ----------------------------------- 
+ 
+ 
+digraph G {
+  rankdir=LR;
+  q0 [shape=doublecircle, margin=0];
+  q1 [shape=doublecircle, margin=0];
+  q2 [shape=doublecircle, margin=0];
+  start0 [shape=none, style=invis];
+  start0 -> q2 [label="START"];
+  q0 -> q0  [label="\"q,x,p\""];
+  q1 -> q1  [label="\"s,q,x\""];
+  q1 -> q0  [label="\"p\""];
+  q0 -> q1  [label="\"s\""];
+  q2 -> q2  [label="\"p,x,s,r\""];
+  q2 -> q1  [label="\"q\""];
+  q1 -> q2  [label="\"r\""];
+  invalid -> invalid  [label="\"*\""];
+  q0 -> invalid  [label="\"r\""];
+  invalid [shape=circle, margin=0];
+}

@@ -18,8 +18,10 @@
 package ca.uqac.lif.ecp.atomic;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,8 +132,12 @@ public class Automaton extends AtomicCayleyGraph<String>
 		Map<String,AtomicEvent> event_pool = new HashMap<String,AtomicEvent>();
 		Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 		CayleyVertexLabelling<String> labelling = new CayleyVertexLabelling<String>();
+		Map<String,Vertex<AtomicEvent>> vertices = new HashMap<String,Vertex<AtomicEvent>>();
 		Pattern pat_edge = Pattern.compile("(.*?)->(.*?) \\[label=[\"<](.*?)[\">]\\];{0,1}");
-		Pattern pat_vertex = Pattern.compile("(\\d+?) \\[label=[\"<](.*?)[\">]\\];{0,1}");
+		Pattern pat_vertex = Pattern.compile("([^\\s]+?) \\[([^\\]]*?)\\];{0,1}");
+		Pattern pat_label = Pattern.compile("label=[\"<](.*?)[\">]");
+		Set<String> to_ignore = new HashSet<String>();
+		int initial_id = -1;
 		while(scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
@@ -143,24 +149,36 @@ public class Automaton extends AtomicCayleyGraph<String>
 			{
 				// New edge
 				String s_from = mat.group(1).trim();
-				int i_from = Integer.parseInt(s_from);
-				Vertex<AtomicEvent> from = g.getVertex(i_from);
-				if (from == null)
+				if (!vertices.containsKey(s_from))
 				{
-					from = new Vertex<AtomicEvent>(i_from);
-					g.add(from);
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					vertices.put(s_from, v);
 				}
+				int i_from = vertices.get(s_from).getId();
 				String s_to = mat.group(2).trim();
-				int i_to = Integer.parseInt(s_to);
-				Vertex<AtomicEvent> to = g.getVertex(i_to);
-				if (to == null)
+				if (!vertices.containsKey(s_to))
 				{
-					to = new Vertex<AtomicEvent>(i_to);
-					g.add(to);
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					vertices.put(s_to, v);
 				}
-				String[] labels = mat.group(3).trim().split(",");
+				int i_to = vertices.get(s_to).getId();
+				String unformatted_label = mat.group(3).trim();
+				if (unformatted_label.startsWith("\\\""))
+				{
+					// Label is surrounded by spurious escaped quotes: remove
+					unformatted_label = unformatted_label.replace("\\\"", "");
+				}
+				String[] labels = unformatted_label.split(",");
 				for (String label : labels)
 				{
+					if (label.compareToIgnoreCase("START") == 0)
+					{
+						// In some graph formats, the START transition points to
+						// the initial state of the graph. The incoming vertex of
+						// this transition is invisible and will be deleted from
+						// the final graph
+						initial_id = i_to;
+					}
 					Edge<AtomicEvent> e;
 					if (label.compareTo(ElseEvent.label) == 0)
 					{
@@ -184,7 +202,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 						}
 						e = new Edge<AtomicEvent>(i_from, ae, i_to);
 					}
-					from.add(e);
+					vertices.get(s_from).add(e);
 				}
 			}
 			else
@@ -196,15 +214,58 @@ public class Automaton extends AtomicCayleyGraph<String>
 					// Ignore line
 					continue;
 				}
-				int vertex_id = Integer.parseInt(mat.group(1));
-				String[] vertex_labels = mat.group(2).split(",");
-				MathSet<String> labels = new MathSet<String>();
-				for (String label : vertex_labels)
+				// Replace all nondigits by blank, and then parse int
+				String vertex_string = mat.group(1).trim();
+				if (!vertices.containsKey(vertex_string))
 				{
-					labels.add(label);
+					Vertex<AtomicEvent> v = new Vertex<AtomicEvent>();
+					vertices.put(vertex_string, v);
 				}
-				labelling.put(vertex_id, labels);
+				int vertex_id = vertices.get(vertex_string).getId();
+				String vertex_attributes = mat.group(2);
+				if (vertex_attributes.contains("invis"))
+				{
+					// Node is invisible: will be ignored
+					to_ignore.add(mat.group(1));
+					continue;
+				}
+				if (vertex_string.compareToIgnoreCase("invalid") == 0)
+				{
+					labelling.put(vertex_id, new MathSet<String>("invalid"));
+				}
+				else
+				{
+					Matcher label_mat = pat_label.matcher(vertex_attributes);
+					if (label_mat.find())
+					{
+						String[] vertex_labels = label_mat.group(1).split(",");
+						MathSet<String> labels = new MathSet<String>();
+						for (String label : vertex_labels)
+						{
+							labels.add(label);
+						}
+						labelling.put(vertex_id, labels);					
+					}
+					else
+					{
+						// By default: the label is just the parsed ID
+						MathSet<String> labels = new MathSet<String>(Integer.toString(vertex_id));
+						labelling.put(vertex_id, labels);
+					}					
+				}
 			}
+		}
+		for (String name : to_ignore)
+		{
+			vertices.remove(name);
+		}
+		for (Vertex<AtomicEvent> v : vertices.values())
+		{
+			g.add(v);
+		}
+		if (initial_id != -1)
+		{
+			g.setInitialVertexId(initial_id);
 		}
 		g.setLabelling(labelling);
 		g.setAlphabet(alphabet);

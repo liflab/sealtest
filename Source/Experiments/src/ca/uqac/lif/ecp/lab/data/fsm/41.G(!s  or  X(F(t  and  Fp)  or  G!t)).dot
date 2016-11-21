@@ -1,0 +1,17 @@
+# ----------------------------------- 
+#Title:   G(!s || X(F(t && Fp) || G!t))
+#From:  patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml 
+# alphabet : [x, s, t, p]
+# ----------------------------------- 
+ 
+ 
+digraph G {
+  rankdir=LR;
+  q0 [shape=doublecircle, margin=0];
+  q1 [shape=doublecircle, margin=0];
+  start0 [shape=none, style=invis];
+  q1 -> q1  [label="\"x,t\""];
+  q0 -> q0  [label="\"*\""];
+  q1 -> q0  [label="\"p,s\""];
+  start0 -> q0 [label="START"];
+}

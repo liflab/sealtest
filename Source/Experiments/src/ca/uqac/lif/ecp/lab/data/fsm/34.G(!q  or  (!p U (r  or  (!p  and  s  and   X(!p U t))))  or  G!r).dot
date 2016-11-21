@@ -1,0 +1,34 @@
+# ----------------------------------- 
+#Title:   G(!q || (!p U (r || (!p && s &&  X(!p U t)))) || G!r)
+#From:  patterns.projects.cs.ksu.edu/documentation/patterns/ltl.shtml 
+# alphabet : [t, p, r, q, s, x]
+# ----------------------------------- 
+ 
+ 
+digraph G {
+  rankdir=LR;
+  q0 [shape=doublecircle, margin=0];
+  q1 [shape=doublecircle, margin=0];
+  q2 [shape=doublecircle, margin=0];
+  q3 [shape=doublecircle, margin=0];
+  q4 [shape=doublecircle, margin=0];
+  start0 [shape=none, style=invis];
+  start0 -> q3 [label="START"];
+  q3 -> q0  [label="\"r,t,x,p\""];
+  q0 -> q0  [label="\"x,p,t,s,r\""];
+  q4 -> q4  [label="\"s,t,p,x,q\""];
+  q1 -> q1  [label="\"s,x\""];
+  q1 -> q0  [label="\"r,t\""];
+  q2 -> q1  [label="\"s\""];
+  q1 -> q2  [label="\"q\""];
+  q2 -> q2  [label="\"x,t,q\""];
+  q0 -> q2  [label="\"q\""];
+  q1 -> q4  [label="\"p\""];
+  q3 -> q3  [label="\"s\""];
+  q3 -> q2  [label="\"q\""];
+  q2 -> q0  [label="\"r\""];
+  q2 -> q4  [label="\"p\""];
+  invalid -> invalid  [label="\"*\""];
+  q4 -> invalid  [label="\"r\""];
+  invalid [shape=circle, margin=0];
+}
