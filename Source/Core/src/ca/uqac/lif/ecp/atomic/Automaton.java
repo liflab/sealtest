@@ -181,6 +181,10 @@ public class Automaton extends AtomicCayleyGraph<String>
 						initial_id = i_to;
 						continue;
 					}
+					if (initial_id == -1)
+					{
+						initial_id = i_from;
+					}
 					Edge<AtomicEvent> e;
 					if (label.compareTo(ElseEvent.label) == 0)
 					{
