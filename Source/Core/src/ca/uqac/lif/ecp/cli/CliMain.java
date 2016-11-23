@@ -17,8 +17,12 @@
  */
 package ca.uqac.lif.ecp.cli;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Array;
+import java.util.Scanner;
 
+import ca.uqac.lif.ecp.TraceGenerator;
 import ca.uqac.lif.ecp.cli.CliParser.Argument;
 import ca.uqac.lif.ecp.cli.CliParser.ArgumentMap;
 
@@ -37,6 +41,7 @@ public class CliMain
 	/* Return codes */
 	public static final transient int ERR_OK = 0;
 	public static final transient int ERR_ARGUMENTS = 1;
+	public static final transient int ERR_IO = 2;
 	
 	/**
 	 * The version number of the library
@@ -62,12 +67,40 @@ public class CliMain
 			CliParser cli_parser = new CliParser();
 			cli_parser.addArgument(new Argument().withShortName("h").withLongName("help").withDescription("Show usage"));
 			cli_parser.addArgument(new Argument().withShortName("s").withLongName("spec").withArgument("file").withDescription("Reads specification from file"));
-			cli_parser.addArgument(new Argument().withShortName("f").withLongName("function").withArgument("name").withDescription("Use triaging function name"));
+			cli_parser.addArgument(new Argument().withShortName("t").withLongName("type").withArgument("name").withDescription("Set speciication type to name (ltl, fsm)"));
+			cli_parser.addArgument(new Argument().withShortName("g").withLongName("generator").withArgument("name").withDescription("Use generator name"));
 			ArgumentMap arguments = cli_parser.parse(removeAction(args));
 			if (arguments.hasOption("help"))
 			{
 				cli_parser.printHelp("", System.err);
 				System.exit(ERR_OK);
+			}
+			TraceGenerator<?> generator = null;
+			if (!arguments.hasOption("generator"))
+			{
+				System.err.println("ERROR: you must specify a generator");
+				System.exit(ERR_ARGUMENTS);
+			}
+			String generator_name = arguments.getOptionValue("generator");
+			Scanner spec_scanner = null;
+			if (arguments.hasOption("spec"))
+			{
+				// Read spec from file
+				String filename = arguments.getOptionValue("spec");
+				try 
+				{
+					spec_scanner = new Scanner(new File(filename));
+				} 
+				catch (FileNotFoundException e) 
+				{
+					System.err.println("ERROR: file " + filename + " not found");
+					System.exit(ERR_IO);
+				}
+			}
+			else
+			{
+				// Read spec from stdin
+				spec_scanner = new Scanner(System.in);
 			}
 		}
 		else if (action.compareToIgnoreCase("coverage") == 0)

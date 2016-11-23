@@ -1,0 +1,26 @@
+# -----------------------------------
+# Title: Microwave
+# -----------------------------------
+
+digraph {
+ 0 -> 1 [label="open door"];
+ 1 -> 0 [label="close door"];
+ 1 -> 2 [label="place food"];
+ 2 -> 1 [label="remove food"];
+ 2 -> 3 [label="close door"];
+ 3 -> 4 [label="start"];
+ 4 -> 3 [label="manual stop"];
+ 3 -> 2 [label="open door"];
+ 0 -> 5 [label="*"];
+ 1 -> 5 [label="*"];
+ 2 -> 5 [label="*"];
+ 3 -> 5 [label="*"];
+ 4 -> 5 [label="*"];
+ 5 -> 5 [label="*"];
+ 0 [label="closed empty"];
+ 1 [label="open empty"];
+ 2 [label="open food"];
+ 3 [label="closed food"]
+ 4 [label="heating"];
+ 5 [label="invalid"];
+}

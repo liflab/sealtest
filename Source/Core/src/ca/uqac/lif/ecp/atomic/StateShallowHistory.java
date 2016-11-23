@@ -27,6 +27,11 @@ public class StateShallowHistory extends ShallowHistoryFunction<Integer>
 	{
 		super(a, size);
 	}
+	
+	public StateShallowHistory(Automaton a)
+	{
+		this(a, 1);
+	}
 
 	@Override
 	public MathSet<MathList<Integer>> processTransition(Edge<AtomicEvent> edge)
