@@ -25,9 +25,7 @@ import ca.uqac.lif.ecp.SpanningTreeTraceGenerator;
 import ca.uqac.lif.ecp.TestSuite;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.ecp.atomic.StateShallowHistory;
 import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
-import ca.uqac.lif.ecp.online.PrintHook;
 import ca.uqac.lif.ecp.online.TestDriver;
 import ca.uqac.lif.ecp.online.TestHook;
 import ca.uqac.lif.ecp.online.UnidirectionalTestDriver;
@@ -35,8 +33,6 @@ import ca.uqac.lif.structures.MathList;
 
 /**
  * Create a test hook that converts events into method calls on an object.
- * This example is similar to {@link SimplePrint}, but we use a different
- * test hook.
  *  
  * @author Sylvain Hallé
  */
@@ -62,6 +58,11 @@ public class MethodCalls
 		driver.run();
 	}
 
+	/**
+	 * This hook receives event names by the test driver, and converts
+	 * each of them into a method call on an instance of the Microwave 
+	 * class
+	 */
 	public static class MicrowaveHook implements TestHook<AtomicEvent,Object>
 	{
 		Microwave m_oven = new Microwave();
@@ -111,6 +112,9 @@ public class MethodCalls
 
 	}
 
+	/**
+	 * Simple model of a microwave oven
+	 */
 	public static class Microwave
 	{
 		public boolean m_heating = false;

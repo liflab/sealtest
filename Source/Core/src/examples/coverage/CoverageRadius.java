@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package examples;
+package examples.coverage;
 
 import java.util.Scanner;
 import java.util.Set;
@@ -28,12 +28,17 @@ import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.ecp.atomic.StateShallowHistory;
 import ca.uqac.lif.structures.MathList;
 
+/**
+ * Display the coverage radius graph from a test suite.
+ * 
+ * @author Sylvain Hallé
+ */
 public class CoverageRadius
 {
 	public static void main(String[] args)
 	{
 		// Read automaton from a file
-		Automaton automaton = Automaton.parseDot(new Scanner(CoverageRadius.class.getResourceAsStream("editor-clipboard.dot")), "Editor clipboard");
+		Automaton automaton = Automaton.parseDot(new Scanner(CoverageRadius.class.getResourceAsStream("../editor-clipboard.dot")), "Editor clipboard");
 		// Create a triaging function
 		StateShallowHistory function = new StateShallowHistory(automaton, 2);
 		// Create a coverage radius
