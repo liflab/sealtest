@@ -20,11 +20,13 @@ package examples.online;
 import java.util.Scanner;
 
 import ca.uqac.lif.ecp.CayleyGraph;
+import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.SpanningTreeTraceGenerator;
 import ca.uqac.lif.ecp.TestSuite;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
 import ca.uqac.lif.ecp.atomic.StateShallowHistory;
+import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
 import ca.uqac.lif.ecp.online.PrintHook;
 import ca.uqac.lif.ecp.online.TestDriver;
 import ca.uqac.lif.ecp.online.TestHook;
@@ -45,16 +47,16 @@ public class MethodCalls
 		// Read an automaton
 		Automaton a = Automaton.parseDot(new Scanner(MethodCalls.class.getResourceAsStream("../microwave.dot")));
 		// Create a test suite using state coverage
-		StateShallowHistory function = new StateShallowHistory(a);
-		CayleyGraph<AtomicEvent,MathList<Integer>> graph = function.getCayleyGraph();
-		SpanningTreeTraceGenerator<AtomicEvent,MathList<Integer>> generator = new SpanningTreeTraceGenerator<AtomicEvent,MathList<Integer>>(graph);
+		TransitionShallowHistory function = new TransitionShallowHistory(a,1);
+		CayleyGraph<AtomicEvent,MathList<Edge<AtomicEvent>>> graph = function.getCayleyGraph();
+		SpanningTreeTraceGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>> generator = new SpanningTreeTraceGenerator<AtomicEvent,MathList<Edge<AtomicEvent>>>(graph);
 		TestSuite<AtomicEvent> suite = generator.generateTraces();
 		// Create a test driver
 		UnidirectionalTestDriver<AtomicEvent,Object> driver = new UnidirectionalTestDriver<AtomicEvent,Object>();
 		driver.setTestSuite(suite);
 		// Connect the driver to the microwave hook
-		//MicrowaveHook hook = new MicrowaveHook();
-		PrintHook<AtomicEvent> hook = new PrintHook<AtomicEvent>();
+		MicrowaveHook hook = new MicrowaveHook();
+		//PrintHook<AtomicEvent> hook = new PrintHook<AtomicEvent>();
 		driver.setHook(hook);
 		// Start the driver
 		driver.run();

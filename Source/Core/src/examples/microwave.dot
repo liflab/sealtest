@@ -8,7 +8,7 @@ digraph {
  1 -> 2 [label="place food"];
  2 -> 1 [label="remove food"];
  2 -> 3 [label="close door"];
- 3 -> 4 [label="start"];
+ 3 -> 4 [label="start oven"];
  4 -> 3 [label="manual stop"];
  3 -> 2 [label="open door"];
  0 -> 5 [label="*"];
