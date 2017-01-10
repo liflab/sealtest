@@ -8,12 +8,15 @@
 *.swp
 *.bak
 *.old
+*.log
 
 # Auto-generated folders
-/doc/
-/lib/
-/deps/
+**/doc/
+lib/
+doxygen/
+/dep/
 /tests/
+/html/
 
 # Top-level jar, but not jars in subfolders (if any)
 *.jar
@@ -29,31 +32,31 @@ jacoco.exec
 # ----------------------------------------------------
 
 # Eclipse-specific
-Source/.metadata/
-Source/**/*.pydevproject
-Source/**/.project
-Source/**/.metadata
-Source/**/*.class
-Source/**/bin
-Source/**/tmp
-Source/**/*~.nib
-Source/**/local.properties
-Source/**/.classpath
-Source/**/.settings/
-Source/**/.recommenders/
-Source/**/.loadpath
+.metadata/
+**/*.pydevproject
+**/.project
+.metadata
+**/*.class
+**/bin
+**/tmp
+**/*~.nib
+**/local.properties
+**/.classpath
+**/.settings/
+**/.recommenders/
+**/.loadpath
 
 # External tool builders
-Source/**/.externalToolBuilders/
+**/.externalToolBuilders/
 
 # Locally stored "Eclipse launch configurations"
-Source/**/*.launch
+**/*.launch
 
 # CDT-specific
-Source/**/.cproject
+**/.cproject
 
 # PDT-specific
-Source/**/.buildpath
+**/.buildpath
 
-# PDFs, used for debugging
-*.pdf
+# SonarQube
+.sonar/

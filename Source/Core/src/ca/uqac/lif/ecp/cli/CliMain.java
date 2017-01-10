@@ -19,7 +19,6 @@ package ca.uqac.lif.ecp.cli;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.lang.reflect.Array;
 import java.util.Scanner;
 
 import ca.uqac.lif.ecp.TraceGenerator;
@@ -38,27 +37,41 @@ import ca.uqac.lif.ecp.cli.CliParser.ArgumentMap;
  */
 public class CliMain
 {
-	/* Return codes */
+	/**
+	 * Exit code when everything is OK
+	 */
 	public static final transient int ERR_OK = 0;
+	
+	/**
+	 * Exit code when there is an error in the command line arguments
+	 */
 	public static final transient int ERR_ARGUMENTS = 1;
+	
+	/**
+	 * Exit code when there is an error reading some input file
+	 */
 	public static final transient int ERR_IO = 2;
 	
 	/**
 	 * The version number of the library
 	 */
-	public static final transient String s_versionString = "1.0";
+	public static final transient String s_versionString = "0.1";
 	
+	/**
+	 * The main method when Seal Test is run from the command line
+	 * @param args The command line arguments
+	 */
 	public static void main(String[] args)
 	{
 		System.err.println("Seal Test v" + s_versionString + " - A test generator with many tricks");
-		System.err.println("(C) 2016 Laboratoire d'informatique formelle, Université du Québec à Chicoutimi");
-		System.err.println("https://liflab.github.io/seal-test\n");
+		System.err.println("(C) 2016 Laboratoire d'informatique formelle\nUniversité du Québec à Chicoutimi, Canada");
+		System.err.println("https://liflab.github.io/sealtest\n");
 		if (args.length < 1)
 		{
 			System.err.println("Invalid number of arguments");
-			System.err.println("Usage: java -jar seal-test.jar [action] [parameters]");
+			System.err.println("Usage: java -jar sealtest.jar [action] [parameters]");
 			System.err.println("Where action is \"generate\" or \"coverage\"");
-			System.err.println("Run java -jar seal-test.jar action --help for help about each option");
+			System.err.println("Run java -jar sealtest.jar action --help for help about each option");
 			System.exit(ERR_ARGUMENTS);
 		}
 		String action = args[0];
