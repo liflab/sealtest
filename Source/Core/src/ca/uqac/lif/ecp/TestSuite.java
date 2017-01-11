@@ -41,6 +41,16 @@ public class TestSuite<T extends Event> extends MathSet<Trace<T>>
 	}
 	
 	/**
+	 * Creates a test suite by copying the contents of another suite
+	 * @param suite The other suite
+	 */
+	public TestSuite(TestSuite<T> suite)
+	{
+		super();
+		addAll(suite);
+	}
+	
+	/**
 	 * Gets the total length of the test suite
 	 * @return The total length
 	 */
