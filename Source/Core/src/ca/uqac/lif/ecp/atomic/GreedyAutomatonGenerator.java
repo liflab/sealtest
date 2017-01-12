@@ -36,6 +36,12 @@ public class GreedyAutomatonGenerator extends GreedyTraceGenerator<AtomicEvent>
 		super(random, metric);
 		m_automaton = aut;
 	}
+	
+	@Override
+	public int pickLength()
+	{
+		return m_random.nextInt(m_automaton.getEdgeCount());
+	}
 
 	@Override
 	public Trace<AtomicEvent> generateTrace(int length) 

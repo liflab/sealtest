@@ -59,6 +59,15 @@ public abstract class GreedyTraceGenerator<T extends Event> extends TraceGenerat
 	}
 	
 	/**
+	 * Sets the maximum number of iterations of the algorithm before giving up
+	 * @param iterations The number of iterations
+	 */
+	public void setMaxIterations(int iterations)
+	{
+		m_maxIterations = iterations;
+	}
+	
+	/**
 	 * Gets the coverage obtained the last time {@link #generateTraces()} was
 	 * called
 	 * @return The coverage, -1 if the method has not been called yet
@@ -99,12 +108,13 @@ public abstract class GreedyTraceGenerator<T extends Event> extends TraceGenerat
 				generated_suite.add(candidate_trace);
 				current_coverage = new_coverage;
 			}
+			m_lastCoverage = current_coverage;
 			if (current_coverage >= 1)
 			{
 				break;
 			}
-			m_lastCoverage = current_coverage;
 		}
+		m_lastCoverage = Math.min(1, m_lastCoverage);
 		return generated_suite;
 	}
 	

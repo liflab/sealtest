@@ -34,6 +34,7 @@ import ca.uqac.lif.structures.Matrix;
  * identified by integers.
  * 
  * @param <T> The type of event this graph has for edge labels
+ * @param <U> The type of the categories in the Cayley Graph
  * @author Sylvain Hallé
  *
  */
