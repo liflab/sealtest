@@ -67,7 +67,7 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 		Edge<AtomicEvent> edge = m_automaton.getTransition(m_currentVertex, e);
 		if (edge == null)
 		{
-			System.out.println("ERROR!");
+			System.out.println("ERROR! The transition relation of the automaton is not total.");
 		}
 		m_currentVertex = m_automaton.getVertex(edge.getDestination());
 		assert m_currentVertex != null;
