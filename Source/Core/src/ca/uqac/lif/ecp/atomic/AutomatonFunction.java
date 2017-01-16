@@ -19,6 +19,7 @@ package ca.uqac.lif.ecp.atomic;
 
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.TriagingFunction;
+import ca.uqac.lif.ecp.UnexpectedError;
 import ca.uqac.lif.ecp.graphs.Vertex;
 import ca.uqac.lif.structures.MathSet;
 
@@ -67,10 +68,14 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 		Edge<AtomicEvent> edge = m_automaton.getTransition(m_currentVertex, e);
 		if (edge == null)
 		{
-			System.out.println("ERROR! The transition relation of the automaton is not total.");
+			throw new UnexpectedError("The transition relation of the automaton is not total: no outgoing edge from "
+					+ m_currentVertex + " with event " + e);
 		}
 		m_currentVertex = m_automaton.getVertex(edge.getDestination());
-		assert m_currentVertex != null;
+		if (m_currentVertex == null)
+		{
+			throw new UnexpectedError("Edge refers to a nonexistent vertex ID: " + m_currentVertex.getId());
+		}
 		return processTransition(edge);
 	}
 	

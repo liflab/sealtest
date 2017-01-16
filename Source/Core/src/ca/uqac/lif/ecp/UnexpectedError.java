@@ -17,30 +17,27 @@
  */
 package ca.uqac.lif.ecp;
 
-import ca.uqac.lif.structures.MathSet;
-
-public class Alphabet<T> extends MathSet<T> 
+/**
+ * Exception thrown when an unexpected condition occurs. This corresponds to
+ * problems that are not supposed to occur in a normal use of the system.
+ * @author Sylvain Hallé
+ *
+ */
+public class UnexpectedError extends RuntimeException 
 {
 	/**
 	 * Dummy UID
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Creates an empty alphabet
-	 */
-	public Alphabet()
+	
+	public UnexpectedError(Throwable t)
 	{
-		super();
+		super(t);
 	}
 	
-	/**
-	 * Creates a copy of an alphabet
-	 * @param alphabet The alphabet to copy
-	 */
-	public Alphabet(Alphabet<T> alphabet)
+	public UnexpectedError(String message)
 	{
-		this();
-		addAll(alphabet);
+		super(message);
 	}
+
 }
