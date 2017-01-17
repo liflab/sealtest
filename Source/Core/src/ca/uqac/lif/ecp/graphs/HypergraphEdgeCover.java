@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -23,7 +23,7 @@ import ca.uqac.lif.structures.MathSet;
 /**
  * Solver for the hypergraph edge covering problem. Different descendents
  * of this abstract class will solve the problem using different algorithms.
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  *
  */
 public abstract class HypergraphEdgeCover 

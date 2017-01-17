@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016 Sylvain HallÃ©
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -24,7 +24,7 @@ import ca.uqac.lif.structures.MathSet;
  * Solves the hypergraph edge cover by a greedy approach. The algorithm simply
  * picks the hyperedge that covers the most remaining vertices.
  * 
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  */
 public class GreedyHypergraphEdgeCover extends HypergraphEdgeCover
 {
