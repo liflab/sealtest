@@ -65,15 +65,26 @@ public class AtomicTrace extends Trace<AtomicEvent>
 				// Ignore this line
 				continue;
 			}
-			Trace<AtomicEvent> trace = new Trace<AtomicEvent>();
-			String[] labels = line.split(",");
-			for (String label : labels)
-			{
-				AtomicEvent event = new AtomicEvent(label);
-				trace.add(event);
-			}
-			set.add(trace);
+			set.add(readTrace(line));
 		}
 		return set;
 	}	
+	
+	/**
+	 * Reads a trace from a text string
+	 * @see #readSet(Scanner)
+	 * @param line The string
+	 * @return The trace
+	 */
+	public static Trace<AtomicEvent> readTrace(String line)
+	{
+		Trace<AtomicEvent> trace = new Trace<AtomicEvent>();
+		String[] labels = line.split(",");
+		for (String label : labels)
+		{
+			AtomicEvent event = new AtomicEvent(label);
+			trace.add(event);
+		}
+		return trace;
+	}
 }
