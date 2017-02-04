@@ -5,11 +5,14 @@
 # --------------------------------------
 
 <S>           := <binary-op> | <unary-op> | <atom> ;
-<binary-op>   := <and> | <or> | <implies> ;
+<binary-op>   := <and> | <or> | <implies> | <until> | <weak_until> | <release> ;
 <unary-op>    := <not> | <globally> | <eventually> | <next> ;
 <and>         := <atom> & <atom> | <atom> & ( <S> ) | ( <S> ) & <atom> | ( <S> ) & ( <S> ) ;
 <or>          := <atom> \u007c <atom> | <atom> \u007c ( <S> ) | ( <S> ) \u007c <atom> | ( <S> ) \u007c ( <S> ) ;
 <implies>     := <atom> -\u003e <atom> | <atom> -\u003e ( <S> ) | ( <S> ) -\u003e <atom> | ( <S> ) -\u003e ( <S> ) ;
+<until>       := <atom> U <atom> | <atom> U ( <S> ) | ( <S> ) U <atom> | ( <S> ) U ( <S> ) ;
+<weak_until>  := <atom> W <atom> | <atom> W ( <S> ) | ( <S> ) W <atom> | ( <S> ) W ( <S> ) ;
+<release>     := <atom> R <atom> | <atom> R ( <S> ) | ( <S> ) R <atom> | ( <S> ) R ( <S> ) ;
 <globally>    := G <atom> | G ( <S> ) ;
 <eventually>  := F <atom> | F ( <S> ) ;
 <next>        := X <atom> | X ( <S> ) ;

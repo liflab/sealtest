@@ -177,6 +177,33 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 				o.addOperand(left);
 				m_stack.push(o);
 			}
+			else if (token_name.compareTo("<until>") == 0)
+			{
+				Until<T> o = new Until<T>();
+				Operator<T> right = m_stack.pop();
+				Operator<T> left = m_stack.pop();
+				o.addOperand(left);
+				o.addOperand(right);
+				m_stack.push(o);
+			}
+			else if (token_name.compareTo("<weak_until>") == 0)
+			{
+				WeakUntil<T> o = new WeakUntil<T>();
+				Operator<T> right = m_stack.pop();
+				Operator<T> left = m_stack.pop();
+				o.addOperand(left);
+				o.addOperand(right);
+				m_stack.push(o);
+			}
+			else if (token_name.compareTo("<release>") == 0)
+			{
+				Release<T> o = new Release<T>();
+				Operator<T> right = m_stack.pop();
+				Operator<T> left = m_stack.pop();
+				o.addOperand(left);
+				o.addOperand(right);
+				m_stack.push(o);
+			}
 			else if (token_name.compareTo("<atom>") == 0)
 			{
 				// This is an atom
@@ -188,6 +215,7 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 					|| token_name.compareTo("|") == 0 || token_name.compareTo("G") == 0 
 					|| token_name.compareTo("X") == 0 || token_name.compareTo("F") == 0 
 					|| token_name.compareTo("U") == 0 || token_name.compareTo("!") == 0
+					|| token_name.compareTo("W") == 0 || token_name.compareTo("R") == 0
 					|| token_name.compareTo("->") == 0 || token_name.compareTo("<binary-op>") == 0
 					|| token_name.compareTo("<unary-op>") == 0)
 			{
