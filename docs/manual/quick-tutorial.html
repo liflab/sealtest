@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+<!DOCTYPE html><html lang="en-us">
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<!-- Enable responsiveness on mobile devices--><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="author" content="Sylvain Hall&eacute;">
+<title>A quick tutorial - SealTest</title>
+<!-- CSS --><link rel="stylesheet" href="../css/syntax.css">
+<link rel="stylesheet" href="../css/screen.css">
+<!-- Syntax highlighting --><link rel="stylesheet" href="../assets/js/styles/default.css">
+<script src="../assets/js/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script><!-- RSS --><!-- <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml"> -->
+</head>
+<body>
+  
+  <div id="wrapper">		
+    <main><div id="content">
+    <div class="innertube">
+      <h2>A quick tutorial</h2>      <p>
+  <a href="index.html">User Manual</a>
+</p>
+
+
+
+<p>SealTest allows a user to generate test sequences of a wide range of types, according to potentially unlimited coverage metrics, by defining very simple building blocks that interact with existing functions and algorithms.</p>
+
+<h4>Event Types</h4>
+
+<p>The basic classes in SealTest make no assumption on the type of event contained in a trace, or on the type of objects used as categories by the triaging function. To this end, the top-level definitions of triaging function and trace are all parameterized with generic types, generally called <code>T</code> for events and <code>U</code> for categories. This makes it possible for the user to define arbitrary objects as events (provided they inherit from the <code>Event</code> superclass), and similarly for triaging functions.</p>
+
+<p>Currently, SealTest does provide one predefined type of event, called the <code>AtomicEvent</code>. An atomic event is represented by a single symbol, which can be any character string. Atomic events can be used in finite-state automata and in propositional Linear Temporal Logic.</p>
+
+<h4>Writing Specifications</h4>
+
+<h5>Finite-State Machines</h5>
+
+<p>FSMs can be created programmatically, by manually adding states and transitions:</p>
+
+<pre><code>Automaton aut = new Automaton();
+Vertex&lt;AtomicEvent&gt; v0 = new Vertex&lt;&gt;(0);
+v0.add(new Edge&lt;&gt;(0, new AtomicEvent("a"), 1));
+aut.add(v0);
+</code>
+</pre>
+
+<p>Alternatively, SealTest also provides a parser that can build an automaton directly from a text file in GraphViz (DOT) format:</p>
+
+<pre><code>Scanner s = new Scanner(new File("fsm.dot"));
+Automaton aut = Automaton.parseDot(s);
+</code>
+</pre>
+
+<h5>LTL Specifications</h5>
+
+<p>SealTest also provides ways of writing LTL formul&aelig;:</p>
+
+<pre><code>Operator&lt;AtomicEvent&gt; op = new Globally&lt;&gt;(
+  new Implies&lt;&gt;(
+    new EventLeaf(new AtomicEvent("a")),
+    new Next&lt;&gt;(
+      new Or&lt;&gt;(new AtomicEvent("b"),
+        new AtomicEvent("c"))
+)));
+</code>
+</pre>
+
+<p>Alternatively, SealTest also provides a parser that can build an LTL formula directly from a string:</p>
+
+<pre><code>String formula = "G (a -&gt; (X (b | c)))";
+AtomicParserBuilder parser = 
+  new AtomicParserBuilder(formula);
+Operator&lt;AtomicEvent&gt; op = parser.build();
+</code>
+</pre>
+
+<h4>Traces</h4>
+
+<p>SealTest provides <code>AtomicEvent</code>; in turn, a trace of atomic events is an <code>AtomicTrace</code>. A trace can be created programmatically, or parsed from a string; the following code snippet shows both methods. Since a trace is a list of events, its concents can be enumerated and accessed like any other Java list.</p>
+
+<pre><code>Trace&lt;AtomicEvent&gt; trace1, trace2;
+trace1 = new AtomicTrace();
+trace1.add(new AtomicEvent("a");
+trace2 = AtomicTrace.readTrace("a,b,c");
+for (AtomicEvent e : trace1) {
+  System.out.println(e);
+}
+</code>
+</pre>
+
+<h3>Generating Traces</h3>
+
+<h4>Triaging Functions</h4>
+
+<p>A triaging function is&hellip;</p>
+
+<h5>Automata-Based Functions</h5>
+
+<p>Given a FSM specification, SealTest already provides a number of built-in triaging functions. For example, to classify a trace according to their state shallow history of length 2 with respect to some FSM, one writes:</p>
+
+<pre><code>Automaton aut = ...
+Trace t = ...
+StateShallowHistory f = 
+  new StateShallowHistory(aut, 2);
+MathSet&lt;Integer&gt; category = f.getStartClass();
+for (AtomicEvent e : trace1) {
+  category = f.processTransition(e);
+}
+</code>
+</pre>
+
+<p>At the exit of the loop, variable <code>category</code> contains the category in which <code>f</code> places the trace.</p>
+
+<h5>Hologram-Based Functions</h5>
+
+<p>The same applies to LTL-based specifications. The following code example evaluates an LTL formula on a trace, and then applies a hologram transformation on the resulting evaluation tree.</p>
+
+<pre><code>Operator&lt;AtomicEvent&gt; op = ...
+Trace t = ...
+for (AtomicEvent e : t)
+  op.evaluate(ae);
+FailFastDeletion&lt;AtomicEvent&gt; f = 
+  new FailFastDeletion&lt;&gt;();
+Operator&lt;&gt; new_op = f.transform(op);
+</code>
+</pre>
+
+<p>In addition, SealTest allows the hologram to be exported as a picture, by producing a text file in Graphviz (DOT) format:</p>
+
+<pre><code>GraphvizHologramRenderer&lt;AtomicEvent&gt; renderer 
+  = new GraphvizHologramRenderer&lt;AtomicEvent&gt;();
+new_op.acceptPrefix(renderer, true);
+System.out.println(renderer.toDot());
+</code>
+</pre>
+
+<h5>User-Defined Functions</h5>
+
+<p>One simply needs to create a new class that extends <code>TriagingFunction</code>; for example, here is a simple triaging function that categorizes each trace with respect to the number of events named <em>a</em> it contains:</p>
+
+<pre><code>public class MyFunction 
+extends TriagingFunction&lt;AtomicEvent,Integer&gt; {
+  // Number of a's
+  int num_a = 0;
+  
+  public Set&lt;Integer&gt; getStartClass() {
+    return new MathSet&lt;Integer&gt;(0);
+  }
+  public Set&lt;U&gt; read(AtomicEvent e) {
+    if (e.getLabel().compareTo("a") == 0)
+      num_a++;
+    return new MathSet&lt;Integer&gt;(num_a);
+  }
+  public void reset() {
+    num_a = 0;
+  }
+}
+</code>
+</pre>
+
+<h4>Coverage Metrics</h4>
+
+<p>TODO</p>
+
+<h4>Trace Generation</h4>
+
+<h5>Cayley Graph Method</h5>
+
+<p>A first method to generate traces is by exploiting the Cayley graph of a triaging function. Here, <code>T</code> is the generic type of the events inside a sequence, and <code>U</code> is the type of the categories returned by the function. The new class needs to implement <code>getStartCategory()</code>, which returns the equivalence class of the empty trace, and <code>processTransition()</code>, which returns the equivalence class of the current sequence to which a new event is to be appended. Computing the Cayley graph associated to a function, as well as computing its prefix closure, can also be easily done using predefined objects:</p>
+
+<pre><code>TriagingFunction&amp;ltT,U&gt; f = ...
+CayleyGraph&amp;ltT,U&gt; g = f.getCayleyGraph();
+PrefixClosure&amp;ltT,U&gt; closure 
+  = new PrefixClosure&lt;&gt;(graph);
+CayleyGraph&amp;ltT,U&gt; closure_graph =  closure.getCayleyGraph();
+</code>
+</pre>
+
+<p>Note that the function can define its Cayley graph directly by overriding the <code>getCayleyGraph()</code> method; otherwise it defaults to calling  a generic graph exploration algorithm. Finally, generating a set of test sequences from a graph is also simple; for example, the following syntax shows how to use the hypergraph/Steiner tree algorithm to generate a set of sequences from an existing Cayley graph:
+%</p>
+
+<pre><code>TraceGenerator<t> gen 
+  = new HypergraphTraceGenerator&lt;&gt;(g);
+Set<trace>&gt; traces = gen.generateTraces();
+</trace></t></code>
+</pre>
+
+<h5>Greedy Random Algorithm</h5>
+
+<p>SealTest also provides an alternate method of generating traces, using a random algorithm. This algorithm requires a coverage metric, an alphabet of possible events and a random number generator:</p>
+
+<pre><code>Automaton aut = ...
+CoverageMetric<t> metric = ...
+Random rand = new Random();
+GreedyAutomatonGenerator<t> gen = 
+  new GreedyAutomatonGenerator&lt;&gt;(aut, rand, metric);
+Set<trace>&gt; traces = gen.generateTraces();
+</trace></t></t></code>
+</pre>
+
+<h4>Test Driver and Test Hooks</h4>
+
+<p>A test hook is an object that receives events and is responsible for executing them on some system under test. Suppose for example that we want to test a <code>Microwave</code> object that has methods like <code>start</code>, <code>stop</code>, <code>open</code>, <code>setFood</code>, etc. We can create a simple <code>TestHook</code> object that receives atomic events, and depending on their name, makes a specific method call on a <code>Microwave</code> object it is given. The resulting hook could look like this:</p>
+
+<pre><code>class MicrowaveHook
+  implements TestHook<atomicevent> {
+  
+  Microwave oven;
+  
+  public MicrowaveHook(Microwave o) {
+    oven = o;
+  }
+  public Object execute(AtomicEvent event) {
+    String event_name = event.getLabel();
+    if (event_name.compareTo("start") == 0)
+      oven.start();
+    if (event_name.compareTo("stop") == 0)
+      oven.stop();
+    ...
+    return null;
+  }
+}
+</atomicevent></code>
+</pre>
+
+<p>Obviously, a test hook can be programmed to do other tasks, such as printing the event, logging it into a database, sending an HTTP request to some online system, etc. A test hook is used in conjunction with a <em>test driver</em>. The driver is given a set of traces, and executes each event they contain by calling the test hook. This set of traces can be built by hand, or, obviously, be constructed by a trace generator as described earlier.</p>
+
+<pre><code>TestSequenceGenerator gen = ...
+TestSuite&lt;AtomicEvent&gt; suite = gen.generateTraces();
+UnidirectionalTestDriver<atomicevent> driver 
+  = new UnidirectionalTestDriver&lt;&gt;();
+driver.setTestSuite(suite);
+MicrowaveHook hook = new MicrowaveHook(new Microwave());
+driver.setHook(hook);
+driver.run();
+</atomicevent></code>
+</pre>
+
+<p>Since a driver implements Java's <code>Runnable</code> interface, its interaction with the SUT can be placed inside a separate thread.</p>
+
+<!-- :wrap=soft:mode=markdown: -->    </div>
+    </div>
+    </main><nav id="nav"><div class="innertube">
+    <center>
+<div id="seal-image"></div>
+</center>
+
+<ul><li><a href="../index.html">Home</a></li>
+<li><a href="../manual/index.html">User Manual</a></li>
+<li><a href="../manual/quick-tutorial.html">Quick Tutorial</a></li>
+<li><a href="https://github.com/liflab/sealtest">GitHub repo</a></li>
+</ul><p>&copy; 2016-2017 <a href="http://liflab.ca">Laboratoire d'informatique formelle</a>,
+Universit&eacute; du Qu&eacute;bec &agrave; Chicoutimi, Canada.</p>    </div>
+    </nav><!-- Piwik --><script type="text/javascript">
+  var _paq = _paq || [];
+  // tracker methods like "setCustomDimension" should be called before "trackPageView"
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//leduotang.ca/piwik/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '4']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script><!-- End Piwik Code -->
+</div>
+</body>
+</html>
