@@ -34,15 +34,15 @@ import ca.uqac.lif.ecp.Event;
 public class Transition<T extends Event>
 {
 	protected T m_label;
-	protected Set<Place> m_incoming;
-	protected Set<Place> m_outgoing;
+	protected Set<Place<T>> m_incoming;
+	protected Set<Place<T>> m_outgoing;
 	
 	public Transition()
 	{
 		super();
 		m_label = null;
-		m_incoming = new HashSet<Place>();
-		m_outgoing = new HashSet<Place>();
+		m_incoming = new HashSet<Place<T>>();
+		m_outgoing = new HashSet<Place<T>>();
 	}
 	
 	public Transition(T event)
@@ -51,19 +51,19 @@ public class Transition<T extends Event>
 		m_label = event;
 	}
 	
-	public void addIncomingPlace(Place p)
+	public void addIncomingPlace(Place<T> p)
 	{
 		m_incoming.add(p);
 	}
 	
-	public void addOutgoingPlace(Place p)
+	public void addOutgoingPlace(Place<T> p)
 	{
 		m_outgoing.add(p);
 	}
 	
 	public boolean isEnabled()
 	{
-		for (Place p : m_incoming)
+		for (Place<T> p : m_incoming)
 			if (p.isEmpty())
 				return false;
 		return true;
@@ -72,9 +72,9 @@ public class Transition<T extends Event>
 	public void fire()
 	{
 		assert isEnabled();
-		for (Place p : m_incoming)
+		for (Place<T> p : m_incoming)
 			p.consume();
-		for (Place p : m_outgoing)
+		for (Place<T> p : m_outgoing)
 			p.put();
 	}
 	

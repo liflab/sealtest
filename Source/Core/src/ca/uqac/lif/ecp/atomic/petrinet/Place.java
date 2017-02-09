@@ -20,6 +20,8 @@ package ca.uqac.lif.ecp.atomic.petrinet;
 import java.util.HashSet;
 import java.util.Set;
 
+import ca.uqac.lif.ecp.Event;
+
 /**
  * A place in a Petri net is a graph node that can contain zero or more
  * <em>tokens</em>. It is linked via incoming and outgoing arrows to
@@ -27,10 +29,10 @@ import java.util.Set;
  * @author Sylvain Hallé
  *
  */
-public class Place
+public class Place<T extends Event>
 {
-	protected Set<Transition> m_incoming;
-	protected Set<Transition> m_outgoing;
+	protected Set<Transition<T>> m_incoming;
+	protected Set<Transition<T>> m_outgoing;
 	protected int m_marking = 0;
 	protected String m_label;
 
@@ -39,8 +41,8 @@ public class Place
 	{
 		super();
 		m_label = "";
-		m_incoming = new HashSet<Transition>();
-		m_outgoing = new HashSet<Transition>();
+		m_incoming = new HashSet<Transition<T>>();
+		m_outgoing = new HashSet<Transition<T>>();
 	}
 	
 	public Place(String label)
@@ -50,12 +52,12 @@ public class Place
 		m_label = label;
 	}
 	
-	public void addIncomingTransition(Transition t)
+	public void addIncomingTransition(Transition<T> t)
 	{
 		m_incoming.add(t);
 	}
 	
-	public void addOutgoingTransition(Transition t)
+	public void addOutgoingTransition(Transition<T> t)
 	{
 		m_outgoing.add(t);
 	}
@@ -86,6 +88,7 @@ public class Place
 		return m_label.hashCode();  
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object o)
 	{
@@ -93,10 +96,10 @@ public class Place
 			return false;
 		if (!(o instanceof Place))
 			return false;
-		return equals((Place) o);
+		return equals((Place<T>) o);
 	}
 	
-	public boolean equals(Place p)
+	public boolean equals(Place<T> p)
 	{
 		if (p == null)
 			return false;

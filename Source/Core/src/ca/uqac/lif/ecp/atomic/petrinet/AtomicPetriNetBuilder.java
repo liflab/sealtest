@@ -58,7 +58,7 @@ public class AtomicPetriNetBuilder
 				// Definition of a place -> transition arrow
 				String place_label = elements[1];
 				String trans_label = elements[2];
-				Place p = net.getAddPlace(new Place(place_label));
+				Place<AtomicEvent> p = net.getAddPlace(new Place<AtomicEvent>(place_label));
 				Transition<AtomicEvent> t = net.getAddTransition(new Transition<AtomicEvent>(new AtomicEvent(trans_label)));
 				p.addOutgoingTransition(t);
 				t.addIncomingPlace(p);
@@ -68,7 +68,7 @@ public class AtomicPetriNetBuilder
 				// Definition of a transition -> place arrow
 				String place_label = elements[2];
 				String trans_label = elements[1];
-				Place p = net.getAddPlace(new Place(place_label));
+				Place<AtomicEvent> p = net.getAddPlace(new Place<AtomicEvent>(place_label));
 				Transition<AtomicEvent> t = net.getAddTransition(new Transition<AtomicEvent>(new AtomicEvent(trans_label)));
 				p.addIncomingTransition(t);
 				t.addOutgoingPlace(p);
@@ -78,8 +78,9 @@ public class AtomicPetriNetBuilder
 				// Definition of an initial marking
 				String place_label = elements[1];
 				int value = Integer.parseInt(elements[2]);
-				Place p = net.getAddPlace(new Place(place_label));
+				Place<AtomicEvent> p = net.getAddPlace(new Place<AtomicEvent>(place_label));
 				p.setMarking(value);
+				net.setInitialMarking(place_label, value);
 			}
 			else
 			{

@@ -36,13 +36,17 @@ public class PetriNet<T extends Event>
 	/**
 	 * The list of places in the Petri net
 	 */
-	protected List<Place> m_places;
+	protected List<Place<T>> m_places;
 
-	
 	/**
 	 * The list of transitions in the Petri net
 	 */
 	protected List<Transition<T>> m_transitions;
+	
+	/**
+	 * The list of places that contain a token in the initial marking
+	 */
+	protected Map<String,Integer> m_initialMarking;
 	
 	/**
 	 * Creates an empty Petri Net
@@ -50,10 +54,69 @@ public class PetriNet<T extends Event>
 	public PetriNet()
 	{
 		super();
-		m_places = new ArrayList<Place>();
+		m_places = new ArrayList<Place<T>>();
 		m_transitions = new ArrayList<Transition<T>>();
+		m_initialMarking = new HashMap<String,Integer>();
 	}
 	
+	/**
+	 * Resets the Petri net to its initial markings
+	 */
+	public void reset()
+	{
+		for (Place<T> p : m_places)
+		{
+			p.setMarking(0);
+		}
+		for (Map.Entry<String,Integer> entries : m_initialMarking.entrySet())
+		{
+			Place<T> p = getPlace(entries.getKey());
+			if (p != null)
+			{
+				// ...which should be the case
+				p.setMarking(entries.getValue());
+			}
+		}
+	}
+	
+	/**
+	 * Gets the place with given label
+	 * @param label The label
+	 * @return The place, or {@code null} if the place was not found
+	 */
+	protected Place<T> getPlace(String label)
+	{
+		for (Place<T> p : m_places)
+		{
+			if (p.m_label.compareTo(label) == 0)
+				return p;
+		}
+		return null;
+	}
+	
+	/**
+	 * Attempts to fire a transition in the current state of the
+	 * Petri net.
+	 * @param t The transition to fire
+	 * @return {@code true} if the transition can fire, {@code false}
+	 * otherwise. If the transition fires, the Petri net's state is
+	 * updated accordingly. 
+	 */
+	public boolean fire(Transition<T> t)
+	{
+		// TODO
+		return false;
+	}
+	
+	/**
+	 * Adds tokens to the initial marking of this Petri net.
+	 * @param label The label of the place where tokens should be added
+	 * @param value The number of tokens to put there
+	 */
+	public void setInitialMarking(String label, int value)
+	{
+		m_initialMarking.put(label, value);
+	}
 	
 	/**
 	 * Given a place p: finds and returns the element in the list of places
@@ -61,7 +124,7 @@ public class PetriNet<T extends Event>
 	 * @param p The place to look for
 	 * @return
 	 */
-	Place getAddPlace(Place p)
+	Place<T> getAddPlace(Place<T> p)
 	{
 		int i = m_places.lastIndexOf(p);
 		if (i == -1)
