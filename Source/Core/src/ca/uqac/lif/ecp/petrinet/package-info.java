@@ -19,4 +19,4 @@
  * Classes for manipulating specifications expressed as Petri nets.
  * @author Sylvain Hallé
  */
-package ca.uqac.lif.ecp.atomic.petrinet;
+package ca.uqac.lif.ecp.petrinet;
