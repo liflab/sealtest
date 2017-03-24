@@ -24,7 +24,7 @@ import ca.uqac.lif.ecp.CayleyGraphFactory;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.graphs.Vertex;
 
-public class AtomicStatechartCayleyGraphFactory extends CayleyGraphFactory<AtomicEvent,List<Integer>>
+public class AtomicStatechartCayleyGraphFactory<T> extends CayleyGraphFactory<AtomicEvent,List<T>>
 {
 	/**
 	 * The set of atomic events that will be used as the alphabet

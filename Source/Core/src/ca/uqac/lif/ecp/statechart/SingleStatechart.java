@@ -90,12 +90,12 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	}
 
 	@Override
-	public boolean takeTransition(T event)
+	public Transition<T> takeTransition(T event)
 	{
 		if (m_currentState == m_trashState.getId())
 		{
 			// Do nothing and stay in the trash sink
-			return false;
+			return null;
 		}
 		Set<Transition<T>> transitions = m_transitions.get(m_currentState);
 		if (transitions != null)
@@ -109,7 +109,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 				StateNode<T> target = trans.getTarget();
 				if (applyTransition(event, target))
 				{
-					return true;
+					return trans;
 				}
 			}			
 		}
@@ -123,9 +123,9 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 			if (box.m_contents.size() == 1)
 			{
 				// Nested state
-				boolean success = box.m_contents.get(0).takeTransition(event);
-				if (success)
-					return true;
+				Transition<T> trans = box.m_contents.get(0).takeTransition(event);
+				if (trans != null)
+					return trans;
 			}
 			else
 			{
@@ -133,11 +133,11 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 				for (int i = 0; i < box.m_contents.size(); i++)
 				{
 					Statechart<T> sc_clone = box.m_contents.get(i).clone(null);
-					boolean success = sc_clone.takeTransition(event);
-					if (success)
+					Transition<T> trans = sc_clone.takeTransition(event);
+					if (trans != null)
 					{
 						box.m_contents.get(i).takeTransition(event);
-						return true;
+						return trans;
 					}
 				}
 			}
@@ -145,7 +145,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 		// If we get here, no transition has fired; we
 		// go to the "trash" sink state
 		m_currentState = m_trashState.getId();
-		return false;
+		return null;
 	}
 
 	@Override
@@ -265,5 +265,39 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 		new_sc.m_initialState = m_initialState;
 		new_sc.m_currentState = m_currentState;
 		return new_sc;
+	}
+	
+	@Override
+	public int getEdgeCount()
+	{
+		int cnt = 0;
+		cnt += m_transitions.entrySet().size();
+		for (State<T> s : m_states.values())
+		{
+			if (s instanceof NestedState)
+			{
+				for (Statechart<T> sc : ((NestedState<T>) s).m_contents)
+				{
+					cnt += sc.getEdgeCount();
+				}
+			}
+		}
+		return cnt;
+	}
+	
+	@Override
+	public StateNode<T> getInitialVertex()
+	{
+		State<T> cur_state = getState(m_initialState);
+		StateNode<T> list = new StateNode<T>(cur_state.getName());
+		if (cur_state instanceof NestedState)
+		{
+			NestedState<T> box = (NestedState<T>) cur_state;
+			for (Statechart<T> sc : box.m_contents)
+			{
+				list.addChild(sc.getInitialVertex());
+			}
+		}
+		return list;
 	}
 }

@@ -77,6 +77,32 @@ public class StateNode<T extends Event>
 	{
 		return m_name;
 	}
+	
+	@Override
+	public int hashCode()
+	{
+		return 17 * m_name.hashCode() * m_children.size();
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof StateNode))
+		{
+			return false;
+		}
+		StateNode<?> n = (StateNode<?>) o;
+		if (n.m_name.compareTo(m_name) != 0)
+			return false;
+		if (m_children.size() != n.m_children.size())
+			return false;
+		for (int i = 0; i < m_children.size(); i++)
+		{
+			if (!m_children.get(i).equals(n.m_children.get(i)))
+				return false;
+		}
+		return true;
+	}
 
 	public static class UpStateNode<U extends Event> extends StateNode<U>
 	{

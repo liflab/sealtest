@@ -105,10 +105,10 @@ public abstract class Statechart<T extends Event>
 	/**
 	 * Takes a transition in the statechart
 	 * @param event The event
-	 * @return {@code true} if the transition was successfully taken,
-	 *  {@code false} if the transition cannot be done
+	 * @return The transition that was taken, or {@code null} if no
+	 * valid transtition exists 
 	 */
-	public abstract boolean takeTransition(T event);
+	public abstract Transition<T> takeTransition(T event);
 	
 	/**
 	 * Gets the identifier of the current state of the statechart. If that
@@ -136,4 +136,16 @@ public abstract class Statechart<T extends Event>
 	 * @param parent The parent of this statechart, if any
 	 */
 	public abstract Statechart<T> clone(Statechart<T> parent);
+	
+	/**
+	 * Gets the number of edges in this statechart
+	 * @return The number of edges
+	 */
+	public abstract int getEdgeCount();
+
+	/**
+	 * Gets the initial state of this statechart
+	 * @return The initial state
+	 */
+	public abstract StateNode<T> getInitialVertex();
 }
