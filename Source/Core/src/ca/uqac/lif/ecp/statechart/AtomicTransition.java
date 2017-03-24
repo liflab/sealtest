@@ -58,4 +58,12 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	{
 		return m_event + " -> " + m_target;
 	}
+
+	@Override
+	public AtomicTransition clone()
+	{
+		AtomicTransition at = new AtomicTransition(m_event);
+		at.setTarget(m_target);
+		return at;
+	}
 }

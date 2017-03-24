@@ -12,5 +12,8 @@ public abstract class Transition<T extends Event>
 {
 	public abstract boolean matches(T event);
 	
-	public abstract StateNode getTarget();
+	public abstract StateNode<T> getTarget();
+	
+	@Override
+	public abstract Transition<T> clone();
 }

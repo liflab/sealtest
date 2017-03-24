@@ -2,6 +2,7 @@ package ca.uqac.lif.ecp.statechart;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.Event;
@@ -14,8 +15,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	 * @param s The state
 	 * @return This statechart
 	 */
-	@SuppressWarnings("unchecked")
-	public Statechart<T> add(State s)
+	public Statechart<T> add(State<T> s)
 	{
 		if (m_states.isEmpty())
 		{
@@ -64,7 +64,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	 */
 	public Statechart<T> add(String source_name, Transition<T> transition)
 	{
-		State s = getState(source_name);
+		State<T> s = getState(source_name);
 		if (s != null)
 		{
 			add(s.getId(), transition);
@@ -72,7 +72,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public boolean takeTransition(T event)
 	{
 		if (m_currentState == m_trashState.getId())
@@ -98,16 +98,31 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 		}
 		// If we get here, no transition with given label exists
 		// from current state
-		State cur_state = getState(m_currentState);
+		State<T> cur_state = getState(m_currentState);
 		if (cur_state instanceof NestedState)
 		{
 			// But maybe it is a transition of the inner statechart
 			NestedState<T> box = (NestedState<T>) cur_state;
-			for (Statechart<T> sc : box.m_contents)
+			if (box.m_contents.size() == 1)
 			{
-				boolean success = sc.takeTransition(event);
+				// Nested state
+				boolean success = box.m_contents.get(0).takeTransition(event);
 				if (success)
 					return true;
+			}
+			else
+			{
+				// Orthogonal regions
+				for (int i = 0; i < box.m_contents.size(); i++)
+				{
+					Statechart<T> sc_clone = box.m_contents.get(i).clone(null);
+					boolean success = sc_clone.takeTransition(event);
+					if (success)
+					{
+						box.m_contents.get(i).takeTransition(event);
+						return true;
+					}
+				}
 			}
 		}
 		// If we get here, no transition has fired; we
@@ -116,7 +131,6 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean applyTransition(T event, StateNode<T> node)
 	{
@@ -131,17 +145,13 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 			return sc.applyTransition(event, children.get(0));
 		}
 		String target_element = node.getName();
-		State s = getState(target_element);
+		State<T> s = getState(target_element);
 		m_currentState = s.getId();
 		s.reset();
 		if (s instanceof NestedState)
 		{
 			List<Statechart<T>> contents = ((NestedState<T>) s).m_contents;
-			if (contents.size() != children.size())
-			{
-				return false;
-			}
-			for (int i = 0; i < contents.size(); i++)
+			for (int i = 0; i < children.size(); i++)
 			{
 				Statechart<T> sc = contents.get(i);
 				StateNode<T> child = children.get(i);
@@ -157,7 +167,7 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	 * @param name The name
 	 * @return The state, or {@code null} if no state exists with such name
 	 */
-	protected State getState(String name)
+	protected State<T> getState(String name)
 	{
 		return m_states.get(name);
 	}
@@ -170,10 +180,9 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	 * followed by the ID of the inner state (if any), and so on.
 	 * @return The list of state IDs
 	 */
-	@SuppressWarnings("unchecked")
 	public StateNode<T> getFullState()
 	{
-		State cur_state = getState(m_currentState);
+		State<T> cur_state = getState(m_currentState);
 		StateNode<T> list = new StateNode<T>(cur_state.getName());
 		if (cur_state instanceof NestedState)
 		{
@@ -191,13 +200,13 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	 * @param id The ID
 	 * @return The state, or {@code null} if no state exists with such ID
 	 */
-	protected State getState(int id)
+	protected State<T> getState(int id)
 	{
 		if (id == m_trashState.getId())
 		{
 			return m_trashState;
 		}
-		for (State s : m_states.values())
+		for (State<T> s : m_states.values())
 		{
 			if (s.m_id == id)
 			{
@@ -211,10 +220,33 @@ public class SingleStatechart<T extends Event> extends Statechart<T>
 	public Statechart<T> reset()
 	{
 		m_currentState = m_initialState;
-		for (State s : m_states.values())
+		for (State<T> s : m_states.values())
 		{
 			s.reset();
 		}
 		return this;
+	}
+
+	@Override
+	public Statechart<T> clone(Statechart<T> parent) 
+	{
+		SingleStatechart<T> new_sc = new SingleStatechart<T>();
+		for (Map.Entry<String,State<T>> entry : m_states.entrySet())
+		{
+			new_sc.m_states.put(entry.getKey(), entry.getValue().clone(new_sc));
+		}
+		for (Map.Entry<Integer,Set<Transition<T>>> entry : m_transitions.entrySet())
+		{
+			Set<Transition<T>> new_set = new HashSet<Transition<T>>();
+			for (Transition<T> t : entry.getValue())
+			{
+				new_set.add(t.clone());
+			}
+			new_sc.m_transitions.put(entry.getKey(), new_set);
+		}
+		new_sc.m_parent = parent;
+		new_sc.m_initialState = m_initialState;
+		new_sc.m_currentState = m_currentState;
+		return new_sc;
 	}
 }

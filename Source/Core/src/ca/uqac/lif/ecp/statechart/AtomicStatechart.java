@@ -17,7 +17,6 @@ public class AtomicStatechart extends SingleStatechart<AtomicEvent>
 	 * statechart
 	 * @return The set of events
 	 */
-	@SuppressWarnings("unchecked")
 	public Set<AtomicEvent> getAlphabet()
 	{
 		Set<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
@@ -28,7 +27,7 @@ public class AtomicStatechart extends SingleStatechart<AtomicEvent>
 				alphabet.add(((AtomicTransition) t).getEvent());
 			}
 		}
-		for (State s : m_states.values())
+		for (State<AtomicEvent> s : m_states.values())
 		{
 			if (s instanceof NestedState)
 			{

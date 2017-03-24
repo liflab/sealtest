@@ -1,5 +1,6 @@
 package ca.uqac.lif.ecp.statechart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.uqac.lif.ecp.Event;
@@ -10,7 +11,7 @@ import ca.uqac.lif.ecp.Event;
  * multiple statecharts, these are interpreted as <em>orthogonal regions</em>.
  * @author Sylvain Hallé
  */
-public class NestedState<T extends Event> extends State
+public class NestedState<T extends Event> extends State<T>
 {
 	/**
 	 * The inner statecharts
@@ -24,6 +25,18 @@ public class NestedState<T extends Event> extends State
 	public NestedState(String name)
 	{
 		super(name);
+		m_contents = new ArrayList<Statechart<T>>();
+	}
+	
+	/**
+	 * Creates a new box state with a given name and a predefined ID
+	 * @param name The name
+	 * @param id The ID
+	 */
+	protected NestedState(String name, int id)
+	{
+		super(name, id);
+		m_contents = new ArrayList<Statechart<T>>();
 	}
 	
 	/**
@@ -34,6 +47,7 @@ public class NestedState<T extends Event> extends State
 	public NestedState(String name, Statechart<T> ... s)
 	{
 		super(name);
+		m_contents = new ArrayList<Statechart<T>>();
 		for (Statechart<T> sc : s)
 		{
 			m_contents.add(sc);
@@ -58,5 +72,16 @@ public class NestedState<T extends Event> extends State
 		{
 			sc.reset();
 		}
+	}
+	
+	@Override
+	public NestedState<T> clone(Statechart<T> parent)
+	{
+		NestedState<T> s = new NestedState<T>(m_name, m_id);
+		for (Statechart<T> sc : m_contents)
+		{
+			s.m_contents.add(sc.clone(parent));
+		}
+		return s;
 	}
 }

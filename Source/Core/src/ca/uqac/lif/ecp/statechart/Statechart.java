@@ -28,7 +28,7 @@ public abstract class Statechart<T extends Event>
 	/**
 	 * The set of states contained in this statechart
 	 */
-	protected Map<String,State> m_states;
+	protected Map<String,State<T>> m_states;
 	
 	/**
 	 * The map of transitions in this statechart. The map's keys are the
@@ -50,7 +50,7 @@ public abstract class Statechart<T extends Event>
 	/**
 	 * A special sink state to make sure the transition relation is total
 	 */
-	protected final State m_trashState;
+	protected final State<T> m_trashState;
 	
 	/**
 	 * The parent statechart, if any
@@ -63,9 +63,9 @@ public abstract class Statechart<T extends Event>
 	public Statechart()
 	{
 		super();
-		m_states = new HashMap<String,State>();
+		m_states = new HashMap<String,State<T>>();
 		m_transitions = new HashMap<Integer,Set<Transition<T>>>();
-		m_trashState = new State(TRASH);
+		m_trashState = new State<T>(TRASH);
 	}
 	
 	/**
@@ -85,6 +85,12 @@ public abstract class Statechart<T extends Event>
 	 */
 	public abstract Statechart<T> reset();
 	
+	/**
+	 * Takes a transition in the statechart
+	 * @param event The event
+	 * @return {@code true} if the transition was successfully taken,
+	 *  {@code false} if the transition cannot be done
+	 */
 	public abstract boolean takeTransition(T event);
 	
 	/**
@@ -107,4 +113,10 @@ public abstract class Statechart<T extends Event>
 	}
 	
 	public abstract boolean applyTransition(T event, StateNode<T> node);
+	
+	/**
+	 * Gets a copy of this statechart
+	 * @param parent The parent of this statechart, if any
+	 */
+	public abstract Statechart<T> clone(Statechart<T> parent);
 }

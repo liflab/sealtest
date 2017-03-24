@@ -1,14 +1,15 @@
 package ca.uqac.lif.ecp.statechart;
 
+import ca.uqac.lif.ecp.Event;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * An atomic state in a statechart. Graphically, it is represented by a
  * box with a textual name.
- * @author Sylvain Hallé
+ * @author Sylvain HallÃ©
  */
-public class State 
+public class State<T extends Event>
 {
 	/**
 	 * A name given to the state
@@ -43,12 +44,20 @@ public class State
 		s_counterLock.unlock();
 	}
 	
+	protected State(String name, int id)
+	{
+		super();
+		m_name = name;
+		m_id = id;
+	}
+	
 	@Override
 	public int hashCode()
 	{
 		return m_id;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean equals(Object o)
 	{
@@ -56,7 +65,7 @@ public class State
 		{
 			return false;
 		}
-		State s = (State) o;
+		State<T> s = (State<T>) o;
 		return m_id == s.m_id;
 	}
 	
@@ -90,5 +99,11 @@ public class State
 	public void reset()
 	{
 		// Nothing to do
+	}
+	
+	public State<T> clone(Statechart<T> parent)
+	{
+		State<T> s = new State<T>(m_name, m_id);
+		return s;
 	}
 }

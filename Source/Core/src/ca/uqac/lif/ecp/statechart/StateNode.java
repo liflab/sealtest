@@ -37,6 +37,7 @@ public class StateNode<T extends Event>
 	public String toString()
 	{
 		StringBuilder out = new StringBuilder();
+		out.append(m_name);
 		if (!m_children.isEmpty())
 		{
 			out.append(m_children.toString());
