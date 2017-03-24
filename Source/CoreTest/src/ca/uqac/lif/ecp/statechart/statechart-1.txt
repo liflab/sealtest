@@ -1,0 +1,12 @@
+# A simple statechart to test the parser
+
+begin statechart
+  begin states
+    S0
+    S1
+  end states
+  begin transitions
+    S0 - a -> S1
+    S1 - b -> S0
+  end transitions
+end statechart

@@ -1,0 +1,33 @@
+# A statechart with orthogonal regions
+
+begin statechart
+  begin states
+    S0
+    S1 = begin parallel
+           begin statechart
+             begin states
+               J0
+               J1
+             end states
+             begin transitions
+               J0 - c -> J1
+               J1 - c -> J0
+             end transitions
+           end statechart
+           begin statechart
+             begin states
+               I0
+               I1
+             end states
+             begin transitions
+               I0 - d -> I1
+               I1 - d -> I0
+             end transitions
+           end statechart
+         end parallel
+  end states
+  begin transitions
+    S0 - a -> S1
+    S1 - b -> S0
+  end transitions
+end statechart
