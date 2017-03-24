@@ -17,25 +17,23 @@
  */
 package ca.uqac.lif.ecp.statechart;
 
-import ca.uqac.lif.ecp.Alphabet;
-import ca.uqac.lif.ecp.CayleyGraph;
-import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.structures.MathList;
 
-public abstract class ShallowHistoryFunction<T> extends AtomicStatechartFunction<MathList<T>> 
+public abstract class ShallowHistoryFunction<T extends Event,U> extends StatechartFunction<T,MathList<U>> 
 {
 	protected FixedSizeWindow m_window = null;
 	
-	public ShallowHistoryFunction(Statechart<AtomicEvent> a, int size)
+	public ShallowHistoryFunction(Statechart<T> a, int size)
 	{
 		super(a);
 		m_window = new FixedSizeWindow(size);
 	}
 	
 	/**
-	 * Sliding window of elements of type T
+	 * Sliding window of elements of type U
 	 */
-	protected class FixedSizeWindow extends MathList<T>
+	protected class FixedSizeWindow extends MathList<U>
 	{
 		/**
 		 * Dummy UID
@@ -54,7 +52,7 @@ public abstract class ShallowHistoryFunction<T> extends AtomicStatechartFunction
 		}
 		
 		@Override
-		public boolean add(T e)
+		public boolean add(U e)
 		{
 			if (size() == m_size)
 			{
@@ -72,17 +70,5 @@ public abstract class ShallowHistoryFunction<T> extends AtomicStatechartFunction
 		{
 			m_window.clear();
 		}
-	}
-	
-	@Override
-	public CayleyGraph<AtomicEvent,MathList<T>> getCayleyGraph()
-	{
-		if (m_automaton instanceof AtomicStatechart)
-		{
-			Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
-			alphabet.addAll(((AtomicStatechart) m_automaton).getAlphabet());
-			AtomicStatechartCayleyGraphFactory<MathList<T>> factory = new AtomicStatechartCayleyGraphFactory<MathList<T>>((AtomicStatechart) m_automaton);
-			return factory.getGraph(this);
-		}
-	}
+	}	
 }

@@ -17,38 +17,32 @@
  */
 package ca.uqac.lif.ecp.statechart;
 
+import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.TriagingFunction;
 import ca.uqac.lif.ecp.UnexpectedError;
-import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.structures.MathSet;
 
 /**
  * Triaging function based on a finite-state automaton
  */
-public abstract class AtomicStatechartFunction<U extends Object> extends TriagingFunction<AtomicEvent,U>
+public abstract class StatechartFunction<T extends Event,U extends Object> extends TriagingFunction<T,U>
 {
 	/**
 	 * The automaton this function uses as its reference
 	 */
-	protected Statechart<AtomicEvent> m_automaton;
+	protected Statechart<T> m_automaton;
 	
 	/**
 	 * The current vertex in the automaton after reading the previous
 	 * events
 	 */
-	protected StateNode<AtomicEvent> m_currentVertex;
-	
-	/**
-	 * A label given to a state of the automaton to indicate it is
-	 * the sink state for invalid transitions 
-	 */
-	public static String s_invalidLabel = "invalid";
+	protected StateNode<T> m_currentVertex;
 	
 	/**
 	 * Creates a new triaging function from an automaton
-	 * @param a The automaton this function uses as its reference
+	 * @param a The statechart this function uses as its reference
 	 */
-	public AtomicStatechartFunction(Statechart<AtomicEvent> a)
+	public StatechartFunction(Statechart<T> a)
 	{
 		super();
 		m_automaton = a;
@@ -62,10 +56,10 @@ public abstract class AtomicStatechartFunction<U extends Object> extends Triagin
 	}
 	
 	@Override
-	public MathSet<U> read(AtomicEvent e)
+	public MathSet<U> read(T e)
 	{
-		StateNode<AtomicEvent> start_state = m_automaton.getFullState();
-		Transition<AtomicEvent> edge = m_automaton.takeTransition(e);
+		StateNode<T> start_state = m_automaton.getFullState();
+		Transition<T> edge = m_automaton.takeTransition(e);
 		if (edge == null)
 		{
 			throw new UnexpectedError("The transition relation of the statechart is not total: no outgoing edge from "
@@ -74,5 +68,5 @@ public abstract class AtomicStatechartFunction<U extends Object> extends Triagin
 		return processTransition(start_state, edge);
 	}
 	
-	public abstract MathSet<U> processTransition(StateNode<AtomicEvent> start_state, Transition<AtomicEvent> edge);
+	public abstract MathSet<U> processTransition(StateNode<T> start_state, Transition<T> edge);
 }

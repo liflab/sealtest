@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016-2017 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -17,25 +17,25 @@
  */
 package ca.uqac.lif.ecp.statechart;
 
-import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.Event;
 import ca.uqac.lif.ecp.statechart.ShallowHistoryFunction;
 import ca.uqac.lif.structures.MathList;
 import ca.uqac.lif.structures.MathSet;
 
-public class StateShallowHistory extends ShallowHistoryFunction<StateNode<AtomicEvent>> 
+public abstract class StateShallowHistory<T extends Event> extends ShallowHistoryFunction<T,StateNode<T>> 
 {
-	public StateShallowHistory(Statechart<AtomicEvent> a, int size) 
+	public StateShallowHistory(Statechart<T> a, int size) 
 	{
 		super(a, size);
 	}
 	
-	public StateShallowHistory(Statechart<AtomicEvent> a)
+	public StateShallowHistory(Statechart<T> a)
 	{
 		this(a, 1);
 	}
 
 	@Override
-	public MathSet<MathList<StateNode<AtomicEvent>>> processTransition(StateNode<AtomicEvent> start_state, Transition<AtomicEvent> edge)
+	public MathSet<MathList<StateNode<T>>> processTransition(StateNode<T> start_state, Transition<T> edge)
 	{
 		// This is the first event: add both source and destination
 		// to the window
@@ -44,18 +44,18 @@ public class StateShallowHistory extends ShallowHistoryFunction<StateNode<Atomic
 			m_window.add(start_state);
 		}
 		m_window.add(edge.getTarget());
-		MathSet<MathList<StateNode<AtomicEvent>>> out = new MathSet<MathList<StateNode<AtomicEvent>>>();
-		MathList<StateNode<AtomicEvent>> new_list = new MathList<StateNode<AtomicEvent>>();
+		MathSet<MathList<StateNode<T>>> out = new MathSet<MathList<StateNode<T>>>();
+		MathList<StateNode<T>> new_list = new MathList<StateNode<T>>();
 		new_list.addAll(m_window);
 		out.add(new_list);
 		return out;
 	}
 
 	@Override
-	public MathSet<MathList<StateNode<AtomicEvent>>> getStartClass()
+	public MathSet<MathList<StateNode<T>>> getStartClass()
 	{
-		MathSet<MathList<StateNode<AtomicEvent>>> out = new MathSet<MathList<StateNode<AtomicEvent>>>();
-		MathList<StateNode<AtomicEvent>> new_list = new MathList<StateNode<AtomicEvent>>();
+		MathSet<MathList<StateNode<T>>> out = new MathSet<MathList<StateNode<T>>>();
+		MathList<StateNode<T>> new_list = new MathList<StateNode<T>>();
 		new_list.add(m_automaton.getInitialVertex());
 		out.add(new_list);
 		return out;

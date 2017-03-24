@@ -17,24 +17,26 @@
  */
 package ca.uqac.lif.ecp.statechart;
 
-import java.util.List;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.CayleyGraphFactory;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.graphs.Vertex;
 
-public class AtomicStatechartCayleyGraphFactory<T> extends CayleyGraphFactory<AtomicEvent,List<T>>
+public class AtomicStatechartCayleyGraphFactory<T> extends CayleyGraphFactory<AtomicEvent,T>
 {
 	/**
 	 * The set of atomic events that will be used as the alphabet
 	 */
 	protected Set<AtomicEvent> m_possibleEvents;
 	
-	public AtomicStatechartCayleyGraphFactory(AtomicStatechart s)
+	public AtomicStatechartCayleyGraphFactory(Statechart<AtomicEvent> s)
 	{
 		super();
-		m_possibleEvents = s.getAlphabet();
+		if (s instanceof AtomicStatechart)
+		{
+			m_possibleEvents = ((AtomicStatechart) s).getAlphabet();
+		}
 	}
 	
 	@Override
