@@ -5,7 +5,7 @@ import java.util.Set;
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 
-public class AtomicStatechart extends Statechart<AtomicEvent> 
+public class AtomicStatechart extends SingleStatechart<AtomicEvent> 
 {
 	/**
 	 * The alphabet associated to this statechart
@@ -30,9 +30,9 @@ public class AtomicStatechart extends Statechart<AtomicEvent>
 		}
 		for (State s : m_states.values())
 		{
-			if (s instanceof BoxState)
+			if (s instanceof NestedState)
 			{
-				alphabet.addAll(((AtomicStatechart) ((BoxState<AtomicEvent>) s).m_contents).getAlphabet());
+				alphabet.addAll(((AtomicStatechart) ((NestedState<AtomicEvent>) s).m_contents).getAlphabet());
 			}
 		}
 		return alphabet;

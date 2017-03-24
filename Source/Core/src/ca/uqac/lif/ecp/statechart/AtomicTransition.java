@@ -1,8 +1,5 @@
 package ca.uqac.lif.ecp.statechart;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 
 public class AtomicTransition extends Transition<AtomicEvent> 
@@ -15,7 +12,7 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	/**
 	 * The target of this transition
 	 */
-	protected List<String> m_target;
+	protected StateNode<AtomicEvent> m_target;
 	
 	public AtomicTransition(AtomicEvent e)
 	{
@@ -23,7 +20,7 @@ public class AtomicTransition extends Transition<AtomicEvent>
 		m_event = e;
 	}
 	
-	public AtomicTransition(AtomicEvent e, String ... target)
+	public AtomicTransition(AtomicEvent e, StateNode<AtomicEvent> target)
 	{
 		super();
 		m_event = e;
@@ -40,7 +37,7 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	 * Sets the target of this transition
 	 * @param target The target
 	 */
-	public void setTarget(List<String> target)
+	public void setTarget(StateNode<AtomicEvent> target)
 	{
 		m_target = target;
 	}
@@ -49,23 +46,9 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	{
 		return m_event;
 	}
-	
-	/**
-	 * Sets the target of this transition
-	 * @param target The target
-	 */
-	public void setTarget(String ... target)
-	{
-		List<String> list = new ArrayList<String>(target.length);
-		for (String i : target)
-		{
-			list.add(i);
-		}
-		setTarget(list);
-	}
 
 	@Override
-	public List<String> getTarget() 
+	public StateNode<AtomicEvent> getTarget() 
 	{
 		return m_target;
 	}

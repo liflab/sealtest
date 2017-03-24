@@ -1,7 +1,5 @@
 package ca.uqac.lif.ecp.statechart;
 
-import java.util.List;
-
 import ca.uqac.lif.ecp.Event;
 
 /**
@@ -14,5 +12,5 @@ public abstract class Transition<T extends Event>
 {
 	public abstract boolean matches(T event);
 	
-	public abstract List<String> getTarget();
+	public abstract StateNode getTarget();
 }
