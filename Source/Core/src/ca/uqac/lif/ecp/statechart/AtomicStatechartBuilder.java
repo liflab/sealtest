@@ -20,14 +20,14 @@ public class AtomicStatechartBuilder
 		}
 		if (line.startsWith("begin statechart"))
 		{
-			SingleStatechart<AtomicEvent> new_as = new SingleStatechart<AtomicEvent>();
+			Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
 			new_as = parseStatechart(new_as, scanner);
 			return new_as;
 		}
 		throw new ParseException("Parsing failed");
 	}
 	
-	protected static SingleStatechart<AtomicEvent> parseStatechart(SingleStatechart<AtomicEvent> sc, Scanner scanner) throws ParseException
+	protected static Statechart<AtomicEvent> parseStatechart(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
 		if (line == null || !line.startsWith("begin states"))
@@ -43,7 +43,7 @@ public class AtomicStatechartBuilder
 		return null;
 	}
 	
-	protected static void parseStates(SingleStatechart<AtomicEvent> sc, Scanner scanner) throws ParseException
+	protected static void parseStates(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
 		while (line != null && !line.startsWith("end states"))
@@ -67,7 +67,7 @@ public class AtomicStatechartBuilder
 				{
 					// This is a nested state
 					NestedState<AtomicEvent> ns = new NestedState<AtomicEvent>(state_name);
-					SingleStatechart<AtomicEvent> new_as = new SingleStatechart<AtomicEvent>();
+					Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
 					new_as = parseStatechart(new_as, scanner);
 					ns.addStatechart(new_as);
 					sc.add(ns);
@@ -80,7 +80,7 @@ public class AtomicStatechartBuilder
 					String in_line = nextValidLine(scanner); // begin statechart
 					while (!in_line.startsWith("end parallel"))
 					{
-						SingleStatechart<AtomicEvent> new_as = new SingleStatechart<AtomicEvent>();
+						Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
 						new_as = parseStatechart(new_as, scanner);
 						if (new_as == null)
 						{
@@ -100,7 +100,7 @@ public class AtomicStatechartBuilder
 		}
 	}
 	
-	protected static void parseTransitions(SingleStatechart<AtomicEvent> sc, Scanner scanner) throws ParseException
+	protected static void parseTransitions(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
 		while (line != null && !line.startsWith("end transitions"))
@@ -124,7 +124,7 @@ public class AtomicStatechartBuilder
 	{
 		String[] parts = target_string.split(",");
 		StateNode<AtomicEvent> child = null;
-		for (int i = 0; i < parts.length; i++)
+		for (int i = parts.length - 1; i >=0; i--)
 		{
 			String part = parts[i];
 			StateNode<AtomicEvent> cur_node = null;

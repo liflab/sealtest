@@ -22,7 +22,7 @@ import java.util.Set;
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 
-public class AtomicStatechart extends SingleStatechart<AtomicEvent> 
+public class AtomicStatechart extends Statechart<AtomicEvent> 
 {
 	/**
 	 * The alphabet associated to this statechart
