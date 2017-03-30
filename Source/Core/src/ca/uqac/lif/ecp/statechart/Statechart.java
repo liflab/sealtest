@@ -30,15 +30,13 @@ import ca.uqac.lif.ecp.statechart.StateNode.UpStateNode;
  * Representation of a UML statechart. Currently, the implementation of UML
  * statecharts imposes the following constraints and peculiarities:
  * <ul>
- * <li>A transition from a state within an orthogonal region cannot lead
- * outside of that region. It can, however, lead to a state nested
- * <em>within</em> the region.</li>
- * <li>However, transitions from the box surrounding a group of orthogonal
+ * <li>A transition cannot cross the boundary of an orthogonal region.
+ * However, transitions from the box surrounding a group of orthogonal
  * regions to somewhere else are allowed.</li>
  * <li>If no transition can fire on a given input event, the statechart
  * moves to an implicit "trash" state and stays there forever. This
  * propagates upwards, so a statechart enclosed within another one will
- * provoke the same effect on its"parent" statechart.</li>
+ * provoke the same effect on its "parent" statechart.</li>
  * </ul>
  * @author Sylvain Hallé
  *
@@ -61,6 +59,11 @@ public class Statechart<T extends Event>
 	 * The set of states contained in this statechart
 	 */
 	protected Map<String,State<T>> m_states;
+	
+	/**
+	 * An instance of the trash transition
+	 */
+	protected final TrashTransition<T> m_trashTransition = new TrashTransition<T>();
 	
 	/**
 	 * The map of transitions in this statechart. The map's keys are the
@@ -271,7 +274,7 @@ public class Statechart<T extends Event>
 		if (m_currentState == m_trashState.getId())
 		{
 			// Do nothing and stay in the trash sink
-			return null;
+			return new TrashTransition<T>();
 		}
 		Set<Transition<T>> transitions = m_transitions.get(m_currentState);
 		if (transitions != null)
@@ -300,7 +303,7 @@ public class Statechart<T extends Event>
 			{
 				// Nested state
 				Transition<T> trans = box.m_contents.get(0).takeTransition(event);
-				if (trans != null)
+				if (!(trans instanceof TrashTransition))
 					return trans;
 			}
 			else
@@ -310,7 +313,7 @@ public class Statechart<T extends Event>
 				{
 					Statechart<T> sc_clone = box.m_contents.get(i).clone(null);
 					Transition<T> trans = sc_clone.takeTransition(event);
-					if (trans != null)
+					if (!(trans instanceof TrashTransition))
 					{
 						box.m_contents.get(i).takeTransition(event);
 						return trans;
@@ -321,7 +324,7 @@ public class Statechart<T extends Event>
 		// If we get here, no transition has fired; we
 		// go to the "trash" sink state
 		m_currentState = m_trashState.getId();
-		return null;
+		return m_trashTransition;
 	}
 
 	/**
@@ -475,5 +478,4 @@ public class Statechart<T extends Event>
 		}
 		return list;
 	}
-
 }

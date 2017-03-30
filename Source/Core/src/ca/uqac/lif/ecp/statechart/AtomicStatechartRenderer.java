@@ -38,10 +38,10 @@ public class AtomicStatechartRenderer
 	 */
 	public static String toDot(Statechart<AtomicEvent> sc)
 	{
-		return toDot(sc, "", false, "");
+		return toDot(sc, "", "", false, "");
 	}
 	
-	protected static String toDot(Statechart<AtomicEvent> sc, String id, boolean dotted, String indent)
+	protected static String toDot(Statechart<AtomicEvent> sc, String label, String id, boolean dotted, String indent)
 	{
 		StringBuilder out = new StringBuilder();
 		if (id.isEmpty())
@@ -53,6 +53,7 @@ public class AtomicStatechartRenderer
 		else
 		{
 			out.append(indent).append("subgraph cluster_").append(id).append(" {").append(CRLF);
+			out.append(indent).append("label=\"").append(label).append("\";").append(CRLF);
 		}
 		if (dotted)
 		{
@@ -92,16 +93,17 @@ public class AtomicStatechartRenderer
 			{
 				// Normal nested state
 				Statechart<AtomicEvent> inner_sc = n_state.m_contents.get(0);
-				out.append(toDot(inner_sc, n_state.getId() + "", false, indent + "  "));
+				out.append(toDot(inner_sc, n_state.getName(), n_state.getId() + "", false, indent + "  "));
 			}
 			else
 			{
 				// Orthogonal regions
 				out.append(indent).append("subgraph cluster_").append(n_state.getId()).append(" {").append(CRLF);
+				out.append(indent).append("label=\"").append(n_state.getName()).append("\";").append(CRLF);
 				int reg_cnt = 0;
 				for (Statechart<AtomicEvent> sc : n_state.m_contents)
 				{
-					out.append(toDot(sc, n_state.getId() + "_" + reg_cnt, true, indent + "  "));
+					out.append(toDot(sc, "", n_state.getId() + "_" + reg_cnt, true, indent + "  "));
 					reg_cnt++;
 				}
 				out.append(indent).append("};").append(CRLF);

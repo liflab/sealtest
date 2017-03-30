@@ -48,7 +48,10 @@ public class AtomicStatechart extends Statechart<AtomicEvent>
 		{
 			if (s instanceof NestedState)
 			{
-				alphabet.addAll(((AtomicStatechart) ((NestedState<AtomicEvent>) s).m_contents).getAlphabet());
+				for (Statechart<AtomicEvent> as : ((NestedState<AtomicEvent>) s).m_contents)
+				{
+					alphabet.addAll(((AtomicStatechart) as).getAlphabet());
+				}
 			}
 		}
 		return alphabet;

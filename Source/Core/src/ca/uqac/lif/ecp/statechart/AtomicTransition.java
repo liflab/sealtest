@@ -19,6 +19,10 @@ package ca.uqac.lif.ecp.statechart;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 
+/**
+ * Transition of a statechart where the label corresponds to an atomic event
+ * @author Sylvain Hallé
+ */
 public class AtomicTransition extends Transition<AtomicEvent> 
 {
 	/**
@@ -31,6 +35,10 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	 */
 	protected StateNode<AtomicEvent> m_target;
 	
+	/**
+	 * Creates a new atomic transition
+	 * @param e The event associated to this transition
+	 */
 	public AtomicTransition(AtomicEvent e)
 	{
 		super();
@@ -48,6 +56,27 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	public boolean matches(AtomicEvent event) 
 	{
 		return m_event.equals(event);
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		return m_event.hashCode() * m_target.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		if (o == null || !(o instanceof AtomicTransition))
+		{
+			return false;
+		}
+		AtomicTransition at = (AtomicTransition) o;
+		if (!at.m_event.equals(m_event))
+		{
+			return false;
+		}
+		return at.m_target.equals(m_target);
 	}
 	
 	/**

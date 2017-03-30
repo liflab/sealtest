@@ -20,14 +20,14 @@ public class AtomicStatechartBuilder
 		}
 		if (line.startsWith("begin statechart"))
 		{
-			Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
+			AtomicStatechart new_as = new AtomicStatechart();
 			new_as = parseStatechart(new_as, scanner);
 			return new_as;
 		}
 		throw new ParseException("Parsing failed");
 	}
 	
-	protected static Statechart<AtomicEvent> parseStatechart(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
+	protected static AtomicStatechart parseStatechart(AtomicStatechart sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
 		if (line == null || !line.startsWith("begin states"))
@@ -67,7 +67,7 @@ public class AtomicStatechartBuilder
 				{
 					// This is a nested state
 					NestedState<AtomicEvent> ns = new NestedState<AtomicEvent>(state_name);
-					Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
+					AtomicStatechart new_as = new AtomicStatechart();
 					new_as = parseStatechart(new_as, scanner);
 					ns.addStatechart(new_as);
 					sc.add(ns);
@@ -80,7 +80,7 @@ public class AtomicStatechartBuilder
 					String in_line = nextValidLine(scanner); // begin statechart
 					while (!in_line.startsWith("end parallel"))
 					{
-						Statechart<AtomicEvent> new_as = new Statechart<AtomicEvent>();
+						AtomicStatechart new_as = new AtomicStatechart();
 						new_as = parseStatechart(new_as, scanner);
 						if (new_as == null)
 						{
