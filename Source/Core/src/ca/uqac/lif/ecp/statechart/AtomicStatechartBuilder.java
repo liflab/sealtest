@@ -113,28 +113,28 @@ public class AtomicStatechartBuilder
 			String state_source = mat.group(1).trim();
 			String trans_label = mat.group(2).trim();
 			String trans_target = mat.group(3).trim();
-			StateNode<AtomicEvent> target = parseTarget(trans_target);
+			Configuration<AtomicEvent> target = parseTarget(trans_target);
 			AtomicTransition trans = new AtomicTransition(new AtomicEvent(trans_label), target);
 			sc.add(state_source, trans);
 			line = nextValidLine(scanner);
 		}
 	}
 	
-	protected static StateNode<AtomicEvent> parseTarget(String target_string)
+	protected static Configuration<AtomicEvent> parseTarget(String target_string)
 	{
 		String[] parts = target_string.split(",");
-		StateNode<AtomicEvent> child = null;
+		Configuration<AtomicEvent> child = null;
 		for (int i = parts.length - 1; i >=0; i--)
 		{
 			String part = parts[i];
-			StateNode<AtomicEvent> cur_node = null;
+			Configuration<AtomicEvent> cur_node = null;
 			if (part.compareTo("..") == 0)
 			{
-				cur_node = new StateNode.UpStateNode<AtomicEvent>(child);
+				cur_node = new Configuration.UpStateNode<AtomicEvent>(child);
 			}
 			else
 			{
-				cur_node = new StateNode<AtomicEvent>(part);
+				cur_node = new Configuration<AtomicEvent>(part);
 				if (child != null)
 				{
 					cur_node.addChild(child);

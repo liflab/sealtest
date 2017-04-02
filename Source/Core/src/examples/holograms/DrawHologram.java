@@ -20,16 +20,8 @@ package examples.holograms;
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.AtomicTrace;
-import ca.uqac.lif.ecp.ltl.AtomicParserBuilder;
-import ca.uqac.lif.ecp.ltl.DepthFiltering;
-import ca.uqac.lif.ecp.ltl.FailFastDeletion;
-import ca.uqac.lif.ecp.ltl.GraphvizHologramRenderer;
-import ca.uqac.lif.ecp.ltl.HologramTransformation;
-import ca.uqac.lif.ecp.ltl.IdentityHologramTransformation;
-import ca.uqac.lif.ecp.ltl.LeafDeletion;
-import ca.uqac.lif.ecp.ltl.Operator;
+import ca.uqac.lif.ecp.ltl.*;
 import ca.uqac.lif.ecp.ltl.OperatorBuilder.BuildException;
-import ca.uqac.lif.ecp.ltl.PolarityDeletion;
 
 /**
  * Draw a hologram from a trace and an LTL formula

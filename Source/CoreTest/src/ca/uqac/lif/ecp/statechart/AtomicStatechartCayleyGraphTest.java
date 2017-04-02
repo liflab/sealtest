@@ -35,9 +35,9 @@ public class AtomicStatechartCayleyGraphTest
 	{
 		Scanner scanner = new Scanner(this.getClass().getResourceAsStream("statechart-1.txt"));
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
-		AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>>(sc);
+		AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>>(sc);
 		AtomicStateShallowHistory function = new AtomicStateShallowHistory(sc, 1);
-		CayleyGraph<AtomicEvent,MathList<StateNode<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyGraph<AtomicEvent,MathList<Configuration<AtomicEvent>>> graph = factory.getGraph(function);
 		assertNotNull(graph);
 		assertEquals(3, graph.getVertexCount());
 	}
@@ -47,9 +47,9 @@ public class AtomicStatechartCayleyGraphTest
 	{
 		Scanner scanner = new Scanner(this.getClass().getResourceAsStream("statechart-1.txt"));
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
-		AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>>(sc);
+		AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>>(sc);
 		AtomicStateShallowHistory function = new AtomicStateShallowHistory(sc, 2);
-		CayleyGraph<AtomicEvent,MathList<StateNode<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyGraph<AtomicEvent,MathList<Configuration<AtomicEvent>>> graph = factory.getGraph(function);
 		assertNotNull(graph);
 		assertEquals(6, graph.getVertexCount());
 	}
@@ -59,9 +59,9 @@ public class AtomicStatechartCayleyGraphTest
 	{
 		Scanner scanner = new Scanner(this.getClass().getResourceAsStream("statechart-2.txt"));
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
-		AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>>(sc);
+		AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>>(sc);
 		AtomicStateShallowHistory function = new AtomicStateShallowHistory(sc, 1);
-		CayleyGraph<AtomicEvent,MathList<StateNode<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyGraph<AtomicEvent,MathList<Configuration<AtomicEvent>>> graph = factory.getGraph(function);
 		assertNotNull(graph);
 		assertEquals(5, graph.getVertexCount());
 	}
@@ -71,10 +71,10 @@ public class AtomicStatechartCayleyGraphTest
 	{
 		Scanner scanner = new Scanner(this.getClass().getResourceAsStream("statechart-2.txt"));
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
-		AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>>(sc);
+		AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>>(sc);
 		AtomicStateShallowHistory function = new AtomicStateShallowHistory(sc, 2);
-		CayleyGraph<AtomicEvent,MathList<StateNode<AtomicEvent>>> graph = factory.getGraph(function);
+		CayleyGraph<AtomicEvent,MathList<Configuration<AtomicEvent>>> graph = factory.getGraph(function);
 		assertNotNull(graph);
-		assertEquals(9, graph.getVertexCount());
+		assertEquals(13, graph.getVertexCount());
 	}
 }

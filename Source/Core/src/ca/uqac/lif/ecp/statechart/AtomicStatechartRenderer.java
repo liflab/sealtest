@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
-import ca.uqac.lif.ecp.statechart.StateNode.UpStateNode;
+import ca.uqac.lif.ecp.statechart.Configuration.UpStateNode;
 
 /**
  * Renders a statechart graphically
@@ -119,7 +119,7 @@ public class AtomicStatechartRenderer
 	{
 		State<AtomicEvent> arrow_tail = sc.getAnyAtomicChild(sc.getState(source_state));
 		int arrow_tail_id = arrow_tail.getId();
-		StateNode<AtomicEvent> target = transition.getTarget();
+		Configuration<AtomicEvent> target = transition.getTarget();
 		ChartStatePair csp = getLastState(sc, target);
 		State<AtomicEvent> arrow_head = csp.chart.getAnyAtomicChild(csp.state);
 		int arrow_head_id = arrow_head.getId();
@@ -135,7 +135,7 @@ public class AtomicStatechartRenderer
 		out.append("];").append(CRLF);
 	}
 	
-	protected static ChartStatePair getLastState(Statechart<AtomicEvent> owner, StateNode<AtomicEvent> source)
+	protected static ChartStatePair getLastState(Statechart<AtomicEvent> owner, Configuration<AtomicEvent> source)
 	{
 		while (!source.getChildren().isEmpty())
 		{

@@ -19,13 +19,13 @@ public class AtomicStateShallowHistory extends StateShallowHistory<AtomicEvent>
 	}
 
 	@Override
-	public CayleyGraph<AtomicEvent,MathList<StateNode<AtomicEvent>>> getCayleyGraph()
+	public CayleyGraph<AtomicEvent,MathList<Configuration<AtomicEvent>>> getCayleyGraph()
 	{
 		if (m_automaton instanceof AtomicStatechart)
 		{
 			Alphabet<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
 			alphabet.addAll(((AtomicStatechart) m_automaton).getAlphabet());
-			AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<StateNode<AtomicEvent>>>(m_automaton);
+			AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>> factory = new AtomicStatechartCayleyGraphFactory<MathList<Configuration<AtomicEvent>>>(m_automaton);
 			return factory.getGraph(this);
 		}
 		return null;

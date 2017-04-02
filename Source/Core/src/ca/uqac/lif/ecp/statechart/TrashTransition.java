@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.statechart;
 
 import ca.uqac.lif.ecp.Event;
+import ca.uqac.lif.ecp.statechart.ActionException.ValueOutOfBoundsException;
 
 /**
  * Special transition representing the move to the "trash" sink, indicating
@@ -25,21 +26,48 @@ import ca.uqac.lif.ecp.Event;
  */
 public class TrashTransition<T extends Event> extends Transition<T>
 {
-	@Override
-	public boolean matches(T event)
+	/**
+	 * If the trash transition was taken due to the occurrence of an
+	 * exception, store the exception here
+	 */
+	protected final Exception m_exception;
+	
+	public TrashTransition(Exception e)
 	{
-		return true;
+		super();
+		m_exception = e;
 	}
-
-	@Override
-	public StateNode<T> getTarget() 
+	
+	public TrashTransition()
 	{
-		return new StateNode<T>(Statechart.TRASH);
+		this(null);
+	}
+	
+	@Override
+	public Configuration<T> getTarget() 
+	{
+		return new Configuration<T>(Statechart.TRASH);
 	}
 
 	@Override
 	public Transition<T> clone() 
 	{
 		return this;
+	}
+
+	@Override
+	protected boolean afterGuard(T event, Statechart<T> statechart) 
+	{
+		return true;
+	}
+
+	/**
+	 * Gets the exception that provoked the firing of this transition
+	 * @return The exception, or {@code null} if no exception is
+	 * associated to this transition
+	 */
+	public Exception getException() 
+	{
+		return m_exception;
 	}	
 }

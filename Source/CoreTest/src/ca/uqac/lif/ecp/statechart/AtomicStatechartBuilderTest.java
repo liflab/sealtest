@@ -35,7 +35,7 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		StateNode<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getFullState();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
 		state = sc.getFullState();
@@ -49,7 +49,7 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		StateNode<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getFullState();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
 		state = sc.getFullState();
@@ -74,7 +74,7 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		StateNode<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getFullState();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
 		state = sc.getFullState();

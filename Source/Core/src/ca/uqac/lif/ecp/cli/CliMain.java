@@ -64,7 +64,7 @@ public class CliMain
 	public static void main(String[] args)
 	{
 		System.err.println("Seal Test v" + s_versionString + " - A test generator with many tricks");
-		System.err.println("(C) 2016 Laboratoire d'informatique formelle\nUniversité du Québec à Chicoutimi, Canada");
+		System.err.println("(C) 2016-2017 Laboratoire d'informatique formelle\nUniversité du Québec à Chicoutimi, Canada");
 		System.err.println("https://liflab.github.io/sealtest\n");
 		if (args.length < 1)
 		{

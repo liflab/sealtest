@@ -18,6 +18,7 @@
 package ca.uqac.lif.ecp.statechart;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.ltl.Operator;
 
 /**
  * Transition of a statechart where the label corresponds to an atomic event
@@ -29,12 +30,7 @@ public class AtomicTransition extends Transition<AtomicEvent>
 	 * The event this transitions is supposed to match
 	 */
 	protected AtomicEvent m_event;
-	
-	/**
-	 * The target of this transition
-	 */
-	protected StateNode<AtomicEvent> m_target;
-	
+		
 	/**
 	 * Creates a new atomic transition
 	 * @param e The event associated to this transition
@@ -45,19 +41,22 @@ public class AtomicTransition extends Transition<AtomicEvent>
 		m_event = e;
 	}
 	
-	public AtomicTransition(AtomicEvent e, StateNode<AtomicEvent> target)
+	public AtomicTransition(AtomicEvent e, Configuration<AtomicEvent> target)
 	{
 		super();
 		m_event = e;
 		setTarget(target);
 	}
-
-	@Override
-	public boolean matches(AtomicEvent event) 
-	{
-		return m_event.equals(event);
-	}
 	
+	public AtomicTransition(AtomicEvent e, Operator<AtomicEvent> guard, Action<AtomicEvent> action, Configuration<AtomicEvent> target)
+	{
+		super();
+		m_event = e;
+		m_action = action;
+		m_guard = guard;
+		setTarget(target);
+	}
+
 	@Override
 	public int hashCode()
 	{
@@ -76,40 +75,57 @@ public class AtomicTransition extends Transition<AtomicEvent>
 		{
 			return false;
 		}
-		return at.m_target.equals(m_target);
+		return hasSameParameters(at);
 	}
 	
 	/**
 	 * Sets the target of this transition
 	 * @param target The target
 	 */
-	public void setTarget(StateNode<AtomicEvent> target)
+	public void setTarget(Configuration<AtomicEvent> target)
 	{
 		m_target = target;
 	}
 	
+	/**
+	 * Gets the event associated to this transition
+	 * @return The event
+	 */
 	public AtomicEvent getEvent()
 	{
 		return m_event;
-	}
-
-	@Override
-	public StateNode<AtomicEvent> getTarget() 
-	{
-		return m_target;
 	}
 	
 	@Override
 	public String toString()
 	{
-		return m_event + " -> " + m_target;
+		StringBuilder out = new StringBuilder();
+		out.append(m_event);
+		if (m_guard != null)
+		{
+			out.append(" [").append(m_guard).append("]");
+		}
+		if (m_action != null)
+		{
+			out.append(" /").append(m_action);
+		}
+		out.append(" -> ").append(m_target);
+		return out.toString();
 	}
 
 	@Override
 	public AtomicTransition clone()
 	{
-		AtomicTransition at = new AtomicTransition(m_event);
-		at.setTarget(m_target);
-		return at;
+		if (m_guard != null)
+		{
+			return new AtomicTransition(m_event, m_guard.copy(), m_action, m_target);
+		}
+		return new AtomicTransition(m_event, null, m_action, m_target);
+	}
+	
+	@Override
+	protected boolean afterGuard(AtomicEvent event, Statechart<AtomicEvent> statechart)
+	{
+		return m_event.equals(event);
 	}
 }

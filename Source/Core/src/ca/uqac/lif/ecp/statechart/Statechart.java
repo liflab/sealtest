@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.Event;
-import ca.uqac.lif.ecp.statechart.StateNode.UpStateNode;
+import ca.uqac.lif.ecp.statechart.Configuration.UpStateNode;
 
 /**
  * Representation of a UML statechart. Currently, the implementation of UML
@@ -49,49 +49,59 @@ public class Statechart<T extends Event>
 	 * in the parent of the current statechart
 	 */
 	public static final String UP = "..";
-	
+
 	/**
 	 * Label given to the trash sink in the statechart
 	 */
 	public static final String TRASH = "TRASH";
-	
+
 	/**
 	 * The set of states contained in this statechart
 	 */
 	protected Map<String,State<T>> m_states;
-	
+
 	/**
 	 * An instance of the trash transition
 	 */
 	protected final TrashTransition<T> m_trashTransition = new TrashTransition<T>();
-	
+
 	/**
 	 * The map of transitions in this statechart. The map's keys are the
 	 * IDs of the source states, and the values are the outgoing transitions
 	 * from this state.
 	 */
 	protected Map<Integer,Set<Transition<T>>> m_transitions;
-	
+
 	/**
 	 * The ID of the current state in the execution of the statechart
 	 */
 	protected int m_currentState;
-	
+
 	/**
 	 * The ID of the initial state. 0 by default.
 	 */
 	protected int m_initialState = 0;
-	
+
 	/**
 	 * A special sink state to make sure the transition relation is total
 	 */
 	protected final State<T> m_trashState;
-	
+
 	/**
 	 * The parent statechart, if any
 	 */
 	protected Statechart<T> m_parent = null;
-	
+
+	/**
+	 * The state variables of this statechart
+	 */
+	protected Map<String,Object> m_variables;
+
+	/**
+	 * The initial value of the state variables of this statechart
+	 */
+	protected Map<String,Object> m_initialValues;
+
 	/**
 	 * Creates a new empty statechart
 	 */
@@ -101,8 +111,37 @@ public class Statechart<T extends Event>
 		m_states = new HashMap<String,State<T>>();
 		m_transitions = new HashMap<Integer,Set<Transition<T>>>();
 		m_trashState = new State<T>(TRASH);
+		m_variables = null;
+		m_initialValues = null;
 	}
-	
+
+	/**
+	 * Sets the value of a state variable. If the variable does not yet
+	 * exist in this statechart, the value this variable is given is kept
+	 * as the "initial" value. When resetting the statechart (or cloning it),
+	 * the variable will be set back to this value.
+	 * @param name The name of the variable
+	 * @param value The value of the variable
+	 * @return This statechart
+	 */
+	public Statechart<T> setVariable(String name, Object value)
+	{
+		if (m_initialValues == null)
+		{
+			m_initialValues = new HashMap<String,Object>();
+		}
+		if (m_variables == null)
+		{
+			m_variables = new HashMap<String,Object>();
+		}
+		if (!m_variables.containsKey(name))
+		{
+			m_initialValues.put(name, value);
+		}
+		m_variables.put(name, value);
+		return this;
+	}
+
 	/**
 	 * Sets the enclosing instance of this statechart
 	 * @param parent The instance
@@ -113,7 +152,7 @@ public class Statechart<T extends Event>
 		m_parent = parent;
 		return this;
 	}
-	
+
 	/**
 	 * Gets the enclosing instance of this statechart
 	 * @return The instance, or {@code null} if this statechart has no parent
@@ -143,7 +182,7 @@ public class Statechart<T extends Event>
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns an arbitrary state of this statechart that is not a
 	 * {@link NestedState}. The method recurses inside nested states if
@@ -177,7 +216,7 @@ public class Statechart<T extends Event>
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns an arbitrary state of this statechart that is not a
 	 * {@link NestedState} <em>and</em> is contained within the state
@@ -201,7 +240,7 @@ public class Statechart<T extends Event>
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Adds a new state to this statechart
 	 * @param s The state
@@ -274,21 +313,32 @@ public class Statechart<T extends Event>
 		if (m_currentState == m_trashState.getId())
 		{
 			// Do nothing and stay in the trash sink
-			return new TrashTransition<T>();
+			return m_trashTransition;
 		}
 		Set<Transition<T>> transitions = m_transitions.get(m_currentState);
 		if (transitions != null)
 		{
 			for (Transition<T> trans : transitions)
 			{
-				if (!trans.matches(event))
+				if (!trans.matches(event, this))
 				{
 					continue;
 				}
-				StateNode<T> target = trans.getTarget();
+				Configuration<T> target = trans.getTarget();
 				if (applyTransition(event, target))
 				{
-					return trans;
+					try
+					{
+						trans.executeAction(event, this);
+						return trans;
+					}
+					catch (ActionException ex)
+					{
+						// The action associated to the transition failed:
+						// go to trash state
+						m_currentState = m_trashState.getId();
+						return new TrashTransition<T>(ex);
+					}
 				}
 			}			
 		}
@@ -334,9 +384,9 @@ public class Statechart<T extends Event>
 	 * @return {@code true} if the transition could be applied, {@code false}
 	 * otherwise
 	 */
-	public boolean applyTransition(T event, StateNode<T> node)
+	public boolean applyTransition(T event, Configuration<T> node)
 	{
-		List<StateNode<T>> children = node.getChildren();
+		List<Configuration<T>> children = node.getChildren();
 		if (node instanceof UpStateNode)
 		{
 			Statechart<T> sc = getParent();
@@ -356,7 +406,7 @@ public class Statechart<T extends Event>
 			for (int i = 0; i < children.size(); i++)
 			{
 				Statechart<T> sc = contents.get(i);
-				StateNode<T> child = children.get(i);
+				Configuration<T> child = children.get(i);
 				if (!sc.applyTransition(event, child))
 					return false;
 			}
@@ -382,10 +432,11 @@ public class Statechart<T extends Event>
 	 * followed by the ID of the inner state (if any), and so on.
 	 * @return The list of state IDs
 	 */
-	public StateNode<T> getFullState()
+	public Configuration<T> getFullState()
 	{
 		State<T> cur_state = getState(m_currentState);
-		StateNode<T> list = new StateNode<T>(cur_state.getName());
+		Configuration<T> list = new Configuration<T>(cur_state.getName());
+		list.setVariables(m_variables);
 		if (cur_state instanceof NestedState)
 		{
 			NestedState<T> box = (NestedState<T>) cur_state;
@@ -407,6 +458,14 @@ public class Statechart<T extends Event>
 		for (State<T> s : m_states.values())
 		{
 			s.reset();
+		}
+		if (m_variables != null)
+		{
+			m_variables.clear();
+			if (m_initialValues != null)
+			{
+				m_variables.putAll(m_initialValues);
+			}
 		}
 		return this;
 	}
@@ -436,9 +495,25 @@ public class Statechart<T extends Event>
 		new_sc.m_parent = parent;
 		new_sc.m_initialState = m_initialState;
 		new_sc.m_currentState = m_currentState;
+		if (m_initialValues != null)
+		{
+			new_sc.m_initialValues = new HashMap<String,Object>();
+			for (Map.Entry<String,Object> entry : m_initialValues.entrySet())
+			{
+				new_sc.m_initialValues.put(entry.getKey(), entry.getValue());
+			}
+		}
+		if (m_variables != null)
+		{
+			new_sc.m_variables = new HashMap<String,Object>();
+			for (Map.Entry<String,Object> entry : m_variables.entrySet())
+			{
+				new_sc.m_variables.put(entry.getKey(), entry.getValue());
+			}
+		}
 		return new_sc;
 	}
-	
+
 	/**
 	 * Counts the edges in this statechart
 	 * @return The number of edges
@@ -459,15 +534,15 @@ public class Statechart<T extends Event>
 		}
 		return cnt;
 	}
-	
+
 	/**
 	 * Gets the initial state of this statechart
 	 * @return The initial state
 	 */
-	public StateNode<T> getInitialVertex()
+	public Configuration<T> getInitialVertex()
 	{
 		State<T> cur_state = getState(m_initialState);
-		StateNode<T> list = new StateNode<T>(cur_state.getName());
+		Configuration<T> list = new Configuration<T>(cur_state.getName());
 		if (cur_state instanceof NestedState)
 		{
 			NestedState<T> box = (NestedState<T>) cur_state;
@@ -477,5 +552,72 @@ public class Statechart<T extends Event>
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Checks if a statechart has a variable of given name
+	 * @param var_name The name of the variable
+	 * @return {@code true} if the statechart has the variable, {@code false}
+	 * otherwise
+	 */
+	public boolean hasVariable(String var_name) 
+	{
+		if (m_variables == null)
+		{
+			return false;
+		}
+		return (m_variables.containsKey(var_name));
+	}
+	
+	/**
+	 * Gets the value of a state variable
+	 * @param var_name The name of the variable
+	 * @return The value, or {@code null} if the variable is not defined
+	 * in this statechart
+	 */
+	public Object getVariable(String var_name)
+	{
+		if (m_variables == null || !m_variables.containsKey(var_name))
+		{
+			return null;
+		}
+		return m_variables.get(var_name);
+	}
+	
+	/**
+	 * Finds the statechart instance that "owns" the state variable of given name.
+	 * The method starts from a statechart, and if the variable is not defined,
+	 * moves up to its parent, and so on.
+	 * @param statechart The statechart used as a starting point for the search.
+	 * @param var_name The name of the variable
+	 * @return The statechart where this variable is defined, or {@code null}
+	 * if the variable could not be found in this statechart, nor any of its
+	 * parents
+	 */
+	public static Statechart<?> findOwner(Statechart<?> statechart, String var_name)
+	{
+		if (statechart == null)
+		{
+			return null;
+		}
+		if (statechart.hasVariable(var_name))
+		{
+			return statechart;
+		}
+		return findOwner(statechart.getParent(), var_name);
+	}
+	
+	/**
+	 * Finds the statechart instance that "owns" the state variable of given name.
+	 * The method starts from a statechart, and if the variable is not defined,
+	 * moves up to its parent, and so on.
+	 * @param var_name The name of the variable
+	 * @return The statechart where this variable is defined, or {@code null}
+	 * if the variable could not be found in this statechart, nor any of its
+	 * parents
+	 */
+	public Statechart<?> findOwner(String var_name)
+	{
+		return findOwner(this, var_name);
 	}
 }

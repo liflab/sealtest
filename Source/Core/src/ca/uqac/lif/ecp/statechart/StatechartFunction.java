@@ -36,7 +36,7 @@ public abstract class StatechartFunction<T extends Event,U extends Object> exten
 	 * The current vertex in the automaton after reading the previous
 	 * events
 	 */
-	protected StateNode<T> m_currentVertex;
+	protected Configuration<T> m_currentVertex;
 	
 	/**
 	 * Creates a new triaging function from an automaton
@@ -58,7 +58,7 @@ public abstract class StatechartFunction<T extends Event,U extends Object> exten
 	@Override
 	public MathSet<U> read(T e)
 	{
-		StateNode<T> start_state = m_automaton.getFullState();
+		Configuration<T> start_state = m_automaton.getFullState();
 		Transition<T> edge = m_automaton.takeTransition(e);
 		if (edge == null)
 		{
@@ -68,5 +68,5 @@ public abstract class StatechartFunction<T extends Event,U extends Object> exten
 		return processTransition(start_state, edge);
 	}
 	
-	public abstract MathSet<U> processTransition(StateNode<T> start_state, Transition<T> edge);
+	public abstract MathSet<U> processTransition(Configuration<T> start_state, Transition<T> edge);
 }

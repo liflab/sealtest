@@ -22,7 +22,7 @@ import ca.uqac.lif.ecp.statechart.ShallowHistoryFunction;
 import ca.uqac.lif.structures.MathList;
 import ca.uqac.lif.structures.MathSet;
 
-public abstract class StateShallowHistory<T extends Event> extends ShallowHistoryFunction<T,StateNode<T>> 
+public abstract class StateShallowHistory<T extends Event> extends ShallowHistoryFunction<T,Configuration<T>> 
 {
 	public StateShallowHistory(Statechart<T> a, int size) 
 	{
@@ -35,7 +35,7 @@ public abstract class StateShallowHistory<T extends Event> extends ShallowHistor
 	}
 
 	@Override
-	public MathSet<MathList<StateNode<T>>> processTransition(StateNode<T> start_state, Transition<T> edge)
+	public MathSet<MathList<Configuration<T>>> processTransition(Configuration<T> start_state, Transition<T> edge)
 	{
 		// This is the first event: add both source and destination
 		// to the window
@@ -44,18 +44,18 @@ public abstract class StateShallowHistory<T extends Event> extends ShallowHistor
 			m_window.add(start_state);
 		}
 		m_window.add(edge.getTarget());
-		MathSet<MathList<StateNode<T>>> out = new MathSet<MathList<StateNode<T>>>();
-		MathList<StateNode<T>> new_list = new MathList<StateNode<T>>();
+		MathSet<MathList<Configuration<T>>> out = new MathSet<MathList<Configuration<T>>>();
+		MathList<Configuration<T>> new_list = new MathList<Configuration<T>>();
 		new_list.addAll(m_window);
 		out.add(new_list);
 		return out;
 	}
 
 	@Override
-	public MathSet<MathList<StateNode<T>>> getStartClass()
+	public MathSet<MathList<Configuration<T>>> getStartClass()
 	{
-		MathSet<MathList<StateNode<T>>> out = new MathSet<MathList<StateNode<T>>>();
-		MathList<StateNode<T>> new_list = new MathList<StateNode<T>>();
+		MathSet<MathList<Configuration<T>>> out = new MathSet<MathList<Configuration<T>>>();
+		MathList<Configuration<T>> new_list = new MathList<Configuration<T>>();
 		new_list.add(m_automaton.getInitialVertex());
 		out.add(new_list);
 		return out;
