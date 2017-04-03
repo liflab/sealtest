@@ -70,8 +70,8 @@ public class GreaterThan<T extends Event> extends BinaryValueExpression<T,Number
 	@Override
 	public void clean() 
 	{
-		// TODO Auto-generated method stub
-
+		m_eventSeen = null;
+		m_value = Value.INCONCLUSIVE;
 	}
 
 }

@@ -58,7 +58,7 @@ public class Statechart<T extends Event>
 	/**
 	 * The set of states contained in this statechart
 	 */
-	protected Map<String,State<T>> m_states;
+	private Map<String,State<T>> m_states;
 
 	/**
 	 * An instance of the trash transition
@@ -70,7 +70,7 @@ public class Statechart<T extends Event>
 	 * IDs of the source states, and the values are the outgoing transitions
 	 * from this state.
 	 */
-	protected Map<Integer,Set<Transition<T>>> m_transitions;
+	private Map<Integer,Set<Transition<T>>> m_transitions;
 
 	/**
 	 * The ID of the current state in the execution of the statechart
@@ -173,7 +173,7 @@ public class Statechart<T extends Event>
 		{
 			return m_trashState;
 		}
-		for (State<T> s : m_states.values())
+		for (State<T> s : getStates().values())
 		{
 			if (s.m_id == id)
 			{
@@ -194,18 +194,18 @@ public class Statechart<T extends Event>
 	public State<T> getAnyAtomicChild()
 	{
 		// First, try to find any direct child that is not a nested state
-		for (State<T> s : m_states.values())
+		for (State<T> s : getStates().values())
 		{
 			if (!(s instanceof NestedState))
 				return s;
 		}
 		// If no success, recursively ask for an atomic child in all
 		// nested states
-		for (State<T> s : m_states.values())
+		for (State<T> s : getStates().values())
 		{
 			// We can safely cast; if we get here, all elements are of that type
 			NestedState<T> ns = (NestedState<T>) s;
-			for (Statechart<T> sc : ns.m_contents)
+			for (Statechart<T> sc : ns.getContents())
 			{
 				State<T> out_state = sc.getAnyAtomicChild();
 				if (out_state != null)
@@ -230,7 +230,7 @@ public class Statechart<T extends Event>
 		if (!(state instanceof NestedState))
 			return state;
 		NestedState<T> ns = (NestedState<T>) state;
-		for (Statechart<T> sc : ns.m_contents)
+		for (Statechart<T> sc : ns.getContents())
 		{
 			State<T> out_state = sc.getAnyAtomicChild();
 			if (out_state != null)
@@ -248,16 +248,16 @@ public class Statechart<T extends Event>
 	 */
 	public Statechart<T> add(State<T> s)
 	{
-		if (m_states.isEmpty())
+		if (getStates().isEmpty())
 		{
 			// By default, the first added state is the initial state
 			m_initialState = s.getId();
 			m_currentState = m_initialState;
 		}
-		m_states.put(s.getName(), s);
+		getStates().put(s.getName(), s);
 		if (s instanceof NestedState)
 		{
-			for (Statechart<T> sc : ((NestedState<T>) s).m_contents)
+			for (Statechart<T> sc : ((NestedState<T>) s).getContents())
 			{
 				sc.setParent(this);
 			}
@@ -274,16 +274,16 @@ public class Statechart<T extends Event>
 	public Statechart<T> add(int source, Transition<T> transition)
 	{
 		Set<Transition<T>> set = null;
-		if (!m_transitions.containsKey(source))
+		if (!getTransitions().containsKey(source))
 		{
 			set = new HashSet<Transition<T>>();
 		}
 		else
 		{
-			set = m_transitions.get(source);
+			set = getTransitions().get(source);
 		}
 		set.add(transition);
-		m_transitions.put(source, set);
+		getTransitions().put(source, set);
 		return this;
 	}
 
@@ -315,7 +315,7 @@ public class Statechart<T extends Event>
 			// Do nothing and stay in the trash sink
 			return m_trashTransition;
 		}
-		Set<Transition<T>> transitions = m_transitions.get(m_currentState);
+		Set<Transition<T>> transitions = getTransitions().get(m_currentState);
 		if (transitions != null)
 		{
 			for (Transition<T> trans : transitions)
@@ -349,23 +349,25 @@ public class Statechart<T extends Event>
 		{
 			// But maybe it is a transition of the inner statechart
 			NestedState<T> box = (NestedState<T>) cur_state;
-			if (box.m_contents.size() == 1)
+			if (box.getContents().size() == 1)
 			{
 				// Nested state
-				Transition<T> trans = box.m_contents.get(0).takeTransition(event);
+				Transition<T> trans = box.getContents().get(0).takeTransition(event);
 				if (!(trans instanceof TrashTransition))
 					return trans;
 			}
 			else
 			{
 				// Orthogonal regions
-				for (int i = 0; i < box.m_contents.size(); i++)
+				for (int i = 0; i < box.getContents().size(); i++)
 				{
-					Statechart<T> sc_clone = box.m_contents.get(i).clone(null);
+					Statechart<T> sc_clone = box.getContents().get(i).clone(null);
+					// We artificially put all the state variables from the parent into the clone
+					putAllStateVariables(sc_clone);
 					Transition<T> trans = sc_clone.takeTransition(event);
 					if (!(trans instanceof TrashTransition))
 					{
-						box.m_contents.get(i).takeTransition(event);
+						box.getContents().get(i).takeTransition(event);
 						return trans;
 					}
 				}
@@ -402,7 +404,7 @@ public class Statechart<T extends Event>
 		s.reset();
 		if (s instanceof NestedState)
 		{
-			List<Statechart<T>> contents = ((NestedState<T>) s).m_contents;
+			List<Statechart<T>> contents = ((NestedState<T>) s).getContents();
 			for (int i = 0; i < children.size(); i++)
 			{
 				Statechart<T> sc = contents.get(i);
@@ -421,7 +423,7 @@ public class Statechart<T extends Event>
 	 */
 	protected State<T> getState(String name)
 	{
-		return m_states.get(name);
+		return getStates().get(name);
 	}
 
 	/**
@@ -432,7 +434,7 @@ public class Statechart<T extends Event>
 	 * followed by the ID of the inner state (if any), and so on.
 	 * @return The list of state IDs
 	 */
-	public Configuration<T> getFullState()
+	public Configuration<T> getCurrentConfiguration()
 	{
 		State<T> cur_state = getState(m_currentState);
 		Configuration<T> list = new Configuration<T>(cur_state.getName());
@@ -440,9 +442,9 @@ public class Statechart<T extends Event>
 		if (cur_state instanceof NestedState)
 		{
 			NestedState<T> box = (NestedState<T>) cur_state;
-			for (Statechart<T> sc : box.m_contents)
+			for (Statechart<T> sc : box.getContents())
 			{
-				list.addChild(sc.getFullState());
+				list.addChild(sc.getCurrentConfiguration());
 			}
 		}
 		return list;
@@ -455,7 +457,7 @@ public class Statechart<T extends Event>
 	public Statechart<T> reset()
 	{
 		m_currentState = m_initialState;
-		for (State<T> s : m_states.values())
+		for (State<T> s : getStates().values())
 		{
 			s.reset();
 		}
@@ -479,18 +481,18 @@ public class Statechart<T extends Event>
 	public Statechart<T> clone(Statechart<T> parent) 
 	{
 		Statechart<T> new_sc = new Statechart<T>();
-		for (Map.Entry<String,State<T>> entry : m_states.entrySet())
+		for (Map.Entry<String,State<T>> entry : getStates().entrySet())
 		{
-			new_sc.m_states.put(entry.getKey(), entry.getValue().clone(new_sc));
+			new_sc.getStates().put(entry.getKey(), entry.getValue().clone(new_sc));
 		}
-		for (Map.Entry<Integer,Set<Transition<T>>> entry : m_transitions.entrySet())
+		for (Map.Entry<Integer,Set<Transition<T>>> entry : getTransitions().entrySet())
 		{
 			Set<Transition<T>> new_set = new HashSet<Transition<T>>();
 			for (Transition<T> t : entry.getValue())
 			{
 				new_set.add(t.clone());
 			}
-			new_sc.m_transitions.put(entry.getKey(), new_set);
+			new_sc.getTransitions().put(entry.getKey(), new_set);
 		}
 		new_sc.m_parent = parent;
 		new_sc.m_initialState = m_initialState;
@@ -521,12 +523,12 @@ public class Statechart<T extends Event>
 	public int getEdgeCount()
 	{
 		int cnt = 0;
-		cnt += m_transitions.entrySet().size();
-		for (State<T> s : m_states.values())
+		cnt += getTransitions().entrySet().size();
+		for (State<T> s : getStates().values())
 		{
 			if (s instanceof NestedState)
 			{
-				for (Statechart<T> sc : ((NestedState<T>) s).m_contents)
+				for (Statechart<T> sc : ((NestedState<T>) s).getContents())
 				{
 					cnt += sc.getEdgeCount();
 				}
@@ -536,19 +538,20 @@ public class Statechart<T extends Event>
 	}
 
 	/**
-	 * Gets the initial state of this statechart
-	 * @return The initial state
+	 * Gets the initial configuration of this statechart
+	 * @return The initial configuration
 	 */
-	public Configuration<T> getInitialVertex()
+	public Configuration<T> getInitialConfiguration()
 	{
 		State<T> cur_state = getState(m_initialState);
 		Configuration<T> list = new Configuration<T>(cur_state.getName());
+		list.setVariables(m_initialValues);
 		if (cur_state instanceof NestedState)
 		{
 			NestedState<T> box = (NestedState<T>) cur_state;
-			for (Statechart<T> sc : box.m_contents)
+			for (Statechart<T> sc : box.getContents())
 			{
-				list.addChild(sc.getInitialVertex());
+				list.addChild(sc.getInitialConfiguration());
 			}
 		}
 		return list;
@@ -619,5 +622,46 @@ public class Statechart<T extends Event>
 	public Statechart<?> findOwner(String var_name)
 	{
 		return findOwner(this, var_name);
+	}
+
+	/**
+	 * @return the m_transitions
+	 */
+	public Map<Integer,Set<Transition<T>>> getTransitions() {
+		return m_transitions;
+	}
+
+	/**
+	 * @param m_transitions the m_transitions to set
+	 */
+	public void setTransitions(Map<Integer,Set<Transition<T>>> m_transitions) {
+		this.m_transitions = m_transitions;
+	}
+
+	/**
+	 * Gets the states of this statechart
+	 * @return A map whose keys are state names, and whose values are
+	 * the corresponding state objects
+	 */
+	public Map<String,State<T>> getStates() 
+	{
+		return m_states;
+	}
+	
+	protected void putAllStateVariables(Statechart<T> sc)
+	{
+		Statechart<T> parent = this;
+		while (parent != null)
+		{
+			if (parent.m_variables != null)
+			{
+				if (sc.m_variables == null)
+				{
+					sc.m_variables = new HashMap<String,Object>();
+				}
+				sc.m_variables.putAll(parent.m_variables);
+			}
+			parent = parent.getParent();
+		}
 	}
 }

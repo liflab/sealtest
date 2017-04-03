@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016-2017 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -23,14 +23,14 @@ import ca.uqac.lif.ecp.UnexpectedError;
 import ca.uqac.lif.structures.MathSet;
 
 /**
- * Triaging function based on a finite-state automaton
+ * Triaging function based on a UML statechart
  */
 public abstract class StatechartFunction<T extends Event,U extends Object> extends TriagingFunction<T,U>
 {
 	/**
-	 * The automaton this function uses as its reference
+	 * The statechart this function uses as its reference
 	 */
-	protected Statechart<T> m_automaton;
+	protected Statechart<T> m_statechart;
 	
 	/**
 	 * The current vertex in the automaton after reading the previous
@@ -45,21 +45,21 @@ public abstract class StatechartFunction<T extends Event,U extends Object> exten
 	public StatechartFunction(Statechart<T> a)
 	{
 		super();
-		m_automaton = a;
-		m_automaton.reset();
+		m_statechart = a;
+		m_statechart.reset();
 	}
 	
 	@Override
 	public void reset()
 	{
-		m_automaton.reset();
+		m_statechart.reset();
 	}
 	
 	@Override
 	public MathSet<U> read(T e)
 	{
-		Configuration<T> start_state = m_automaton.getFullState();
-		Transition<T> edge = m_automaton.takeTransition(e);
+		Configuration<T> start_state = m_statechart.getCurrentConfiguration();
+		Transition<T> edge = m_statechart.takeTransition(e);
 		if (edge == null)
 		{
 			throw new UnexpectedError("The transition relation of the statechart is not total: no outgoing edge from "

@@ -1,4 +1,21 @@
-package ca.uqac.lif.ecp.statechart;
+/*
+    Log trace triaging and etc.
+    Copyright (C) 2016-2017 Sylvain Hallé
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -6,11 +23,38 @@ import java.util.regex.Pattern;
 
 import ca.uqac.lif.bullwinkle.BnfParser.ParseException;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.NestedState;
+import ca.uqac.lif.ecp.statechart.State;
+import ca.uqac.lif.ecp.statechart.Statechart;
 
+/**
+ * Creates a statechart of atomic events out of a text string. The statechart
+ * must be structured as follows.
+ * <ul>
+ * <li>The statechart is enclosed between the lines <tt>begin statechart</tt>
+ * and <tt>end statechart</tt></li>
+ * <li>The states are declared in a section <tt>begin states</tt> &hellip;
+ * <tt>end states</tt></li>
+ * <li>The transitions are declared in a section <tt>begin transitions</tt> &hellip;
+ * <tt>end transitions</tt></li>
+ * </ul> 
+ * @author Sylvain Hallé
+ */
 public class AtomicStatechartBuilder 
 {
+	/**
+	 * The pattern to parse transitions
+	 */
 	protected static final Pattern s_transPattern = Pattern.compile("(.*?) -(.*?)-> (.*?)");
 	
+	/**
+	 * Parses a statechart from a source of text
+	 * @param scanner A scanner open on a source of text
+	 * @return The statechart read from the source
+	 * @throws ParseException Thrown if the source of text does not follow the
+	 *   expected syntax
+	 */
 	public static Statechart<AtomicEvent> parseFromString(Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
@@ -27,6 +71,15 @@ public class AtomicStatechartBuilder
 		throw new ParseException("Parsing failed");
 	}
 	
+	/**
+	 * Parses a statechart from a source of text
+	 * @param sc The statechart to "fill" with the contents to be read
+	 * @param scanner A scanner pointing to the first line of the internal
+	 * contents of the statechart
+	 * @return The parsed statechart
+	 * @throws ParseException Thrown if the source of text does not follow the
+	 *   expected syntax
+	 */
 	protected static AtomicStatechart parseStatechart(AtomicStatechart sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
@@ -42,7 +95,15 @@ public class AtomicStatechartBuilder
 			return sc;
 		return null;
 	}
-	
+
+	/**
+	 * Parses the states of a statechart
+	 * @param sc The statechart to "fill" with the contents to be read
+	 * @param scanner A scanner pointing to the first line of the list of
+	 * states of the statechart
+	 * @throws ParseException Thrown if the source of text does not follow the
+	 *   expected syntax
+	 */
 	protected static void parseStates(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
@@ -100,6 +161,14 @@ public class AtomicStatechartBuilder
 		}
 	}
 	
+	/**
+	 * Parses the transitions of a statechart
+	 * @param sc The statechart to "fill" with the contents to be read
+	 * @param scanner A scanner pointing to the first line of the list of
+	 * transitions of the statechart
+	 * @throws ParseException Thrown if the source of text does not follow the
+	 *   expected syntax
+	 */
 	protected static void parseTransitions(Statechart<AtomicEvent> sc, Scanner scanner) throws ParseException
 	{
 		String line = nextValidLine(scanner);
@@ -120,6 +189,11 @@ public class AtomicStatechartBuilder
 		}
 	}
 	
+	/**
+	 * Creates a target configuration from a string of text
+	 * @param target_string The string of text
+	 * @return The parsed configuration
+	 */
 	protected static Configuration<AtomicEvent> parseTarget(String target_string)
 	{
 		String[] parts = target_string.split(",");
@@ -145,6 +219,14 @@ public class AtomicStatechartBuilder
 		return child;
 	}
 	
+	/**
+	 * Gets the next valid line from the input source. A line if valid if
+	 * does not contain only whitespace, and whose first non-whitespace
+	 * character is not "#"
+	 * @param scanner A scanner open on a source of text
+	 * @return The next valid line, or {@code null} if there are no more
+	 * valid lines in the input source
+	 */
 	protected static String nextValidLine(Scanner scanner)
 	{
 		while (scanner.hasNextLine())

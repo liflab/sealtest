@@ -23,24 +23,22 @@ import ca.uqac.lif.structures.MathList;
 import ca.uqac.lif.structures.MathSet;
 
 /**
- * Triaging function that associates a trace to the list of states
- * in the statechart that were the destination of the 
- * last <i>n</i> transitions that fired. If the statechart has state
- * variables, these variables are ignored. Similarly, if the statechart
- * has orthogonal regions, only the state of the orthogonal region that
- * changes in a transition is considered.
+ * Triaging function that associates a trace to the list of the
+ * last <i>n</i> configurations of the statechart. A configuration
+ * includes all the state pointers in the statechart, as well as
+ * the values of all its defined state variables.
  * @author Sylvain Hallé
  *
  * @param <T> The type of events in the statechart
  */
-public abstract class StateShallowHistory<T extends Event> extends ShallowHistoryFunction<T,Configuration<T>> 
+public abstract class ConfigurationShallowHistory<T extends Event> extends ShallowHistoryFunction<T,Configuration<T>> 
 {
-	public StateShallowHistory(Statechart<T> a, int size) 
+	public ConfigurationShallowHistory(Statechart<T> a, int size) 
 	{
 		super(a, size);
 	}
 	
-	public StateShallowHistory(Statechart<T> a)
+	public ConfigurationShallowHistory(Statechart<T> a)
 	{
 		this(a, 1);
 	}
@@ -54,7 +52,7 @@ public abstract class StateShallowHistory<T extends Event> extends ShallowHistor
 		{
 			m_window.add(start_state);
 		}
-		m_window.add(edge.getTarget());
+		m_window.add(m_statechart.getCurrentConfiguration());
 		MathSet<MathList<Configuration<T>>> out = new MathSet<MathList<Configuration<T>>>();
 		MathList<Configuration<T>> new_list = new MathList<Configuration<T>>();
 		new_list.addAll(m_window);

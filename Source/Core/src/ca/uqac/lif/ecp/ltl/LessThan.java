@@ -70,8 +70,8 @@ public class LessThan<T extends Event> extends BinaryValueExpression<T,Number,Op
 	@Override
 	public void clean() 
 	{
-		// TODO Auto-generated method stub
-
+		m_eventSeen = null;
+		m_value = Value.INCONCLUSIVE;
 	}
 
 }

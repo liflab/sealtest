@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import static org.junit.Assert.*;
 
@@ -26,6 +26,11 @@ import org.junit.Test;
 import ca.uqac.lif.bullwinkle.BnfParser.ParseException;
 import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.Statechart;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStateShallowHistory;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechartBuilder;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechartCayleyGraphFactory;
 import ca.uqac.lif.structures.MathList;
 
 public class AtomicStatechartCayleyGraphTest 

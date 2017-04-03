@@ -15,13 +15,21 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import java.util.Set;
 
 import ca.uqac.lif.ecp.Alphabet;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.NestedState;
+import ca.uqac.lif.ecp.statechart.State;
+import ca.uqac.lif.ecp.statechart.Statechart;
+import ca.uqac.lif.ecp.statechart.Transition;
 
+/**
+ * Statechart of atomic events whose alphabet is known in advance.
+ * @author Sylvain Hallé
+ */
 public class AtomicStatechart extends Statechart<AtomicEvent> 
 {
 	/**
@@ -37,18 +45,18 @@ public class AtomicStatechart extends Statechart<AtomicEvent>
 	public Set<AtomicEvent> getAlphabet()
 	{
 		Set<AtomicEvent> alphabet = new Alphabet<AtomicEvent>();
-		for (Set<Transition<AtomicEvent>> trans : m_transitions.values())
+		for (Set<Transition<AtomicEvent>> trans : getTransitions().values())
 		{
 			for (Transition<AtomicEvent> t : trans)
 			{
 				alphabet.add(((AtomicTransition) t).getEvent());
 			}
 		}
-		for (State<AtomicEvent> s : m_states.values())
+		for (State<AtomicEvent> s : getStates().values())
 		{
 			if (s instanceof NestedState)
 			{
-				for (Statechart<AtomicEvent> as : ((NestedState<AtomicEvent>) s).m_contents)
+				for (Statechart<AtomicEvent> as : ((NestedState<AtomicEvent>) s).getContents())
 				{
 					alphabet.addAll(((AtomicStatechart) as).getAlphabet());
 				}

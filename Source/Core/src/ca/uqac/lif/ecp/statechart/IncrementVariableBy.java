@@ -65,5 +65,11 @@ public class IncrementVariableBy<T extends Event> extends VariableAssignment<T,I
 			throw new ActionException.ValueOutOfBoundsException(m_variableName);
 		}
 		owner.setVariable(m_variableName, new_value);
-	}	
+	}
+	
+	@Override
+	public String toString()
+	{
+		return m_variableName + " += " + m_increment;
+	}
 }

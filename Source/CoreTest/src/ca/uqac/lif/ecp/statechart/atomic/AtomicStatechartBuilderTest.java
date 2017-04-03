@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import static org.junit.Assert.*;
 
@@ -25,6 +25,9 @@ import org.junit.Test;
 
 import ca.uqac.lif.bullwinkle.BnfParser.ParseException;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.Statechart;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechartBuilder;
 
 public class AtomicStatechartBuilderTest
 {
@@ -35,10 +38,10 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		Configuration<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getCurrentConfiguration();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals("S1", state.getName());
 	}
 	
@@ -49,20 +52,20 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		Configuration<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getCurrentConfiguration();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(1, state.getChildren().size());
 		assertEquals("S1", state.getName());
 		assertEquals("J0", state.getChildren().get(0).getName());
 		sc.takeTransition(new AtomicEvent("c"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(1, state.getChildren().size());
 		assertEquals("S1", state.getName());
 		assertEquals("J1", state.getChildren().get(0).getName());
 		sc.takeTransition(new AtomicEvent("b"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(0, state.getChildren().size());
 		assertEquals("S0", state.getName());
 	}
@@ -74,22 +77,22 @@ public class AtomicStatechartBuilderTest
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
 		assertNotNull(sc);
 		assertTrue(sc instanceof Statechart);
-		Configuration<AtomicEvent> state = sc.getFullState();
+		Configuration<AtomicEvent> state = sc.getCurrentConfiguration();
 		assertEquals("S0", state.getName());
 		sc.takeTransition(new AtomicEvent("a"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(2, state.getChildren().size());
 		assertEquals("S1", state.getName());
 		assertEquals("J0", state.getChildren().get(0).getName());
 		assertEquals("I0", state.getChildren().get(1).getName());
 		sc.takeTransition(new AtomicEvent("d"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(2, state.getChildren().size());
 		assertEquals("S1", state.getName());
 		assertEquals("J0", state.getChildren().get(0).getName());
 		assertEquals("I1", state.getChildren().get(1).getName());
 		sc.takeTransition(new AtomicEvent("b"));
-		state = sc.getFullState();
+		state = sc.getCurrentConfiguration();
 		assertEquals(0, state.getChildren().size());
 		assertEquals("S0", state.getName());
 	}

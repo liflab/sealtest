@@ -15,34 +15,9 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
 
-import java.util.Set;
+/**
+ * UML statecharts made of atomic events
+ */
+package ca.uqac.lif.ecp.statechart.atomic;
 
-import ca.uqac.lif.ecp.CayleyGraphFactory;
-import ca.uqac.lif.ecp.atomic.AtomicEvent;
-import ca.uqac.lif.ecp.graphs.Vertex;
-
-public class AtomicStatechartCayleyGraphFactory<T> extends CayleyGraphFactory<AtomicEvent,T>
-{
-	/**
-	 * The set of atomic events that will be used as the alphabet
-	 */
-	protected Set<AtomicEvent> m_possibleEvents;
-	
-	public AtomicStatechartCayleyGraphFactory(Statechart<AtomicEvent> s)
-	{
-		super();
-		if (s instanceof AtomicStatechart)
-		{
-			m_possibleEvents = ((AtomicStatechart) s).getAlphabet();
-		}
-	}
-	
-	@Override
-	protected Set<AtomicEvent> getNextEvents(Vertex<AtomicEvent> vertex) 
-	{
-		return m_possibleEvents;
-	}
-
-}

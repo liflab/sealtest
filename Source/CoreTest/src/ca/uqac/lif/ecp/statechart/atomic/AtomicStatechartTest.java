@@ -15,7 +15,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import static org.junit.Assert.*;
 
@@ -24,8 +24,21 @@ import org.junit.Test;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.ltl.Constant;
 import ca.uqac.lif.ecp.ltl.LessThan;
+import ca.uqac.lif.ecp.ltl.Not;
+import ca.uqac.lif.ecp.statechart.ActionChain;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.InState;
+import ca.uqac.lif.ecp.statechart.IncrementVariableBy;
+import ca.uqac.lif.ecp.statechart.NestedState;
+import ca.uqac.lif.ecp.statechart.State;
+import ca.uqac.lif.ecp.statechart.Statechart;
+import ca.uqac.lif.ecp.statechart.StatechartVariableAtom;
+import ca.uqac.lif.ecp.statechart.Transition;
+import ca.uqac.lif.ecp.statechart.TrashTransition;
 import ca.uqac.lif.ecp.statechart.ActionException.ValueOutOfBoundsException;
 import ca.uqac.lif.ecp.statechart.ActionException.VariableNotFoundException;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechart;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicTransition;
 
 public class AtomicStatechartTest 
 {
@@ -43,17 +56,17 @@ public class AtomicStatechartTest
 		as.add("S0", new AtomicTransition(A, new Configuration<AtomicEvent>("S1")));
 		Transition<AtomicEvent> b;
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals("S0", list.getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals("S1", list.getName());
 		b = as.takeTransition(A);
 		assertTrue(b instanceof TrashTransition);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals(Statechart.TRASH, list.getName());
 	}
@@ -77,34 +90,34 @@ public class AtomicStatechartTest
 		as.add("S1", new AtomicTransition(C, new Configuration<AtomicEvent>("S0")));
 		Transition<AtomicEvent> b;
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals("S0", list.getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I1", list.getChildren().get(0).getName());
 		b = as.takeTransition(C);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals("S0", list.getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
 		b = as.takeTransition(D);
 		assertTrue(b instanceof TrashTransition);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(0, list.getChildren().size());
 		assertEquals(Statechart.TRASH, list.getName());
 	}
@@ -136,24 +149,24 @@ public class AtomicStatechartTest
 		as.add("S1", new AtomicTransition(D, new Configuration<AtomicEvent>("S0")));
 		Transition<AtomicEvent> b;
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S0", list.getName());
 		assertEquals("J0", list.getChildren().get(0).getName());
 		b = as.takeTransition(C);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I1", list.getChildren().get(0).getName());
 		b = as.takeTransition(B);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
 		assertEquals("J1", list.getChildren().get(0).getName());
 	}
@@ -185,24 +198,24 @@ public class AtomicStatechartTest
 		as.add("S1", new AtomicTransition(D, new Configuration<AtomicEvent>("S0")));
 		Transition<AtomicEvent> b;
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S0", list.getName());
 		assertEquals("J0", list.getChildren().get(0).getName());
 		b = as.takeTransition(C);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(1, list.getChildren().size());
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
 		b = as.takeTransition(A);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I1", list.getChildren().get(0).getName());
 		b = as.takeTransition(B);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
 		assertEquals("J0", list.getChildren().get(0).getName());
 	}
@@ -234,14 +247,14 @@ public class AtomicStatechartTest
 		Statechart<AtomicEvent> as = new Statechart<AtomicEvent>();
 		as.add(ns);
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(2, list.getChildren().size());
 		assertEquals("IN", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
 		assertEquals("J0", list.getChildren().get(1).getName());
 		Transition<AtomicEvent> b = as.takeTransition(C);
 		assertNotNull(b);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals(2, list.getChildren().size());
 		assertEquals("IN", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
@@ -260,20 +273,20 @@ public class AtomicStatechartTest
 			as.add("S0", t);
 		}
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(0, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(0, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(1, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(1, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(2, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(2, list.getVariable("n"));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -303,39 +316,39 @@ public class AtomicStatechartTest
 		}
 		as.add("S0", new AtomicTransition(B, new Configuration<AtomicEvent>("S1")));
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(0, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(0, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(1, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(1, list.getVariable("n"));
 		as.takeTransition(B);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(1, list.m_variables.get("n"));
-		assertTrue(list.getChildren().get(0).m_variables.containsKey("m"));
-		assertEquals(10, list.getChildren().get(0).m_variables.get("m"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(1, list.getVariable("n"));
+		assertTrue(list.getChildren().get(0).containsVariable("m"));
+		assertEquals(10, list.getChildren().get(0).getVariable("m"));
 		as.takeTransition(B);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I1", list.getChildren().get(0).getName());
-		assertEquals(3, list.m_variables.get("n"));
-		assertEquals(15, list.getChildren().get(0).m_variables.get("m"));
+		assertEquals(3, list.getVariable("n"));
+		assertEquals(15, list.getChildren().get(0).getVariable("m"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertEquals(3, list.m_variables.get("n"));
+		assertEquals(3, list.getVariable("n"));
 		as.takeTransition(B);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S1", list.getName());
 		assertEquals("I0", list.getChildren().get(0).getName());
-		assertEquals(3, list.m_variables.get("n"));
-		assertEquals(10, list.getChildren().get(0).m_variables.get("m"));
+		assertEquals(3, list.getVariable("n"));
+		assertEquals(10, list.getChildren().get(0).getVariable("m"));
 	}
 	
 	@Test
@@ -351,15 +364,15 @@ public class AtomicStatechartTest
 			as.add("S0", t);
 		}
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(0, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(0, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(1, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(1, list.getVariable("n"));
 		Transition<AtomicEvent> b = as.takeTransition(A);
 		assertTrue(b instanceof TrashTransition);
 	}
@@ -376,20 +389,20 @@ public class AtomicStatechartTest
 			as.add("S0", t);
 		}
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(0, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(0, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(1, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(1, list.getVariable("n"));
 		as.takeTransition(A);
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
-		assertTrue(list.m_variables.containsKey("n"));
-		assertEquals(2, list.m_variables.get("n"));
+		assertTrue(list.containsVariable("n"));
+		assertEquals(2, list.getVariable("n"));
 		Transition<AtomicEvent> b = as.takeTransition(A);
 		// The action fails
 		assertTrue(b instanceof TrashTransition);
@@ -408,11 +421,73 @@ public class AtomicStatechartTest
 			as.add("S0", t);
 		}
 		Configuration<AtomicEvent> list;
-		list = as.getFullState();
+		list = as.getCurrentConfiguration();
 		assertEquals("S0", list.getName());
 		Transition<AtomicEvent> b = as.takeTransition(A);
 		assertTrue(b instanceof TrashTransition);
 		TrashTransition<AtomicEvent> tt = (TrashTransition<AtomicEvent>) b;
 		assertTrue(tt.getException() instanceof VariableNotFoundException);
+	}
+	
+	@Test
+	public void testInState1()
+	{
+		Statechart<AtomicEvent> as = new Statechart<AtomicEvent>();
+		as.setVariable("n", 0);
+		NestedState<AtomicEvent> ns = new NestedState<AtomicEvent>("IN");
+		{
+			Statechart<AtomicEvent> inside = new Statechart<AtomicEvent>();
+			inside.add(new State<AtomicEvent>("I0"));
+			inside.add(new State<AtomicEvent>("I1"));
+			inside.add("I0", new AtomicTransition(A, new Configuration<AtomicEvent>("I1")));
+			inside.add("I0", new AtomicTransition(B, new Configuration<AtomicEvent>("I0")));
+			{
+				Transition<AtomicEvent> t = new AtomicTransition(A, new Configuration<AtomicEvent>("I1"));
+				t.setGuard(new InState<AtomicEvent>(as, "J1"));
+				t.setAction(new IncrementVariableBy<AtomicEvent>("n", 1));
+				inside.add("I1", t);
+			}
+			{
+				Transition<AtomicEvent> t = new AtomicTransition(A, new Configuration<AtomicEvent>("I1"));
+				t.setGuard(new Not<AtomicEvent>(new InState<AtomicEvent>(as, "J1")));
+				t.setAction(new IncrementVariableBy<AtomicEvent>("n", 2));
+				inside.add("I1", t);
+			}
+			inside.add("I1", new AtomicTransition(B, new Configuration<AtomicEvent>("I0")));
+			ns.addStatechart(inside);
+		}
+		{
+			Statechart<AtomicEvent> inside = new Statechart<AtomicEvent>();
+			inside.add(new State<AtomicEvent>("J0"));
+			inside.add(new State<AtomicEvent>("J1"));
+			inside.add("J0", new AtomicTransition(C, new Configuration<AtomicEvent>("J1")));
+			inside.add("J0", new AtomicTransition(D, new Configuration<AtomicEvent>("J0")));
+			inside.add("J1", new AtomicTransition(C, new Configuration<AtomicEvent>("J1")));
+			inside.add("J1", new AtomicTransition(D, new Configuration<AtomicEvent>("J0")));
+			ns.addStatechart(inside);
+		}
+		as.add(ns);
+		Configuration<AtomicEvent> list;
+		as.takeTransition(A);
+		list = as.getCurrentConfiguration();
+		assertEquals("I1", list.getChildren().get(0).getName());
+		assertEquals("J0", list.getChildren().get(1).getName());
+		assertEquals(0, list.getVariable("n"));
+		as.takeTransition(C);
+		list = as.getCurrentConfiguration();
+		assertEquals("I1", list.getChildren().get(0).getName());
+		assertEquals("J1", list.getChildren().get(1).getName());
+		assertEquals(0, list.getVariable("n"));
+		as.takeTransition(A);
+		list = as.getCurrentConfiguration();
+		assertEquals("I1", list.getChildren().get(0).getName());
+		assertEquals("J1", list.getChildren().get(1).getName());
+		assertEquals(1, list.getVariable("n"));
+		as.takeTransition(D);
+		as.takeTransition(A);
+		list = as.getCurrentConfiguration();
+		assertEquals("I1", list.getChildren().get(0).getName());
+		assertEquals("J0", list.getChildren().get(1).getName());
+		assertEquals(3, list.getVariable("n"));
 	}
 }

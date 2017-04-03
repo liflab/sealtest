@@ -72,8 +72,8 @@ public class Equals<T extends Event,U> extends BinaryValueExpression<T,U,Operato
 	@Override
 	public void clean() 
 	{
-		// TODO Auto-generated method stub
-
+		m_eventSeen = null;
+		m_value = Value.INCONCLUSIVE;
 	}
 
 }

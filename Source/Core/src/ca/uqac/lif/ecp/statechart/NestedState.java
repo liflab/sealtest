@@ -33,7 +33,7 @@ public class NestedState<T extends Event> extends State<T>
 	/**
 	 * The inner statecharts
 	 */
-	protected List<Statechart<T>> m_contents;
+	private List<Statechart<T>> m_contents;
 	
 	/**
 	 * Creates a new box state with a given name
@@ -42,7 +42,7 @@ public class NestedState<T extends Event> extends State<T>
 	public NestedState(String name)
 	{
 		super(name);
-		m_contents = new ArrayList<Statechart<T>>();
+		setContents(new ArrayList<Statechart<T>>());
 	}
 	
 	/**
@@ -53,7 +53,7 @@ public class NestedState<T extends Event> extends State<T>
 	protected NestedState(String name, int id)
 	{
 		super(name, id);
-		m_contents = new ArrayList<Statechart<T>>();
+		setContents(new ArrayList<Statechart<T>>());
 	}
 	
 	/**
@@ -64,10 +64,10 @@ public class NestedState<T extends Event> extends State<T>
 	public NestedState(String name, Statechart<T> ... s)
 	{
 		super(name);
-		m_contents = new ArrayList<Statechart<T>>();
+		setContents(new ArrayList<Statechart<T>>());
 		for (Statechart<T> sc : s)
 		{
-			m_contents.add(sc);
+			getContents().add(sc);
 		}
 	}
 	
@@ -78,14 +78,14 @@ public class NestedState<T extends Event> extends State<T>
 	 */
 	public NestedState<T> addStatechart(Statechart<T> s)
 	{
-		m_contents.add(s);
+		getContents().add(s);
 		return this;
 	}
 	
 	@Override
 	public void reset()
 	{
-		for (Statechart<T> sc : m_contents)
+		for (Statechart<T> sc : getContents())
 		{
 			sc.reset();
 		}
@@ -95,10 +95,24 @@ public class NestedState<T extends Event> extends State<T>
 	public NestedState<T> clone(Statechart<T> parent)
 	{
 		NestedState<T> s = new NestedState<T>(m_name, m_id);
-		for (Statechart<T> sc : m_contents)
+		for (Statechart<T> sc : getContents())
 		{
-			s.m_contents.add(sc.clone(parent));
+			s.getContents().add(sc.clone(parent));
 		}
 		return s;
+	}
+
+	/**
+	 * @return the m_contents
+	 */
+	public List<Statechart<T>> getContents() {
+		return m_contents;
+	}
+
+	/**
+	 * @param m_contents the m_contents to set
+	 */
+	public void setContents(List<Statechart<T>> m_contents) {
+		this.m_contents = m_contents;
 	}
 }

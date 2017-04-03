@@ -25,6 +25,7 @@ import ca.uqac.lif.ecp.CoverageMetric;
 import ca.uqac.lif.ecp.GreedyTraceGenerator;
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechart;
 
 /**
  * Greedy generator when the input specification is an atomic UML statechart.

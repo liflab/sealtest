@@ -15,12 +15,17 @@
     You should have received a copy of the GNU Lesser General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.uqac.lif.ecp.statechart;
+package ca.uqac.lif.ecp.statechart.atomic;
 
 import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.NestedState;
+import ca.uqac.lif.ecp.statechart.State;
+import ca.uqac.lif.ecp.statechart.Statechart;
+import ca.uqac.lif.ecp.statechart.Transition;
 import ca.uqac.lif.ecp.statechart.Configuration.UpStateNode;
 
 /**
@@ -60,7 +65,7 @@ public class AtomicStatechartRenderer
 			out.append(indent).append("graph [style=dotted];").append(CRLF);
 		}
 		int initial_id = -1;
-		for (Map.Entry<String,State<AtomicEvent>> state_entry : sc.m_states.entrySet())
+		for (Map.Entry<String,State<AtomicEvent>> state_entry : sc.getStates().entrySet())
 		{
 			State<AtomicEvent> state = state_entry.getValue();
 			if (initial_id < 0)
@@ -73,7 +78,7 @@ public class AtomicStatechartRenderer
 		out.append(indent).append("i").append(initial_id).append(" [shape=\"point\"];").append(CRLF);
 		out.append(indent).append("i").append(initial_id).append(" -> ").append(initial_id).append(";").append(CRLF);
 		// Create other transitions
-		for (Map.Entry<Integer,Set<Transition<AtomicEvent>>> trans_entries : sc.m_transitions.entrySet())
+		for (Map.Entry<Integer,Set<Transition<AtomicEvent>>> trans_entries : sc.getTransitions().entrySet())
 		{
 			for (Transition<AtomicEvent> trans : trans_entries.getValue())
 			{
@@ -89,10 +94,10 @@ public class AtomicStatechartRenderer
 		if (state instanceof NestedState)
 		{
 			NestedState<AtomicEvent> n_state = (NestedState<AtomicEvent>) state;
-			if (n_state.m_contents.size() == 1)
+			if (n_state.getContents().size() == 1)
 			{
 				// Normal nested state
-				Statechart<AtomicEvent> inner_sc = n_state.m_contents.get(0);
+				Statechart<AtomicEvent> inner_sc = n_state.getContents().get(0);
 				out.append(toDot(inner_sc, n_state.getName(), n_state.getId() + "", false, indent + "  "));
 			}
 			else
@@ -101,7 +106,7 @@ public class AtomicStatechartRenderer
 				out.append(indent).append("subgraph cluster_").append(n_state.getId()).append(" {").append(CRLF);
 				out.append(indent).append("label=\"").append(n_state.getName()).append("\";").append(CRLF);
 				int reg_cnt = 0;
-				for (Statechart<AtomicEvent> sc : n_state.m_contents)
+				for (Statechart<AtomicEvent> sc : n_state.getContents())
 				{
 					out.append(toDot(sc, "", n_state.getId() + "_" + reg_cnt, true, indent + "  "));
 					reg_cnt++;
@@ -145,13 +150,13 @@ public class AtomicStatechartRenderer
 				source = source.getChildren().get(0);
 				continue;
 			}
-			State<AtomicEvent> state = owner.m_states.get(source.getName());
+			State<AtomicEvent> state = owner.getStates().get(source.getName());
 			if (state instanceof NestedState)
 			{
-				owner = ((NestedState<AtomicEvent>) state).m_contents.get(0);
+				owner = ((NestedState<AtomicEvent>) state).getContents().get(0);
 			}
 		}
-		return new ChartStatePair(owner, owner.m_states.get(source.getName()));
+		return new ChartStatePair(owner, owner.getStates().get(source.getName()));
 	}
 	
 	protected static class ChartStatePair

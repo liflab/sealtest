@@ -91,6 +91,10 @@ public class Configuration<T extends Event>
 		{
 			out.append(m_children.toString());
 		}
+		if (m_variables != null && !m_variables.isEmpty())
+		{
+			out.append(m_variables);
+		}
 		return out.toString();
 	}
 	
@@ -100,20 +104,39 @@ public class Configuration<T extends Event>
 	 */
 	public void setVariables(Map<String,Object> variables)
 	{
-		m_variables = variables;
+		if (variables == null)
+		{
+			m_variables = null;
+		}
+		else
+		{
+			m_variables = new HashMap<String,Object>();
+			m_variables.putAll(variables);
+		}
 	}
 
-	
+	/**
+	 * Adds a child node to this configuration
+	 * @param child The child to add
+	 */
 	public void addChild(Configuration<T> child)
 	{
 		m_children.add(child);
 	}
 	
+	/**
+	 * Gets the list of children of this configuration
+	 * @return The list of children
+	 */
 	public List<Configuration<T>> getChildren()
 	{
 		return m_children;
 	}
-		
+	
+	/**
+	 * Gets the name of the state associated to this configuration node
+	 * @return The name of the state
+	 */
 	public String getName() 
 	{
 		return m_name;
@@ -176,5 +199,57 @@ public class Configuration<T extends Event>
 		{
 			super("..", child);
 		}
+	}
+
+	/**
+	 * Checks whether a configuration contains a state with given name
+	 * @param stateName The name of the state to look for
+	 * @return {@code true} if this state is found somewhere in, the
+	 * configuration, {@code false} otherwise
+	 */
+	public boolean contains(String stateName)
+	{
+		if (m_name.compareTo(stateName) == 0)
+		{
+			return true;
+		}
+		for (Configuration<T> conf : m_children)
+		{
+			if (conf.contains(stateName))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks if the current configuration contains a variable of given name
+	 * @param name The name of the variable to look for
+	 * @return {@code true} if the variable is defined, {@code false}
+	 * otherwise
+	 */
+	public boolean containsVariable(String name)
+	{
+		if (m_variables == null)
+		{
+			return false;
+		}
+		return m_variables.containsKey(name);
+	}
+	
+	/**
+	 * Retrieves the value of a state variable
+	 * @param name The name of the variable
+	 * @return The value of the variable, or {@code null} if the variable
+	 * does not exist
+	 */
+	public Object getVariable(String name)
+	{
+		if (m_variables == null || !m_variables.containsKey(name))
+		{
+			return null;
+		}
+		return m_variables.get(name);
 	}
 }

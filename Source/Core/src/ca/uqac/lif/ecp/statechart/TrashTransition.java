@@ -18,7 +18,6 @@
 package ca.uqac.lif.ecp.statechart;
 
 import ca.uqac.lif.ecp.Event;
-import ca.uqac.lif.ecp.statechart.ActionException.ValueOutOfBoundsException;
 
 /**
  * Special transition representing the move to the "trash" sink, indicating
