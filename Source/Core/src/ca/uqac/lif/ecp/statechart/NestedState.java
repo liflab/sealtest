@@ -36,13 +36,18 @@ public class NestedState<T extends Event> extends State<T>
 	private List<Statechart<T>> m_contents;
 	
 	/**
+	 * The statechart that contains this nested state
+	 */
+	protected Statechart<T> m_parent;
+	
+	/**
 	 * Creates a new box state with a given name
 	 * @param name The name
 	 */
 	public NestedState(String name)
 	{
 		super(name);
-		setContents(new ArrayList<Statechart<T>>());
+		m_contents = new ArrayList<Statechart<T>>();
 	}
 	
 	/**
@@ -53,7 +58,7 @@ public class NestedState<T extends Event> extends State<T>
 	protected NestedState(String name, int id)
 	{
 		super(name, id);
-		setContents(new ArrayList<Statechart<T>>());
+		m_contents = new ArrayList<Statechart<T>>();
 	}
 	
 	/**
@@ -64,21 +69,41 @@ public class NestedState<T extends Event> extends State<T>
 	public NestedState(String name, Statechart<T> ... s)
 	{
 		super(name);
-		setContents(new ArrayList<Statechart<T>>());
+		m_contents = new ArrayList<Statechart<T>>();
 		for (Statechart<T> sc : s)
 		{
-			getContents().add(sc);
+			m_contents.add(sc);
 		}
 	}
 	
 	/**
 	 * Sets the enclosed statechart that this box state contains
 	 * @param s The statechart
-	 * @return This box state
+	 * @return This nested state
 	 */
 	public NestedState<T> addStatechart(Statechart<T> s)
 	{
-		getContents().add(s);
+		m_contents.add(s);
+		if (m_parent != null)
+		{
+			s.setParent(m_parent);
+		}
+		return this;
+	}
+	
+	/**
+	 * Sets the parent of this nested state. The parent is the statechart
+	 * that contains the nested state.
+	 * @param statechart The parent
+	 * @return This nested state
+	 */
+	public NestedState<T> setParent(Statechart<T> statechart)
+	{
+		m_parent = statechart;
+		for (Statechart<T> s : m_contents)
+		{
+			s.setParent(m_parent);
+		}
 		return this;
 	}
 	
@@ -95,7 +120,7 @@ public class NestedState<T extends Event> extends State<T>
 	public NestedState<T> clone(Statechart<T> parent)
 	{
 		NestedState<T> s = new NestedState<T>(m_name, m_id);
-		for (Statechart<T> sc : getContents())
+		for (Statechart<T> sc : m_contents)
 		{
 			s.getContents().add(sc.clone(parent));
 		}
@@ -103,16 +128,31 @@ public class NestedState<T extends Event> extends State<T>
 	}
 
 	/**
-	 * @return the m_contents
+	 * Gets the statecharts contained within this nested state 
+	 * @return The list of statecharts
 	 */
-	public List<Statechart<T>> getContents() {
+	public List<Statechart<T>> getContents() 
+	{
 		return m_contents;
 	}
 
 	/**
-	 * @param m_contents the m_contents to set
+	 * Returns an arbitrary state inside this nested state that is not a
+	 * {@link NestedState}. The method recurses inside statecharts.
+	 * This method is mostly used for the graphical
+	 * rendering of a statechart.
+	 * @return A state, or {@code null} if no such state exists
 	 */
-	public void setContents(List<Statechart<T>> m_contents) {
-		this.m_contents = m_contents;
+	public State<T> getAnyAtomicChild()
+	{
+		for (Statechart<T> sc : m_contents)
+		{
+			State<T> s = sc.getAnyAtomicChild();
+			if (s != null)
+			{
+				return s;
+			}
+		}
+		return null;
 	}
 }

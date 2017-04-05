@@ -54,6 +54,11 @@ public class Statechart<T extends Event>
 	 * Label given to the trash sink in the statechart
 	 */
 	public static final String TRASH = "TRASH";
+	
+	/**
+	 * The name given to this statechart
+	 */
+	public final String m_name;
 
 	/**
 	 * The set of states contained in this statechart
@@ -104,15 +109,25 @@ public class Statechart<T extends Event>
 
 	/**
 	 * Creates a new empty statechart
+	 * @param name The name given to this statechart
 	 */
-	public Statechart()
+	public Statechart(String name)
 	{
 		super();
+		m_name = name;
 		m_states = new HashMap<String,State<T>>();
 		m_transitions = new HashMap<Integer,Set<Transition<T>>>();
 		m_trashState = new State<T>(TRASH);
 		m_variables = null;
 		m_initialValues = null;
+	}
+	
+	/**
+	 * Creates a new anonymous statechart
+	 */
+	public Statechart()
+	{
+		this("");
 	}
 
 	/**
@@ -173,7 +188,7 @@ public class Statechart<T extends Event>
 		{
 			return m_trashState;
 		}
-		for (State<T> s : getStates().values())
+		for (State<T> s : m_states.values())
 		{
 			if (s.m_id == id)
 			{
@@ -194,14 +209,14 @@ public class Statechart<T extends Event>
 	public State<T> getAnyAtomicChild()
 	{
 		// First, try to find any direct child that is not a nested state
-		for (State<T> s : getStates().values())
+		for (State<T> s : m_states.values())
 		{
 			if (!(s instanceof NestedState))
 				return s;
 		}
 		// If no success, recursively ask for an atomic child in all
 		// nested states
-		for (State<T> s : getStates().values())
+		for (State<T> s : m_states.values())
 		{
 			// We can safely cast; if we get here, all elements are of that type
 			NestedState<T> ns = (NestedState<T>) s;
@@ -248,19 +263,16 @@ public class Statechart<T extends Event>
 	 */
 	public Statechart<T> add(State<T> s)
 	{
-		if (getStates().isEmpty())
+		if (m_states.isEmpty())
 		{
 			// By default, the first added state is the initial state
 			m_initialState = s.getId();
 			m_currentState = m_initialState;
 		}
-		getStates().put(s.getName(), s);
+		m_states.put(s.getName(), s);
 		if (s instanceof NestedState)
 		{
-			for (Statechart<T> sc : ((NestedState<T>) s).getContents())
-			{
-				sc.setParent(this);
-			}
+			((NestedState<T>) s).setParent(this);
 		}
 		return this;
 	}
@@ -423,7 +435,7 @@ public class Statechart<T extends Event>
 	 */
 	protected State<T> getState(String name)
 	{
-		return getStates().get(name);
+		return m_states.get(name);
 	}
 
 	/**
@@ -457,7 +469,7 @@ public class Statechart<T extends Event>
 	public Statechart<T> reset()
 	{
 		m_currentState = m_initialState;
-		for (State<T> s : getStates().values())
+		for (State<T> s : m_states.values())
 		{
 			s.reset();
 		}
@@ -480,10 +492,10 @@ public class Statechart<T extends Event>
 	 */
 	public Statechart<T> clone(Statechart<T> parent) 
 	{
-		Statechart<T> new_sc = new Statechart<T>();
-		for (Map.Entry<String,State<T>> entry : getStates().entrySet())
+		Statechart<T> new_sc = new Statechart<T>(m_name);
+		for (Map.Entry<String,State<T>> entry : m_states.entrySet())
 		{
-			new_sc.getStates().put(entry.getKey(), entry.getValue().clone(new_sc));
+			new_sc.m_states.put(entry.getKey(), entry.getValue().clone(new_sc));
 		}
 		for (Map.Entry<Integer,Set<Transition<T>>> entry : getTransitions().entrySet())
 		{
@@ -524,7 +536,7 @@ public class Statechart<T extends Event>
 	{
 		int cnt = 0;
 		cnt += getTransitions().entrySet().size();
-		for (State<T> s : getStates().values())
+		for (State<T> s : m_states.values())
 		{
 			if (s instanceof NestedState)
 			{
@@ -663,5 +675,14 @@ public class Statechart<T extends Event>
 			}
 			parent = parent.getParent();
 		}
+	}
+
+	/**
+	 * Gets the initial state of this statechart
+	 * @return The initial state
+	 */
+	public State<T> getInitialState() 
+	{
+		return getState(m_initialState);
 	}
 }

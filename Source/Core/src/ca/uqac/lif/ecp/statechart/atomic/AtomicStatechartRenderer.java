@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.ltl.Operator;
+import ca.uqac.lif.ecp.statechart.Action;
 import ca.uqac.lif.ecp.statechart.Configuration;
 import ca.uqac.lif.ecp.statechart.NestedState;
 import ca.uqac.lif.ecp.statechart.State;
@@ -62,21 +64,34 @@ public class AtomicStatechartRenderer
 		}
 		if (dotted)
 		{
-			out.append(indent).append("graph [style=dotted];").append(CRLF);
+			out.append(indent).append("graph [style=dashed];").append(CRLF);
 		}
-		int initial_id = -1;
+		else
+		{
+			out.append(indent).append("graph [style=solid];").append(CRLF);
+		}
 		for (Map.Entry<String,State<AtomicEvent>> state_entry : sc.getStates().entrySet())
 		{
 			State<AtomicEvent> state = state_entry.getValue();
-			if (initial_id < 0)
-			{
-				initial_id = state.getId();
-			}
 			renderState(out, state, indent);
 		}
 		// Render "empty" transition for initial state
+		State<AtomicEvent> initial_state = sc.getInitialState();
+		int initial_id = initial_state.getId();
 		out.append(indent).append("i").append(initial_id).append(" [shape=\"point\"];").append(CRLF);
-		out.append(indent).append("i").append(initial_id).append(" -> ").append(initial_id).append(";").append(CRLF);
+		out.append(indent).append("i").append(initial_id).append(" -> ");
+		if (initial_state instanceof NestedState)
+		{
+			NestedState<AtomicEvent> ns = (NestedState<AtomicEvent>) initial_state;
+			State<AtomicEvent> any_child = ns.getAnyAtomicChild();
+			int any_id = any_child.getId();
+			out.append(any_id).append(" [lhead=\"cluster_").append(initial_id).append("\"]");
+		}
+		else
+		{
+			out.append(initial_id);
+		}
+		out.append(";").append(CRLF);
 		// Create other transitions
 		for (Map.Entry<Integer,Set<Transition<AtomicEvent>>> trans_entries : sc.getTransitions().entrySet())
 		{
@@ -128,7 +143,8 @@ public class AtomicStatechartRenderer
 		ChartStatePair csp = getLastState(sc, target);
 		State<AtomicEvent> arrow_head = csp.chart.getAnyAtomicChild(csp.state);
 		int arrow_head_id = arrow_head.getId();
-		out.append(indent).append(arrow_tail_id).append(" -> ").append(arrow_head_id).append(" [label=\"").append(((AtomicTransition) transition).m_event.getLabel()).append("\"");
+		String label = renderTransitionLabel(transition);
+		out.append(indent).append(arrow_tail_id).append(" -> ").append(arrow_head_id).append(" [label=\"").append(label).append("\"");
 		if (arrow_tail_id != source_state)
 		{
 			out.append(",ltail=\"cluster_").append(source_state).append("\"");
@@ -138,6 +154,23 @@ public class AtomicStatechartRenderer
 			out.append(",lhead=\"cluster_").append(csp.state.getId()).append("\"");
 		}
 		out.append("];").append(CRLF);
+	}
+	
+	protected static String renderTransitionLabel(Transition<AtomicEvent> transition)
+	{
+		StringBuilder out = new StringBuilder();
+		out.append(((AtomicTransition) transition).getEvent().toString());
+		Operator<?> op = transition.getGuard();
+		if (op != null)
+		{
+			out.append(" [").append(op).append("]");
+		}
+		Action<?> ac = transition.getAction();
+		if (ac != null)
+		{
+			out.append(" / ").append(ac);
+		}
+		return out.toString();
 	}
 	
 	protected static ChartStatePair getLastState(Statechart<AtomicEvent> owner, Configuration<AtomicEvent> source)

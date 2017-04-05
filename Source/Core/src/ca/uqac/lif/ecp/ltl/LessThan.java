@@ -72,6 +72,5 @@ public class LessThan<T extends Event> extends BinaryValueExpression<T,Number,Op
 	{
 		m_eventSeen = null;
 		m_value = Value.INCONCLUSIVE;
-	}
-
+	}	
 }

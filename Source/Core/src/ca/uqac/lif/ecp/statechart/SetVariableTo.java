@@ -47,4 +47,10 @@ public class SetVariableTo<T extends Event,U> extends VariableAssignment<T,U>
 			owner.setVariable(m_variableName, m_value);
 		}
 	}
+	
+	@Override
+	public String toString()
+	{
+		return m_variableName + " = " + m_value;
+	}
 }

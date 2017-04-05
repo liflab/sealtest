@@ -49,5 +49,11 @@ public abstract class BinaryValueExpression<T extends Event,U,V> extends ValueEx
 	{
 		visitor.visit(this);
 	}
+	
+	@Override
+	public String toString()
+	{
+		return m_leftValue + " " + getRootSymbol() + " " + m_rightValue;
+	}
 
 }

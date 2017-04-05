@@ -25,6 +25,9 @@ import org.junit.Test;
 
 import ca.uqac.lif.bullwinkle.BnfParser.ParseException;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
+import ca.uqac.lif.ecp.statechart.Configuration;
+import ca.uqac.lif.ecp.statechart.NestedState;
+import ca.uqac.lif.ecp.statechart.State;
 import ca.uqac.lif.ecp.statechart.Statechart;
 import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechartBuilder;
 import ca.uqac.lif.ecp.statechart.atomic.AtomicStatechartRenderer;
@@ -69,6 +72,43 @@ public class AtomicStatechartRenderTest
 	{
 		Scanner scanner = new Scanner(this.getClass().getResourceAsStream("statechart-3.txt"));
 		Statechart<AtomicEvent> sc = AtomicStatechartBuilder.parseFromString(scanner);
+		String dot_contents = AtomicStatechartRenderer.toDot(sc);
+		assertNotNull(dot_contents);
+		assertFalse(dot_contents.isEmpty());
+		if (s_printToConsole)
+		{
+			System.out.println(dot_contents);
+		}
+	}
+	
+	@Test
+	public void test4() throws ParseException
+	{
+		AtomicStatechart sc = new AtomicStatechart("Top");
+		NestedState<AtomicEvent> ns = new NestedState<AtomicEvent>("NS");
+		AtomicStatechart inside_1 = new AtomicStatechart();
+		{
+			{				
+				NestedState<AtomicEvent> ns_in = new NestedState<AtomicEvent>("In1");
+				AtomicStatechart inside_2 = new AtomicStatechart();
+				inside_2.add(new State<AtomicEvent>("A"));
+				inside_2.add(new State<AtomicEvent>("B"));
+				ns_in.addStatechart(inside_2);
+				inside_1.add(ns_in);				
+			}
+			{
+				NestedState<AtomicEvent> ns_in = new NestedState<AtomicEvent>("In2");
+				AtomicStatechart inside_2 = new AtomicStatechart("");
+				inside_2.add(new State<AtomicEvent>("C"));
+				inside_2.add(new State<AtomicEvent>("D"));
+				ns_in.addStatechart(inside_2);
+				inside_1.add(ns_in);
+			}
+			inside_1.add("In1", new AtomicTransition(new AtomicEvent("foo"), new Configuration<AtomicEvent>("In2")));
+			inside_1.add("In2", new AtomicTransition(new AtomicEvent("foo"), new Configuration<AtomicEvent>("In1")));
+		}
+		ns.addStatechart(inside_1);
+		sc.add(ns);
 		String dot_contents = AtomicStatechartRenderer.toDot(sc);
 		assertNotNull(dot_contents);
 		assertFalse(dot_contents.isEmpty());

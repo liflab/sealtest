@@ -37,6 +37,16 @@ public class AtomicStatechart extends Statechart<AtomicEvent>
 	 */
 	protected Alphabet<AtomicEvent> m_alphabet;
 	
+	public AtomicStatechart()
+	{
+		super();
+	}
+	
+	public AtomicStatechart(String name)
+	{
+		super(name);
+	}
+	
 	/**
 	 * Gets the set of all the events that occur as transition labels in this
 	 * statechart

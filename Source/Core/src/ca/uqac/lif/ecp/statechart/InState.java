@@ -148,7 +148,7 @@ public class InState<T extends Event> extends Operator<T>
 	@Override
 	public String toString()
 	{
-		return "In State " + m_stateName;
+		return "In " + m_stateName;
 	}
 
 }

@@ -154,4 +154,22 @@ public abstract class Transition<T extends Event>
 			m_action.execute(event, this, statechart);
 		}
 	}
+	
+	/**
+	 * Gets the guard associated to this transition
+	 * @return The guard, or {@code null} if no guard is defined
+	 */
+	public Operator<T> getGuard()
+	{
+		return m_guard;
+	}
+	
+	/**
+	 * Gets the action associated to this transition
+	 * @return The action, or {@code null} if no action is defined
+	 */
+	public Action<T> getAction()
+	{
+		return m_action;
+	}
 }
