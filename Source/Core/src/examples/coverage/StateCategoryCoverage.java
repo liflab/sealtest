@@ -22,8 +22,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.CayleyCategoryCoverage;
-import ca.uqac.lif.ecp.CayleyCoverageRadius;
-import ca.uqac.lif.ecp.CayleyCoverageRadius.RadiusMap;
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
