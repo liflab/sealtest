@@ -21,37 +21,41 @@ import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Set;
 
-import ca.uqac.lif.ecp.CayleyCoverageRadius;
-import ca.uqac.lif.ecp.CayleyCoverageRadius.RadiusMap;
+import ca.uqac.lif.ecp.CayleyCategoryCoverage;
+import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.Automaton;
-import ca.uqac.lif.ecp.atomic.StateShallowHistory;
+import ca.uqac.lif.ecp.atomic.TransitionShallowHistory;
 import ca.uqac.lif.structures.MathList;
+import ca.uqac.lif.structures.MathSet;
 
 /**
- * Display the coverage radius graph from a test suite.
+ * Computes category coverage from a test suite.
  * 
  * @author Sylvain Hallé
  */
-public class CoverageRadius
+public class TransitionCategoryCoverage
 {
 	public static void main(String[] args)
 	{
 		// Read automaton from a file
-		InputStream spec_stream = CoverageRadius.class.getResourceAsStream("../editor-clipboard.dot");
+		InputStream spec_stream = TransitionCategoryCoverage.class.getResourceAsStream("../editor-clipboard.dot");
 		Automaton automaton = Automaton.parseDot(new Scanner(spec_stream), "Editor clipboard");
 		// Create a triaging function
-		StateShallowHistory function = new StateShallowHistory(automaton, 2);
+		// Hint: try to change the second parameter, which represents history depth
+		TransitionShallowHistory function = new TransitionShallowHistory(automaton, 1);
 		// Create a coverage radius
-		CayleyCoverageRadius<AtomicEvent,MathList<Integer>> ccr = new CayleyCoverageRadius<AtomicEvent,MathList<Integer>>(function.getCayleyGraph(), function);
-		ccr.setWeighted(true);
+		CayleyCategoryCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>> ccr = new CayleyCategoryCoverage<AtomicEvent,MathList<Edge<AtomicEvent>>>(function.getCayleyGraph(), function);
 		// Read a test suite from a file
-		InputStream test_stream = CoverageRadius.class.getResourceAsStream("../clipboard-test-suite-1.txt");
+		InputStream test_stream = TransitionCategoryCoverage.class.getResourceAsStream("../clipboard-test-suite-1.txt");
 		Set<Trace<AtomicEvent>> test_suite = AtomicEvent.readTestSuite(new Scanner(test_stream));
-		// Get the radius map from this test suite
-		RadiusMap map = ccr.getCoverage(test_suite);
-		// Print the Gnuplot version of this map
-		System.out.println(map.toGnuplot());
+		// Get the coverage metric
+		float coverage = ccr.getCoverage(test_suite);
+		// Print coverage
+		System.out.println("Coverage of this test suite is " + coverage);
+		// Print the classes that are covered
+		Set<MathSet<MathList<Edge<AtomicEvent>>>> covered_classes = ccr.getCoveredClasses(test_suite, false);
+		System.out.println(covered_classes);
 	}
 }

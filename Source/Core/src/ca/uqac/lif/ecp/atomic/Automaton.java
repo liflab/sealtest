@@ -109,6 +109,14 @@ public class Automaton extends AtomicCayleyGraph<String>
 		}
 	}
 	
+	public void add(Vertex<AtomicEvent> ... vertices)
+	{
+		for (Vertex<AtomicEvent> v : vertices)
+		{
+			add(v);
+		}
+	}
+	
 	/**
 	 * Creates an automaton from a dot string
 	 * @param input A scanner to a dot string

@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016-2017 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import ca.uqac.lif.ecp.graphs.Vertex;
+import ca.uqac.lif.structures.MathSet;
 
 /**
  * Generates a plot from a Cayley Graph
@@ -49,7 +50,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 	 * The Cayley graph to plot
 	 */
 	protected final CayleyGraph<T,U> m_graph;
-		
+
 	/**
 	 * Creates a new plotter for a given graph
 	 * @param graph The graph
@@ -59,7 +60,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 		super();
 		m_graph = graph;
 	}
-	
+
 	/**
 	 * Produces a Dot file to draw the graph
 	 * @param format The format to print out
@@ -90,7 +91,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 	{
 		return toDot(Format.DOT);
 	}
-		
+
 	/**
 	 * Prints the vertex in Dot format
 	 * @param v The vertex
@@ -99,7 +100,12 @@ public class GraphPlotter<T extends Event,U extends Object>
 	 */
 	protected String printVertex(Vertex<T> v, Format format)
 	{
-		return m_graph.m_labelling.get(v.getId()).toString();
+		MathSet<U> out = m_graph.m_labelling.get(v.getId());
+		if (out != null)
+		{
+			return out.toString();
+		}
+		return Integer.toString(v.getId());
 	}
 
 	/**
@@ -112,7 +118,7 @@ public class GraphPlotter<T extends Event,U extends Object>
 	{
 		return e.getLabel().toString();
 	}
-		
+
 	/**
 	 * Prints the edges of the graph, by merging the label of all edges
 	 * with the same target state
@@ -143,5 +149,5 @@ public class GraphPlotter<T extends Event,U extends Object>
 		}
 		return out.toString();
 	}
-	
+
 }
