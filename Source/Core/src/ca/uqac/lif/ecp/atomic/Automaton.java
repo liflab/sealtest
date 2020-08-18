@@ -109,7 +109,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 		}
 	}
 	
-	public void add(Vertex<AtomicEvent> ... vertices)
+	public void add(@SuppressWarnings("unchecked") Vertex<AtomicEvent> ... vertices)
 	{
 		for (Vertex<AtomicEvent> v : vertices)
 		{

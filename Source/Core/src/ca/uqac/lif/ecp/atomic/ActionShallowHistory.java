@@ -37,7 +37,7 @@ public class ActionShallowHistory extends ShallowHistoryFunction<AtomicEvent>
 	public MathSet<MathList<AtomicEvent>> processTransition(Edge<AtomicEvent> edge)
 	{
 		MathSet<String> destination_label = m_automaton.getLabelling().get(edge.getDestination());
-		if (destination_label.contains(s_invalidLabel))
+		if (destination_label != null && destination_label.contains(s_invalidLabel))
 		{
 			// All actions going to the "invalid" sink state are the same
 			m_window.add(s_invalidEvent);

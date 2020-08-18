@@ -27,8 +27,8 @@ import ca.uqac.lif.structures.MathSet;
 
 /**
  * From a Cayley graph built from a classification function &kappa;,
- * creates a new Cayley graph representing the category prefix closure
- * of &kappa;. 
+ * creates a new Cayley graph representing the prefix closure
+ * of &int;&kappa;.
  * <p>
  * <strong>Caveat emptor:</strong> the original graph must be complete,
  * i.e. for an alphabet &Sigma;, from any vertex, there must be an outgoing
@@ -43,7 +43,7 @@ public class PrefixCategoryClosure<T extends Event,U>
 	/**
 	 * The maximum recursion depth
 	 */
-	protected static final int s_maxDepth = 1000;
+	protected static final int s_maxDepth = 20;
 	
 	protected static int s_idCounter = 0;
 

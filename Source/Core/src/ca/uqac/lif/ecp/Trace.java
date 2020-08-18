@@ -50,6 +50,20 @@ public class Trace<T extends Event> extends LinkedList<T>
 		this();
 		addAll(t);
 	}
+	
+	/**
+	 * Returns the prefix of the trace up to a given position
+	 * @param index The position
+	 * @return A new trace containing the prefix of the current trace, up to
+	 * and excluding the position at index
+	 */
+	public Trace<T> prefixTo(int index)
+	{
+		Trace<T> out = new Trace<T>();
+		List<T> out_list = subList(0, index);
+		out.addAll(out_list);
+		return out;
+	}
 
 	/**
 	 * Returns the suffix of the trace starting from a given position

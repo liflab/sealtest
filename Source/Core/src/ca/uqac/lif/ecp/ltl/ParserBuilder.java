@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hallé
+    Copyright (C) 2016-2020 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -26,6 +26,7 @@ import ca.uqac.lif.bullwinkle.BnfParser.InvalidGrammarException;
 import ca.uqac.lif.bullwinkle.BnfParser.ParseException;
 import ca.uqac.lif.bullwinkle.ParseNode;
 import ca.uqac.lif.bullwinkle.ParseNodeVisitor;
+import ca.uqac.lif.bullwinkle.ParseNodeVisitor.VisitException;
 import ca.uqac.lif.ecp.Event;
 
 /**
@@ -73,7 +74,11 @@ public abstract class ParserBuilder<T extends Event> extends OperatorBuilder<T>
 			LtlVisitor visitor = new LtlVisitor();
 			node.postfixAccept(visitor);
 			return visitor.getOperator();
-		} 
+		}
+		catch (VisitException e) 
+		{
+			throw new BuildException(e.getMessage());
+		}
 		catch (ParseException e) 
 		{
 			throw new BuildException(e.getMessage());

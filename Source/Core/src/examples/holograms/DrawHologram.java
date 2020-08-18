@@ -17,6 +17,9 @@
  */
 package examples.holograms;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import ca.uqac.lif.ecp.Trace;
 import ca.uqac.lif.ecp.atomic.AtomicEvent;
 import ca.uqac.lif.ecp.atomic.AtomicTrace;
@@ -29,25 +32,35 @@ import ca.uqac.lif.ecp.ltl.OperatorBuilder.BuildException;
  */
 public class DrawHologram
 {
-	public static void main(String[] args) throws BuildException
+	public static void main(String[] args) throws BuildException, FileNotFoundException
 	{
 		// Define the formula and parse
-		String formula_string = "G ((a) -> (X (b | c)))";
+		//String formula_string = "G ((a) -> (X (b | c)))";
+		String formula_string = "(G ((a) -> (X (b)))) | (G ((c) -> (X (d))))";
 		AtomicParserBuilder parser = new AtomicParserBuilder(formula_string);
 		Operator<AtomicEvent> op = parser.build();
 		// Define the trace, parse and evaluate
-		String trace_string = "c,b,a,d";
-		Trace<AtomicEvent> trace = AtomicTrace.readTrace(trace_string);
-		for (AtomicEvent ae : trace)
-			op.evaluate(ae);
-		// Define hologram transformation and transform
-		//HologramTransformation<AtomicEvent> df = //new IdentityHologramTransformation<AtomicEvent>();//new DepthFiltering<AtomicEvent>(2);
-		HologramTransformation<AtomicEvent> df = new PolarityDeletion<AtomicEvent>();
-		Operator<AtomicEvent> new_op = df.transform(op);
-		// Draw resulting hologram
-		GraphvizHologramRenderer<AtomicEvent> renderer = new GraphvizHologramRenderer<AtomicEvent>();
-		new_op.acceptPrefix(renderer, true);
-		System.out.println(renderer.toDot());
+		String[] traces = new String[] {"b", "c,d", "a,b", "a,a,c,c", "c,c", "a,b,c,c", "c,d,a,a", "a,a"};
+		for (int i = 0; i < traces.length; i++)
+		{
+			String trace_string = traces[i];
+			String filename = "/tmp/depth-ex2-" + i + ".dot";
+			//String trace_string = "c,b,a,d";
+			Trace<AtomicEvent> trace = AtomicTrace.readTrace(trace_string);
+			for (AtomicEvent ae : trace)
+				op.evaluate(ae);
+			// Define hologram transformation and transform
+			//HologramTransformation<AtomicEvent> df = //new IdentityHologramTransformation<AtomicEvent>();//new DepthFiltering<AtomicEvent>(2);
+			//HologramTransformation<AtomicEvent> df = new PolarityDeletion<AtomicEvent>();
+			HologramTransformation<AtomicEvent> df = new DepthFiltering<AtomicEvent>(3);
+			Operator<AtomicEvent> new_op = df.transform(op);
+			// Draw resulting hologram
+			GraphvizHologramRenderer<AtomicEvent> renderer = new GraphvizHologramRenderer<AtomicEvent>();
+			new_op.acceptPrefix(renderer, true);
+			PrintWriter pw = new PrintWriter(filename);
+			pw.println(renderer.toDot());
+			pw.close();
+		}
 	}
 
 }
