@@ -40,7 +40,7 @@ public class ActionShallowHistory extends ShallowHistoryFunction<AtomicEvent>
 		if (destination_label != null && destination_label.contains(s_invalidLabel))
 		{
 			// All actions going to the "invalid" sink state are the same
-			m_window.add(s_invalidEvent);
+			m_window.clear();//.add(s_invalidEvent);
 		}
 		else
 		{
