@@ -19,6 +19,7 @@ package ca.uqac.lif.ecp.atomic;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -45,18 +46,18 @@ public class Automaton extends AtomicCayleyGraph<String>
 	 * The alphabet associated to this automaton
 	 */
 	protected Alphabet<AtomicEvent> m_alphabet;
-	
+
 	/**
 	 * A title to give to the automaton
 	 */
 	protected String m_title = "";
-	
+
 	public Automaton()
 	{
 		super();
 		m_alphabet = new Alphabet<AtomicEvent>();
 	}
-	
+
 	/**
 	 * Creates an automaton from a dot string
 	 * @param input A dot string
@@ -66,7 +67,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		return parseDot(new Scanner(s));
 	}
-	
+
 	/**
 	 * Gives a title to the automaton
 	 * @param title The title
@@ -75,7 +76,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		m_title = title;
 	}
-	
+
 	/**
 	 * Gets the title of this automaton
 	 * @return The title
@@ -84,7 +85,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		return m_title;
 	}
-	
+
 	/**
 	 * Sets the alphabet for this automaton
 	 * @param alphabet The alphabet
@@ -93,7 +94,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		m_alphabet = alphabet;
 	}
-	
+
 	@Override
 	public void add(Vertex<AtomicEvent> v)
 	{
@@ -108,7 +109,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 			}
 		}
 	}
-	
+
 	public void add(@SuppressWarnings("unchecked") Vertex<AtomicEvent> ... vertices)
 	{
 		for (Vertex<AtomicEvent> v : vertices)
@@ -116,7 +117,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 			add(v);
 		}
 	}
-	
+
 	/**
 	 * Creates an automaton from a dot string
 	 * @param input A scanner to a dot string
@@ -126,7 +127,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		return parseDot(scanner, "");
 	}
-	
+
 	/**
 	 * Creates an automaton from a dot string
 	 * @param input A scanner to a dot string
@@ -286,7 +287,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 		scanner.close();
 		return g;
 	}
-	
+
 	/**
 	 * Gets the set of all symbols occurring on edge labels in the graph.
 	 * @return The alphabet
@@ -295,7 +296,7 @@ public class Automaton extends AtomicCayleyGraph<String>
 	{
 		return m_alphabet;
 	}
-	
+
 	/**
 	 * Takes a transition from a given state
 	 * @param current_vertex The current state
@@ -326,5 +327,73 @@ public class Automaton extends AtomicCayleyGraph<String>
 		}
 		// This should not happen in the transition function is complete
 		return null;
+	}
+
+	/**
+	 * Modifies the transition function of the automaton by adding a sink state
+	 * and putting an "else" transition from every state to this sink. This has
+	 * for effect that the transition function becomes total.
+	 */
+	public void makeTotal()
+	{
+		int id = getVertexCount();
+		Vertex<AtomicEvent> invalid = new Vertex<AtomicEvent>(id);
+		boolean sink_needed = false;
+		invalid.add(new Edge<AtomicEvent>(id, ElseEvent.instance, id));
+		for (Vertex<AtomicEvent> v : getVertices())
+		{
+			boolean has_else = false;
+			Set<AtomicEvent> outgoing = new HashSet<AtomicEvent>();
+			for (Edge<AtomicEvent> e : v.getEdges())
+			{
+				if (e.getLabel().getLabel().compareToIgnoreCase(ElseEvent.label) == 0)
+				{
+					has_else = true;
+					break;
+				}
+				outgoing.add(e.getLabel());
+			}
+			if (!has_else && outgoing.size() < m_alphabet.size())
+			{
+				v.add(new Edge<AtomicEvent>(v.getId(), ElseEvent.instance, id));
+				sink_needed = true;
+			}
+		}
+		if (sink_needed)
+		{
+			add(invalid);
+		}
+	}
+
+	/**
+	 * On each state, replaces any "else" transition by concrete transitions
+	 * for all labels except those already present on outgoing transitions.
+	 */
+	public void replaceElse()
+	{
+		for (Vertex<AtomicEvent> v : getVertices())
+		{
+			int else_dest = -1;
+			Alphabet<AtomicEvent> e_a = new Alphabet<AtomicEvent>();
+			e_a.addAll(m_alphabet);
+			Iterator<Edge<AtomicEvent>> it = v.getEdges().iterator();
+			while (it.hasNext())
+			{
+				Edge<AtomicEvent> e = it.next();
+				if (e.getLabel().getLabel().compareToIgnoreCase(ElseEvent.label) == 0)
+				{
+					else_dest = e.getDestination();
+					it.remove();
+				}
+				else
+				{
+					e_a.remove(e.getLabel());
+				}
+			}
+			for (AtomicEvent ae : e_a)
+			{
+				v.add(new Edge<AtomicEvent>(v.getId(), ae, else_dest));
+			}
+		}
 	}
 }
