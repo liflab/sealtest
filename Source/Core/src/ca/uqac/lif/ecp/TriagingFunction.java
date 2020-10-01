@@ -37,8 +37,9 @@ public abstract class TriagingFunction<T extends Event,U>
 	{
 		reset();
 		MathSet<U> last = getStartClass();
-		for (T event : trace)
+		for (int i = 0; i < trace.size(); i++)
 		{
+			T event = trace.get(i);
 			last = read(event);
 		}
 		return last;

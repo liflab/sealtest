@@ -71,11 +71,12 @@ public abstract class AutomatonFunction<U extends Object> extends TriagingFuncti
 			throw new UnexpectedError("The transition relation of the automaton is not total: no outgoing edge from "
 					+ m_currentVertex + " with event " + e);
 		}
-		m_currentVertex = m_automaton.getVertex(edge.getDestination());
-		if (m_currentVertex == null)
+		Vertex<AtomicEvent> v = m_automaton.getVertex(edge.getDestination());
+		if (v == null)
 		{
-			throw new UnexpectedError("Edge refers to a nonexistent vertex ID: " + m_currentVertex.getId());
+			throw new UnexpectedError("Edge refers to a nonexistent vertex ID: " + edge.getDestination());
 		}
+		m_currentVertex = v;
 		return processTransition(edge);
 	}
 	
