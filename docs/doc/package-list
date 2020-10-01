@@ -4,7 +4,13 @@ ca.uqac.lif.ecp.cli
 ca.uqac.lif.ecp.graphs
 ca.uqac.lif.ecp.ltl
 ca.uqac.lif.ecp.online
+ca.uqac.lif.ecp.petrinet
+ca.uqac.lif.ecp.statechart
+ca.uqac.lif.ecp.statechart.atomic
+ca.uqac.lif.ecp.util
 ca.uqac.lif.structures
+examples
+examples.automaton
 examples.coverage
 examples.holograms
 examples.online
