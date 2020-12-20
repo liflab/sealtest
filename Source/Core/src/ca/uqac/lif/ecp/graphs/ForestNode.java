@@ -1,6 +1,6 @@
 /*
     Log trace triaging and etc.
-    Copyright (C) 2016 Sylvain Hall�
+    Copyright (C) 2016-2020 Sylvain Hallé
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Lesser General Public License as published
@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import ca.uqac.lif.ecp.CayleyGraph;
 import ca.uqac.lif.ecp.Edge;
 import ca.uqac.lif.ecp.Event;
 
@@ -160,7 +159,7 @@ public class ForestNode<T extends Event>
 	 * @param graph The Cayley graph
 	 * @return list of edges in the spanning tree
 	 */
-	public List<Edge<T>> getOrderedSpanningTree(CayleyGraph<T,?> graph)
+	public List<Edge<T>> getOrderedSpanningTree(LabelledGraph<T> graph)
 	{
 		List<Edge<T>> tree = new ArrayList<Edge<T>>();
 		List<Edge<T>> edges = graph.getEdges();
